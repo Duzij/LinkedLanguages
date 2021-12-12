@@ -1,0 +1,11 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/LinkedLanguages.BL/bin/Debug/net5.0
+/LinkedLanguages.BL/obj
+/LinkedLanguages.Console/bin/Debug/netcoreapp3.1
+/LinkedLanguages.Console/obj
+/LinkedLanguages.DAL/bin/Debug/net5.0
+/LinkedLanguages.DAL/obj

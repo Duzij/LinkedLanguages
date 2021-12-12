@@ -1,8 +1,11 @@
 ﻿using IdentityServer4.EntityFramework.Options;
-using LinkedLanguages.Models;
+
+using LinkedLanguages.DAL.Models;
+
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
