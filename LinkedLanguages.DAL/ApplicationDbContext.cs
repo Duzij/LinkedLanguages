@@ -1,5 +1,6 @@
 ﻿using IdentityServer4.EntityFramework.Options;
 
+using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
 
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
@@ -19,6 +20,15 @@ namespace LinkedLanguages.Data
             DbContextOptions options,
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
+        }
+
+        public DbSet<Language> Languages { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Language>().HasData(LanguageSeed.GetStaticLanguages());
+
+            base.OnModelCreating(builder);
         }
     }
 }
