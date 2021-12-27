@@ -8,10 +8,8 @@ namespace LinkedLanguages.DAL.Models
 {
     public class WordPair
     {
-        public string ForeignWord { get; set; }
-
-        public Language ForeignLanguage { get; set; }
-        public string KnownWord { get; set; }
-        public Language KnownLanguage { get; set; }
+        public int Id { get; set; }
+        public string Content { get; set; }
+        
     }
 }
