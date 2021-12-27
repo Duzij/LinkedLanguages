@@ -4,14 +4,16 @@ using LinkedLanguages.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LinkedLanguages.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211227104612_LanguageToUserAdded")]
+    partial class LanguageToUserAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -187,31 +189,6 @@ namespace LinkedLanguages.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("LinkedLanguages.DAL.Models.KnownLanguageToUser", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ApplicationUserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ApplicationUserId1")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("LanguageId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId1");
-
-                    b.HasIndex("LanguageId");
-
-                    b.ToTable("KnownLanguageToUsers");
-                });
-
             modelBuilder.Entity("LinkedLanguages.DAL.Models.Language", b =>
                 {
                     b.Property<int>("Id")
@@ -292,7 +269,7 @@ namespace LinkedLanguages.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("LinkedLanguages.DAL.Models.UnknownLanguageToUser", b =>
+            modelBuilder.Entity("LinkedLanguages.DAL.Models.LanguageToUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -314,7 +291,7 @@ namespace LinkedLanguages.Data.Migrations
 
                     b.HasIndex("LanguageId");
 
-                    b.ToTable("UnknownLanguageToUsers");
+                    b.ToTable("LanguageToUsers");
                 });
 
             modelBuilder.Entity("LinkedLanguages.DAL.Models.WordPair", b =>
@@ -492,24 +469,7 @@ namespace LinkedLanguages.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("LinkedLanguages.DAL.Models.KnownLanguageToUser", b =>
-                {
-                    b.HasOne("LinkedLanguages.DAL.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId1");
-
-                    b.HasOne("LinkedLanguages.DAL.Models.Language", "Language")
-                        .WithMany()
-                        .HasForeignKey("LanguageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationUser");
-
-                    b.Navigation("Language");
-                });
-
-            modelBuilder.Entity("LinkedLanguages.DAL.Models.UnknownLanguageToUser", b =>
+            modelBuilder.Entity("LinkedLanguages.DAL.Models.LanguageToUser", b =>
                 {
                     b.HasOne("LinkedLanguages.DAL.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
