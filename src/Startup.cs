@@ -31,6 +31,8 @@ namespace LinkedLanguages
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
+            services.AddTransient<LanguageFacade>();
+
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -94,6 +96,7 @@ namespace LinkedLanguages
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+
         }
     }
 }
