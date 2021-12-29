@@ -8,10 +8,10 @@ namespace LinkedLanguages.DAL.Models
 {
     public class KnownLanguageToUser
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public Language Language { get; set; }
-        public int LanguageId { get; set; }
+        public Guid LanguageId { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
-        public int ApplicationUserId { get; set; }
+        public Guid ApplicationUserId { get; set; }
     }
 }

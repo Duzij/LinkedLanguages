@@ -30,19 +30,20 @@ namespace LinkedLanguages.Controllers
         [HttpGet()]
         public async Task<UserProfileDto> GetUserProfile()
         {
-            var userId = Convert.ToInt32(claimsPrincipal.GetUserId());
-            return await languageFacade.GetUserProfileAsync(userId);
+            var userId = claimsPrincipal.GetUserId();
+             var profile = await languageFacade.GetUserProfileAsync(userId);
+            return profile;
         }
 
 
         [HttpPost()]
-        public async Task SaveUserProfile(UserProfileDto userProfile)
+        public async Task<UserProfileDto> SaveUserProfile(UserProfileDto userProfile)
         {
-            var userId = Convert.ToInt32(claimsPrincipal.GetUserId());
-
-            userProfile.UserId = userId;
-
+            userProfile.UserId = Guid.Parse(claimsPrincipal.GetUserId());
+            logger.LogInformation("Saving user profile");
             await languageFacade.SaveUserProfile(userProfile);
+
+            return userProfile;
         }
 
     }

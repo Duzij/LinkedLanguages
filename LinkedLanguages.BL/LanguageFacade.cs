@@ -24,11 +24,11 @@ namespace LinkedLanguages.BL
             return await appContext.Languages.AsNoTracking().Select(l => new LanguageDto { Id = l.Id, LanguageName = l.Name, Code = l.Code }).ToListAsync();
         }
 
-        public async Task<UserProfileDto> GetUserProfileAsync(int userId)
+        public async Task<UserProfileDto> GetUserProfileAsync(string userId)
         {
             return new UserProfileDto()
             {
-                UserId = userId, 
+                UserId = Guid.Parse(userId), 
                 KnownLanguages = await appContext.KnownLanguageToUsers.AsNoTracking().Select(kl => new LanguageDto { Id = kl.Id, Code = kl.Language.Code, LanguageName = kl.Language.Name }).ToListAsync(),
                 UnknownLanguages = await appContext.UnknownLanguageToUsers.AsNoTracking().Select(kl => new LanguageDto { Id = kl.Id, Code = kl.Language.Code, LanguageName = kl.Language.Name }).ToListAsync(),
             };
@@ -61,7 +61,7 @@ namespace LinkedLanguages.BL
 
     public class UserProfileDto
     {
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
         public List<LanguageDto> KnownLanguages { get; set; }
         public List<LanguageDto> UnknownLanguages { get; set; }
     }
@@ -69,7 +69,7 @@ namespace LinkedLanguages.BL
 
     public class LanguageDto
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string LanguageName { get; set; }
         public string Code { get; internal set; }
     }

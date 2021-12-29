@@ -1,70 +1,110 @@
 import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
+import Select from 'react-select';
+import makeAnimated from 'react-select/animated';
+import Form from 'reactstrap/lib/Form';
 
 export class Setup extends Component {
-  static displayName = Setup.name;
+    static displayName = Setup.name;
 
-  constructor(props) {
-    super(props);
-    this.state = { forecasts: [], loading: true };
-  }
+    constructor(props) {
+        super(props);
+        this.state = { profile: null, languages: null, knownLanguages: [], selectedLanguages: [], loading: true };
+    }
 
-  componentDidMount() {
-    this.populateWeatherData();
-  }
+    componentDidMount() {
+        this.fetchLanguages();
+        this.fetchProfile();
+    }
 
-  static renderProfile(languages) {
-    return (
-      <table className='table table-striped' aria-labelledby="tabelLabel">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Code</th>
-          </tr>
-        </thead>
-        <tbody>
-          {languages.map(lang =>
-            <tr key={lang.id}>
-              <td>{lang.languageName}</td>
-              <td>{lang.code}</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    );
-  }
+    // static renderLanguages(savedLanguages, languages) {
+    //     const animatedComponents = makeAnimated();
 
-  render() {
-    let contents = this.state.loading
-      ? <p><em>Loading...</em></p>
-      : Setup.renderProfile(this.state.languages);
+    //     return (
 
-    return (
-      <div>
-        <h1 id="tabelLabel" >User profile</h1>
-        <p>Here you can modify your profile and change known and unknown languages</p>
-        <div className="row">
-            <div className="col-md-6">
-            <p>Known languages</p>
-             {contents}
+    //     );
+    // }
+
+    render() {
+
+        // let languages = this.state.loading
+        //     ? <p><em>Loading...</em></p>
+        //     : Setup.renderLanguages(, , this.state.selectedLanguages);
+
+        return (
+            <div>
+                <h1 id="tabelLabel" >User profile</h1>
+                <p>Here you can modify your profile and change known and unknown languages</p>
+                <div className="row">
+                    <div className="col-md-6">
+                        <p>Known languages</p>
+
+                        <Select
+                            //animatedComponents={animatedComponents}
+                            isMulti
+                            defaultValue={this.state.knownLanguages}
+                            onChange={(selectedLanguages) => this.setState({ selectedLanguages })}
+                            name="colors"
+                            options={this.state.languages}
+                            className="basic-multi-select"
+                            classNamePrefix="select" />
+
+                    </div>
+                    <div className="col-md-6">
+                        <p>Unknown languages</p>
+                        {/* {languages} */}
+                    </div>
+                </div>
+                <div className="row">
+                    <button className="btn btn-primary" onClick={this.incrementCounter.bind(this)}>Save</button>
+                </div>
             </div>
-            <div className="col-md-6">
-             <p>Unknown languages</p>
-             {contents}
-            </div>
-        </div>
-      </div>
-    );
-  }
+        );
+    }
 
-  async populateWeatherData() {
-    const token = await authService.getAccessToken();
-    const response = await fetch('languages', {
-      headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-    });
+    incrementCounter() {
+        console.log('saveLanguages' + this.state.selectedLanguages);
+    }
 
-    const data = await response.json();
-    console.log(data);
-    this.setState({ languages: data, loading: false });
-  }
+    saveLanguages = () => {
+
+        console.log('saveLanguages' + this.state.selectedLanguages);
+
+        // const token = await authService.getAccessToken();
+        // const languagesResponse = await fetch('profile', {
+        //     method: 'POST',
+        //     headers: !token ? {} : { 'Authorization': `Bearer ${token}` },
+        //     body: JSON.stringify({ knownLanguages: this.state.knownLanguages })
+        // });
+
+        // const data = await languagesResponse.json();
+        // console.log(data);
+        // this.setState({ languages: data, loading: false });
+    }
+
+    async fetchLanguages() {
+        const token = await authService.getAccessToken();
+        const languagesResponse = await fetch('languages', {
+            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+        });
+
+        const data = await languagesResponse.json();
+        console.log(data);
+        const languages = data.map((item) => ({ value: item.id, label: item.languageName }));
+        this.setState({ languages: languages, loading: false });
+    }
+
+    async fetchProfile() {
+        const token = await authService.getAccessToken();
+        const response = await fetch('profile', {
+            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+        });
+
+        const data = await response.json();
+        console.log(data);
+        if (data.knownLanguages) {
+            const knownLanguages = data.knownLanguages.map((item) => ({ value: item.id, label: item.languageName }));
+            this.setState({ knownLanguages: knownLanguages });
+        }
+    }
 }

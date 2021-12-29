@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace LinkedLanguages.Data.Migrations
+namespace LinkedLanguages.DAL.Migrations
 {
-    public partial class CreateIdentitySchema : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -66,6 +66,19 @@ namespace LinkedLanguages.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Languages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Languages", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PersistedGrants",
                 columns: table => new
                 {
@@ -83,6 +96,18 @@ namespace LinkedLanguages.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PersistedGrants", x => x.Key);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "WordPairs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WordPairs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -191,6 +216,101 @@ namespace LinkedLanguages.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "KnownLanguageToUsers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LanguageId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ApplicationUserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ApplicationUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_KnownLanguageToUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_KnownLanguageToUsers_AspNetUsers_ApplicationUserId1",
+                        column: x => x.ApplicationUserId1,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_KnownLanguageToUsers_Languages_LanguageId",
+                        column: x => x.LanguageId,
+                        principalTable: "Languages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UnknownLanguageToUsers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LanguageId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ApplicationUserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ApplicationUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UnknownLanguageToUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UnknownLanguageToUsers_AspNetUsers_ApplicationUserId1",
+                        column: x => x.ApplicationUserId1,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_UnknownLanguageToUsers_Languages_LanguageId",
+                        column: x => x.LanguageId,
+                        principalTable: "Languages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "WordPairToApplicationUsers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ApplicationUserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ApplicationUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    WordPairId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WordPairToApplicationUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_WordPairToApplicationUsers_AspNetUsers_ApplicationUserId1",
+                        column: x => x.ApplicationUserId1,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_WordPairToApplicationUsers_WordPairs_WordPairId",
+                        column: x => x.WordPairId,
+                        principalTable: "WordPairs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Languages",
+                columns: new[] { "Id", "Code", "Name" },
+                values: new object[,]
+                {
+                    { new Guid("19bc0378-b248-4f72-b827-ebd4e6818b56"), "lat", "Latin" },
+                    { new Guid("bbeb43aa-8b3b-4902-a91c-68b08e396afe"), "eng", "English" },
+                    { new Guid("f4ed4153-e816-462f-b97f-a97c54d9dcc6"), "ita", "Italian" },
+                    { new Guid("beeab01b-7861-4759-942d-369f74a1f318"), "spa", "Castilian, Spanish" },
+                    { new Guid("955d6d79-e96a-4cdf-b06e-dec4d995d309"), "fra", "French" },
+                    { new Guid("ac332cd9-895a-401f-b115-7e149bdb494b"), "rus", "Russian" },
+                    { new Guid("af909fb3-f372-42c1-9ca7-8ace513bb8e5"), "deu", "German" },
+                    { new Guid("c3312d0d-5898-4dda-852a-383603c2ce71"), "por", "Portuguese" },
+                    { new Guid("f00723bc-0313-44d7-9fe9-1cf4df2b45a9"), "fin", "Finnish" },
+                    { new Guid("964cbdcb-d421-47d9-93c7-7518b6dca11e"), "zho", "Chinese" }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -242,6 +362,16 @@ namespace LinkedLanguages.Data.Migrations
                 column: "Expiration");
 
             migrationBuilder.CreateIndex(
+                name: "IX_KnownLanguageToUsers_ApplicationUserId1",
+                table: "KnownLanguageToUsers",
+                column: "ApplicationUserId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_KnownLanguageToUsers_LanguageId",
+                table: "KnownLanguageToUsers",
+                column: "LanguageId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PersistedGrants_Expiration",
                 table: "PersistedGrants",
                 column: "Expiration");
@@ -255,6 +385,26 @@ namespace LinkedLanguages.Data.Migrations
                 name: "IX_PersistedGrants_SubjectId_SessionId_Type",
                 table: "PersistedGrants",
                 columns: new[] { "SubjectId", "SessionId", "Type" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UnknownLanguageToUsers_ApplicationUserId1",
+                table: "UnknownLanguageToUsers",
+                column: "ApplicationUserId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UnknownLanguageToUsers_LanguageId",
+                table: "UnknownLanguageToUsers",
+                column: "LanguageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WordPairToApplicationUsers_ApplicationUserId1",
+                table: "WordPairToApplicationUsers",
+                column: "ApplicationUserId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WordPairToApplicationUsers_WordPairId",
+                table: "WordPairToApplicationUsers",
+                column: "WordPairId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -278,13 +428,28 @@ namespace LinkedLanguages.Data.Migrations
                 name: "DeviceCodes");
 
             migrationBuilder.DropTable(
+                name: "KnownLanguageToUsers");
+
+            migrationBuilder.DropTable(
                 name: "PersistedGrants");
+
+            migrationBuilder.DropTable(
+                name: "UnknownLanguageToUsers");
+
+            migrationBuilder.DropTable(
+                name: "WordPairToApplicationUsers");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Languages");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "WordPairs");
         }
     }
 }

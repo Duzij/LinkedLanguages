@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace LinkedLanguages.Data.Migrations
+namespace LinkedLanguages.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211227111611_UnknownLanguageToUsersAdded")]
-    partial class UnknownLanguageToUsersAdded
+    [Migration("20211228171809_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -191,19 +191,18 @@ namespace LinkedLanguages.Data.Migrations
 
             modelBuilder.Entity("LinkedLanguages.DAL.Models.KnownLanguageToUser", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("ApplicationUserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ApplicationUserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ApplicationUserId1")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("LanguageId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("LanguageId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -216,10 +215,9 @@ namespace LinkedLanguages.Data.Migrations
 
             modelBuilder.Entity("LinkedLanguages.DAL.Models.Language", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
@@ -234,61 +232,61 @@ namespace LinkedLanguages.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = new Guid("19bc0378-b248-4f72-b827-ebd4e6818b56"),
                             Code = "lat",
                             Name = "Latin"
                         },
                         new
                         {
-                            Id = 2,
+                            Id = new Guid("bbeb43aa-8b3b-4902-a91c-68b08e396afe"),
                             Code = "eng",
                             Name = "English"
                         },
                         new
                         {
-                            Id = 3,
+                            Id = new Guid("f4ed4153-e816-462f-b97f-a97c54d9dcc6"),
                             Code = "ita",
                             Name = "Italian"
                         },
                         new
                         {
-                            Id = 4,
+                            Id = new Guid("beeab01b-7861-4759-942d-369f74a1f318"),
                             Code = "spa",
                             Name = "Castilian, Spanish"
                         },
                         new
                         {
-                            Id = 5,
+                            Id = new Guid("955d6d79-e96a-4cdf-b06e-dec4d995d309"),
                             Code = "fra",
                             Name = "French"
                         },
                         new
                         {
-                            Id = 6,
+                            Id = new Guid("ac332cd9-895a-401f-b115-7e149bdb494b"),
                             Code = "rus",
                             Name = "Russian"
                         },
                         new
                         {
-                            Id = 7,
+                            Id = new Guid("af909fb3-f372-42c1-9ca7-8ace513bb8e5"),
                             Code = "deu",
                             Name = "German"
                         },
                         new
                         {
-                            Id = 8,
+                            Id = new Guid("c3312d0d-5898-4dda-852a-383603c2ce71"),
                             Code = "por",
                             Name = "Portuguese"
                         },
                         new
                         {
-                            Id = 9,
+                            Id = new Guid("f00723bc-0313-44d7-9fe9-1cf4df2b45a9"),
                             Code = "fin",
                             Name = "Finnish"
                         },
                         new
                         {
-                            Id = 10,
+                            Id = new Guid("964cbdcb-d421-47d9-93c7-7518b6dca11e"),
                             Code = "zho",
                             Name = "Chinese"
                         });
@@ -296,19 +294,18 @@ namespace LinkedLanguages.Data.Migrations
 
             modelBuilder.Entity("LinkedLanguages.DAL.Models.UnknownLanguageToUser", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("ApplicationUserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ApplicationUserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ApplicationUserId1")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("LanguageId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("LanguageId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -321,10 +318,9 @@ namespace LinkedLanguages.Data.Migrations
 
             modelBuilder.Entity("LinkedLanguages.DAL.Models.WordPair", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
@@ -336,19 +332,18 @@ namespace LinkedLanguages.Data.Migrations
 
             modelBuilder.Entity("LinkedLanguages.DAL.Models.WordPairToApplicationUser", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("ApplicationUserId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ApplicationUserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ApplicationUserId1")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("WordPairId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("WordPairId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 

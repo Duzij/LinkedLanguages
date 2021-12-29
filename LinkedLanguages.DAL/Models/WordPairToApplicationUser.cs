@@ -8,12 +8,12 @@ namespace LinkedLanguages.DAL.Models
 {
     public class WordPairToApplicationUser
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public ApplicationUser ApplicationUser { get; set; }
-        public int ApplicationUserId { get; set; }
+        public Guid ApplicationUserId { get; set; }
 
-        public int WordPairId { get; set; }
+        public Guid WordPairId { get; set; }
         public WordPair WordPair { get; set; }
     }
 }

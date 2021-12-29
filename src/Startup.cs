@@ -1,15 +1,19 @@
 using LinkedLanguages.BL;
 using LinkedLanguages.DAL.Models;
 using LinkedLanguages.Data;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
+using System.Security.Claims;
 
 namespace LinkedLanguages
 {
@@ -30,7 +34,7 @@ namespace LinkedLanguages
                     Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDatabaseDeveloperPageExceptionFilter();
-
+            services.AddTransient(s => s.GetService<IHttpContextAccessor>().HttpContext.User);
             services.AddTransient<LanguageFacade>();
 
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
