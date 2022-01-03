@@ -9,27 +9,22 @@ export class Setup extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { profile: null, languages: null, knownLanguages: [], selectedLanguages: [], loading: true };
+        this.state = { profile: null, languages: [], knownLanguages: [], selectedLanguages: [], loading: true };
     }
 
     componentDidMount() {
         this.fetchLanguages();
         this.fetchProfile();
+
     }
 
-    // static renderLanguages(savedLanguages, languages) {
-    //     const animatedComponents = makeAnimated();
-
-    //     return (
-
-    //     );
-    // }
-
     render() {
+        let animated = makeAnimated();
 
-        // let languages = this.state.loading
-        //     ? <p><em>Loading...</em></p>
-        //     : Setup.renderLanguages(, , this.state.selectedLanguages);
+        const handleChange = (selectedLanguages) => {
+            this.setState({ selectedLanguages });
+            this.state.knownLanguages = selectedLanguages;
+        }
 
         return (
             <div>
@@ -40,11 +35,10 @@ export class Setup extends Component {
                         <p>Known languages</p>
 
                         <Select
-                            //animatedComponents={animatedComponents}
+                            makeAnimated={animated}
                             isMulti
-                            defaultValue={this.state.knownLanguages}
-                            onChange={(selectedLanguages) => this.setState({ selectedLanguages })}
-                            name="colors"
+                            value={this.state.knownLanguages}
+                            onChange={handleChange}
                             options={this.state.languages}
                             className="basic-multi-select"
                             classNamePrefix="select" />
@@ -56,30 +50,26 @@ export class Setup extends Component {
                     </div>
                 </div>
                 <div className="row">
-                    <button className="btn btn-primary" onClick={this.incrementCounter.bind(this)}>Save</button>
+                    <button className="btn btn-primary" onClick={this.saveLanguages.bind(this)}>Save</button>
                 </div>
             </div>
         );
     }
 
-    incrementCounter() {
-        console.log('saveLanguages' + this.state.selectedLanguages);
-    }
+    async saveLanguages() {
+        const token = await authService.getAccessToken();
+        const languagesResponse = await fetch('profile', {
+            method: 'POST',
+            headers: !token ? {} : {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ knownLanguages: this.state.selectedLanguages, unknownLanguages: this.state.selectedLanguages })
+        });
 
-    saveLanguages = () => {
-
-        console.log('saveLanguages' + this.state.selectedLanguages);
-
-        // const token = await authService.getAccessToken();
-        // const languagesResponse = await fetch('profile', {
-        //     method: 'POST',
-        //     headers: !token ? {} : { 'Authorization': `Bearer ${token}` },
-        //     body: JSON.stringify({ knownLanguages: this.state.knownLanguages })
-        // });
-
-        // const data = await languagesResponse.json();
-        // console.log(data);
-        // this.setState({ languages: data, loading: false });
+        const data = await languagesResponse.json();
+        console.log(data);
+        this.setState({ languages: data, loading: false });
     }
 
     async fetchLanguages() {
@@ -89,9 +79,12 @@ export class Setup extends Component {
         });
 
         const data = await languagesResponse.json();
-        console.log(data);
-        const languages = data.map((item) => ({ value: item.id, label: item.languageName }));
-        this.setState({ languages: languages, loading: false });
+
+        var d = data.filter(x => !this.state.knownLanguages.includes(x))
+
+        console.log(d);
+
+        this.setState({ languages: d, loading: false });
     }
 
     async fetchProfile() {
@@ -103,8 +96,7 @@ export class Setup extends Component {
         const data = await response.json();
         console.log(data);
         if (data.knownLanguages) {
-            const knownLanguages = data.knownLanguages.map((item) => ({ value: item.id, label: item.languageName }));
-            this.setState({ knownLanguages: knownLanguages });
+            this.setState({ knownLanguages: data.knownLanguages });
         }
     }
 }

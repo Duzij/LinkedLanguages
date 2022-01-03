@@ -14,6 +14,8 @@ namespace LinkedLanguages.Controllers
     [Authorize]
     [ApiController]
     [Route("profile")]
+    [Consumes("application/json")]
+    [Produces("application/json")]
     public class ProfileController : ControllerBase
     {
         private readonly LanguageFacade languageFacade;

@@ -21,16 +21,35 @@ namespace LinkedLanguages.BL
 
         public async Task<List<LanguageDto>> GetLanguages()
         {
-            return await appContext.Languages.AsNoTracking().Select(l => new LanguageDto { Id = l.Id, LanguageName = l.Name, Code = l.Code }).ToListAsync();
+            return await appContext.Languages
+                .AsNoTracking()
+                .Select(l => new LanguageDto {
+                    Value = l.Id,
+                    Label = l.Name
+                })
+                .ToListAsync();
         }
 
         public async Task<UserProfileDto> GetUserProfileAsync(string userId)
         {
             return new UserProfileDto()
             {
-                UserId = Guid.Parse(userId), 
-                KnownLanguages = await appContext.KnownLanguageToUsers.AsNoTracking().Select(kl => new LanguageDto { Id = kl.Id, Code = kl.Language.Code, LanguageName = kl.Language.Name }).ToListAsync(),
-                UnknownLanguages = await appContext.UnknownLanguageToUsers.AsNoTracking().Select(kl => new LanguageDto { Id = kl.Id, Code = kl.Language.Code, LanguageName = kl.Language.Name }).ToListAsync(),
+                UserId = Guid.Parse(userId),
+                KnownLanguages = await appContext.KnownLanguageToUsers
+                .AsNoTracking()
+                .Select(kl => new LanguageDto {
+                    Value = kl.LanguageId,
+                    Label = kl.Language.Name
+                })
+                .ToListAsync(),
+
+                UnknownLanguages = await appContext.UnknownLanguageToUsers
+                .AsNoTracking()
+                .Select(kl => new LanguageDto {
+                    Value = kl.LanguageId,
+                    Label = kl.Language.Name
+                })
+                .ToListAsync(),
             };
         }
 
@@ -42,18 +61,24 @@ namespace LinkedLanguages.BL
                 var savedKnown = await appContext.KnownLanguageToUsers.Where(k => k.ApplicationUserId == userProfile.UserId).ToListAsync();
                 var savedUnknown = await appContext.UnknownLanguageToUsers.Where(u => u.ApplicationUserId == userProfile.UserId).ToListAsync();
 
-                appContext.RemoveRange(savedKnown, savedUnknown);
-
-                foreach (var lang in userProfile.KnownLanguages)
+                if (savedKnown.Any())
                 {
-                    await appContext.KnownLanguageToUsers.AddAsync(new DAL.Models.KnownLanguageToUser() { ApplicationUserId = userProfile.UserId, LanguageId = lang.Id });
+                    appContext.RemoveRange(savedKnown);
+                }
+                if (savedUnknown.Any())
+                {
+                    appContext.RemoveRange(savedUnknown);
                 }
 
                 foreach (var lang in userProfile.KnownLanguages)
                 {
-                    await appContext.UnknownLanguageToUsers.AddAsync(new DAL.Models.UnknownLanguageToUser() { ApplicationUserId = userProfile.UserId, LanguageId = lang.Id });
+                    await appContext.KnownLanguageToUsers.AddAsync(new DAL.Models.KnownLanguageToUser() { ApplicationUserId = userProfile.UserId, LanguageId = lang.Value });
                 }
 
+                foreach (var lang in userProfile.KnownLanguages)
+                {
+                    await appContext.UnknownLanguageToUsers.AddAsync(new DAL.Models.UnknownLanguageToUser() { ApplicationUserId = userProfile.UserId, LanguageId = lang.Value });
+                }
                 await appContext.SaveChangesAsync();
             }
         }
@@ -69,8 +94,7 @@ namespace LinkedLanguages.BL
 
     public class LanguageDto
     {
-        public Guid Id { get; set; }
-        public string LanguageName { get; set; }
-        public string Code { get; internal set; }
+        public Guid Value { get; set; }
+        public string Label { get; set; }
     }
 }
