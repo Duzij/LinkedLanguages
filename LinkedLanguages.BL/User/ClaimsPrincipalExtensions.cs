@@ -1,19 +1,20 @@
-﻿using System;
+﻿
+using System;
 using System.Security.Claims;
 
-namespace LinkedLanguages.Services
+namespace LinkedLanguages.BL
 {
     public static class ClaimsPrincipalExtensions
     {
-        public static string GetUserId(this ClaimsPrincipal principal)
+        public static Guid GetUserId(this ClaimsPrincipal principal)
         {
             if (principal == null)
             {
                 throw new ArgumentNullException(nameof(principal));
             }
-            
+
             var claim = principal.FindFirst(ClaimTypes.NameIdentifier);
-            return claim != null ? claim.Value : null;
+            return claim != null ? Guid.Parse(claim.Value) : throw new InvalidOperationException("UserId claim not found");
         }
     }
 }

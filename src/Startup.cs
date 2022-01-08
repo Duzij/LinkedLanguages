@@ -1,6 +1,6 @@
 using LinkedLanguages.BL;
+using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
-using LinkedLanguages.Data;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
@@ -35,7 +35,7 @@ namespace LinkedLanguages
 
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddTransient(s => s.GetService<IHttpContextAccessor>().HttpContext.User);
-            services.AddTransient<LanguageFacade>();
+            services.AddTransient<IAppUserProvider, AppUserProvider>();
 
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -54,6 +54,12 @@ namespace LinkedLanguages
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
+            services.AddMemoryCache();
+
+            services.AddTransient<UnusedUserWordPairsQuery>();
+
+            services.AddTransient<LanguageFacade>();
 
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);

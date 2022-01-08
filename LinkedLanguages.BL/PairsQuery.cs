@@ -9,8 +9,13 @@ namespace LinkedLanguages.BL
     {
         public PairsQuery()
         {
+
+        }
+
+        public void Pump(string myLangCode, string foreignLangCode, int page, int itemsOnPage)
+        {
             var endpoint = new SparqlRemoteEndpoint(
-               new Uri("https://etytree-virtuoso.wmflabs.org/sparql/"));
+             new Uri("https://etytree-virtuoso.wmflabs.org/sparql/"));
 
             //First we need an instance of the SparqlQueryParser
             SparqlQueryParser parser = new SparqlQueryParser();
@@ -34,15 +39,12 @@ namespace LinkedLanguages.BL
                 ?x     rdf:label ?foreignWordLabel
                 FILTER langMatches(lang(?myLanguageLabel), @myLang)
                 FILTER langMatches(lang(?foreignWordLabel), @forLang)
-              }  LIMIT   10";
+              }  ";
+            queryString.CommandText += $"LIMIT {itemsOnPage} OFFSET {page * itemsOnPage}";
 
             //Inject a Value for the parameter
-            queryString.SetLiteral("myLang", "eng");
-            queryString.SetLiteral("forLang", "ll");
-
-            //When we call ToString() we get the full command text with namespaces appended as PREFIX
-            //declarations and any parameters replaced with their declared values
-            System.Console.WriteLine(queryString.ToString());
+            queryString.SetLiteral("myLang", myLangCode);
+            queryString.SetLiteral("forLang", foreignLangCode);
 
             //We can turn this into a query by parsing it as in our previous example
             SparqlQuery query = parser.ParseFromString(queryString);

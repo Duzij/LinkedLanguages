@@ -2,56 +2,75 @@ import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
-import Form from 'reactstrap/lib/Form';
 
 export class Setup extends Component {
     static displayName = Setup.name;
 
     constructor(props) {
         super(props);
-        this.state = { profile: null, languages: [], knownLanguages: [], selectedLanguages: [], loading: true };
+        this.state = { profile: {}, languages: [], loading: true };
     }
 
     componentDidMount() {
         this.fetchLanguages();
         this.fetchProfile();
-
     }
 
     render() {
         let animated = makeAnimated();
 
-        const handleChange = (selectedLanguages) => {
-            this.setState({ selectedLanguages });
-            this.state.knownLanguages = selectedLanguages;
+        const handleKnownChange = (selectedKnownLanguages) => {
+            var profile = this.state.profile;
+            profile.knownLanguages = selectedKnownLanguages;
+            this.setState({ profile: profile });
+        }
+
+        const handleUnknownChange = (selectedUnknownLanguages) => {
+            var profile = this.state.profile;
+            profile.unknownLanguages = selectedUnknownLanguages;
+            this.setState({ profile: profile });
         }
 
         return (
             <div>
-                <h1 id="tabelLabel" >User profile</h1>
-                <p>Here you can modify your profile and change known and unknown languages</p>
-                <div className="row">
-                    <div className="col-md-6">
-                        <p>Known languages</p>
-
+                <form>
+                    <div className='form-group col-md-12'>
+                        <h1 id="tabelLabel" >User profile</h1>
+                        <p>Here you can modify your profile and change known and unknown languages</p>
+                        <div className="alert alert-info" role="alert">
+                            For public alpha only one known language and one unknown language are supported.
+                        </div>
+                    </div>
+                    <div className="form-group col-md-6">
+                        <label>Known languages</label>
                         <Select
                             makeAnimated={animated}
-                            isMulti
-                            value={this.state.knownLanguages}
-                            onChange={handleChange}
+                            //isMulti uncomment when ready for multilanguage support
+                            value={this.state.profile.knownLanguages}
+                            onChange={handleKnownChange}
                             options={this.state.languages}
                             className="basic-multi-select"
                             classNamePrefix="select" />
 
                     </div>
-                    <div className="col-md-6">
-                        <p>Unknown languages</p>
-                        {/* {languages} */}
+                    <div className="form-group col-md-6">
+                        <label>Unknown languages</label>
+                        <Select
+                            makeAnimated={animated}
+                            //isMulti uncomment when ready for multilanguage support
+                            value={this.state.profile.unknownLanguages}
+                            onChange={handleUnknownChange}
+                            options={this.state.languages}
+                            className="basic-multi-select"
+                            classNamePrefix="select" />
                     </div>
-                </div>
-                <div className="row">
-                    <button className="btn btn-primary" onClick={this.saveLanguages.bind(this)}>Save</button>
-                </div>
+
+                    <div className='form-group col-md-12'>
+                        <button type="button" className="btn btn-primary" onClick={this.saveLanguages.bind(this)}>Save</button>
+                    </div>
+
+                </form>
+
             </div>
         );
     }
@@ -64,11 +83,10 @@ export class Setup extends Component {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ knownLanguages: this.state.selectedLanguages, unknownLanguages: this.state.selectedLanguages })
+            body: JSON.stringify({ knownLanguages: this.state.profile.knownLanguages, unknownLanguages: this.state.profile.unknownLanguages })
         });
 
         const data = await languagesResponse.json();
-        console.log(data);
         this.setState({ languages: data, loading: false });
     }
 
@@ -79,12 +97,7 @@ export class Setup extends Component {
         });
 
         const data = await languagesResponse.json();
-
-        var d = data.filter(x => !this.state.knownLanguages.includes(x))
-
-        console.log(d);
-
-        this.setState({ languages: d, loading: false });
+        this.setState({ languages: data, loading: false });
     }
 
     async fetchProfile() {
@@ -95,8 +108,6 @@ export class Setup extends Component {
 
         const data = await response.json();
         console.log(data);
-        if (data.knownLanguages) {
-            this.setState({ knownLanguages: data.knownLanguages });
-        }
+        this.setState({ profile: data });
     }
 }

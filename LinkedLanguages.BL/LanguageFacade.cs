@@ -1,4 +1,4 @@
-﻿using LinkedLanguages.Data;
+﻿using LinkedLanguages.DAL;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -13,10 +13,12 @@ namespace LinkedLanguages.BL
     public class LanguageFacade
     {
         private readonly ApplicationDbContext appContext;
+        private readonly IAppUserProvider appUserProvider;
 
-        public LanguageFacade(ApplicationDbContext appContext)
+        public LanguageFacade(ApplicationDbContext appContext, IAppUserProvider appUserProvider)
         {
             this.appContext = appContext;
+            this.appUserProvider = appUserProvider;
         }
 
         public async Task<List<LanguageDto>> GetLanguages()
@@ -30,11 +32,13 @@ namespace LinkedLanguages.BL
                 .ToListAsync();
         }
 
-        public async Task<UserProfileDto> GetUserProfileAsync(string userId)
+        public async Task<UserProfileDto> GetUserProfileAsync()
         {
+            var userId = appUserProvider.GetUserId();
+
             return new UserProfileDto()
             {
-                UserId = Guid.Parse(userId),
+                UserId = userId,
                 KnownLanguages = await appContext.KnownLanguageToUsers
                 .AsNoTracking()
                 .Select(kl => new LanguageDto {
@@ -57,7 +61,6 @@ namespace LinkedLanguages.BL
         {
             using (appContext)
             {
-
                 var savedKnown = await appContext.KnownLanguageToUsers.Where(k => k.ApplicationUserId == userProfile.UserId).ToListAsync();
                 var savedUnknown = await appContext.UnknownLanguageToUsers.Where(u => u.ApplicationUserId == userProfile.UserId).ToListAsync();
 
@@ -75,7 +78,7 @@ namespace LinkedLanguages.BL
                     await appContext.KnownLanguageToUsers.AddAsync(new DAL.Models.KnownLanguageToUser() { ApplicationUserId = userProfile.UserId, LanguageId = lang.Value });
                 }
 
-                foreach (var lang in userProfile.KnownLanguages)
+                foreach (var lang in userProfile.UnknownLanguages)
                 {
                     await appContext.UnknownLanguageToUsers.AddAsync(new DAL.Models.UnknownLanguageToUser() { ApplicationUserId = userProfile.UserId, LanguageId = lang.Value });
                 }

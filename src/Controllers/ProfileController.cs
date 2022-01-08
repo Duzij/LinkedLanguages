@@ -1,5 +1,4 @@
 ﻿using LinkedLanguages.BL;
-using LinkedLanguages.Services;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,21 +18,18 @@ namespace LinkedLanguages.Controllers
     public class ProfileController : ControllerBase
     {
         private readonly LanguageFacade languageFacade;
-        private readonly ClaimsPrincipal claimsPrincipal;
         private readonly ILogger<ProfileController> logger;
 
-        public ProfileController(LanguageFacade languageFacade, ClaimsPrincipal claimsPrincipal, ILogger<ProfileController> logger)
+        public ProfileController(LanguageFacade languageFacade, ILogger<ProfileController> logger)
         {
             this.languageFacade = languageFacade;
-            this.claimsPrincipal = claimsPrincipal;
             this.logger = logger;
         }
 
         [HttpGet()]
         public async Task<UserProfileDto> GetUserProfile()
         {
-            var userId = claimsPrincipal.GetUserId();
-             var profile = await languageFacade.GetUserProfileAsync(userId);
+            var profile = await languageFacade.GetUserProfileAsync();
             return profile;
         }
 
@@ -41,7 +37,6 @@ namespace LinkedLanguages.Controllers
         [HttpPost()]
         public async Task<UserProfileDto> SaveUserProfile(UserProfileDto userProfile)
         {
-            userProfile.UserId = Guid.Parse(claimsPrincipal.GetUserId());
             logger.LogInformation("Saving user profile");
             await languageFacade.SaveUserProfile(userProfile);
 

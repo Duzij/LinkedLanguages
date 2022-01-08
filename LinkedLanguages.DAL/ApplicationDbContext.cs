@@ -1,13 +1,12 @@
 ﻿using IdentityServer4.EntityFramework.Options;
 
-using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
 
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace LinkedLanguages.Data
+namespace LinkedLanguages.DAL
 {
     public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
     {
@@ -21,7 +20,7 @@ namespace LinkedLanguages.Data
         public DbSet<UnknownLanguageToUser> UnknownLanguageToUsers { get; set; }
         public DbSet<Language> Languages { get; set; }
 
-        public DbSet<WordPair> WordPairs { get; set; }
+        public DbSet<WordPair> UnusedWordPairs { get; set; }
         public DbSet<WordPairToApplicationUser> WordPairToApplicationUsers { get; set; }
 
 

@@ -6,7 +6,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="dotNetRDF" Version="2.7.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.12" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />
 		<PackageReference Include="SendGrid" Version="9.25.1" />
 	</ItemGroup>
 
