@@ -9,3 +9,5 @@
 /LinkedLanguages.Console/obj
 /LinkedLanguages.DAL/bin/Debug/net5.0
 /LinkedLanguages.DAL/obj
+/LinkedLanguages.Tests/obj
+/LinkedLanguages.Tests/bin/Debug

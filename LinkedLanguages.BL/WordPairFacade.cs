@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LinkedLanguages.BL
 {
-    public class WordPairFacade
+    public partial class WordPairFacade
     {
         private readonly ApplicationDbContext appDbContext;
         private readonly WordPairPump wordPairPump;
@@ -26,13 +26,13 @@ namespace LinkedLanguages.BL
             this.unusedUserWordPairs = unusedUserWordPairs;
         }
 
-        public WordPairDTO GetNextWord(string unknownLangCode)
+        public async Task<WordPairDto> GetNextWord(string unknownLangCode)
         {
             string knownLang = appUserProvider.GetUserKnownLanguage();
-            wordPairPump.Pump(knownLang, unknownLangCode);
+            await wordPairPump.Pump(knownLang, unknownLangCode);
 
             return unusedUserWordPairs.GetQueryable(unknownLangCode)
-                .Select(u => new WordPairDTO() { 
+                .Select(u => new WordPairDto() { 
                     Id = u.Id,
                     UnknownWord = u.UnknownWord,
                     KnownWord = u.KnownWord
@@ -48,13 +48,6 @@ namespace LinkedLanguages.BL
         public Task Decline(Guid wordPairId)
         {
             throw new NotImplementedException();
-        }
-
-        public class WordPairDTO
-        {
-            public Guid Id { get; set; }
-            public string UnknownWord { get; set; }
-            public string KnownWord { get; set; }
         }
     }
 }

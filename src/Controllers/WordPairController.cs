@@ -29,9 +29,9 @@ namespace LinkedLanguages.Controllers
         }
 
         [HttpGet("get/{langCode}")]
-        public WordPairDTO GetWordPair(string langCode)
+        public async Task<WordPairDto> GetWordPair(string langCode)
         {
-            var word = wordPairFacade.GetNextWord(langCode);
+            var word = await wordPairFacade.GetNextWord(langCode);
             return word;
         }
 

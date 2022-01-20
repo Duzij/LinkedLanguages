@@ -1,33 +1,27 @@
 ﻿using LinkedLanguages.DAL;
 
 using Microsoft.Extensions.Caching.Memory;
-
 using System.Linq;
 using System.Threading.Tasks;
-
-using VDS.RDF.Query;
 
 namespace LinkedLanguages.BL
 {
     public class WordPairPump
     {
-        private readonly PairsQuery pairsQuery;
-        private readonly ApplicationDbContext appDbContext;
-        private readonly IAppUserProvider appUserProvider;
+        private readonly SparqlPairsQuery pairsQuery;
         private readonly IMemoryCache memoryCache;
         private readonly UnusedUserWordPairsQuery unusedUserWordPairs;
+        private readonly ApplicationDbContext dbContext;
 
-        public WordPairPump(PairsQuery pairsQuery,
-                            ApplicationDbContext dbContext,
-                            IAppUserProvider appUserProvider,
+        public WordPairPump(SparqlPairsQuery pairsQuery,
                             IMemoryCache memoryCache,
-                            UnusedUserWordPairsQuery unusedUserWordPairs)
+                            UnusedUserWordPairsQuery unusedUserWordPairs,
+                            ApplicationDbContext dbContext)
         {
             this.pairsQuery = pairsQuery;
-            this.appDbContext = dbContext;
-            this.appUserProvider = appUserProvider;
             this.memoryCache = memoryCache;
             this.unusedUserWordPairs = unusedUserWordPairs;
+            this.dbContext = dbContext;
         }
 
         /// <summary>
@@ -35,7 +29,7 @@ namespace LinkedLanguages.BL
         /// </summary>
         /// <param name="knownLang"></param>
         /// <param name="foreignLang"></param>
-        public void Pump(string knownLang, string foreignLang)
+        public async Task Pump(string knownLang, string foreignLang)
         {
             var remainingUnusedWords = unusedUserWordPairs.GetQueryable(foreignLang);
 
@@ -48,7 +42,11 @@ namespace LinkedLanguages.BL
                     memoryCache.Set("offset", offset++);
                 }
 
-                pairsQuery.Pump(knownLang, foreignLang, offset, 3);
+                var results = pairsQuery.Execute(knownLang, foreignLang, offset, 3);
+
+                //Add new words to database
+                await dbContext.UnusedWordPairs.AddRangeAsync(results);
+                await dbContext.SaveChangesAsync();
             }
 
         }

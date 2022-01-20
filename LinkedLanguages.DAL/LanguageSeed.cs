@@ -10,6 +10,9 @@ namespace LinkedLanguages.DAL
 {
     public static class LanguageSeed
     {
+        public static Guid EnglishLanguageId = Guid.Parse("bbeb43aa-8b3b-4902-a91c-68b08e396afe");
+        public static Guid LatinLanguageId = Guid.Parse("19bc0378-b248-4f72-b827-ebd4e6818b56");
+
         /// <summary>
         /// Method returns top ten languages used in 
         /// </summary>
@@ -17,8 +20,8 @@ namespace LinkedLanguages.DAL
         public static IEnumerable<Language> GetStaticLanguages()
         {
            return new List<Language>() { 
-                new Language { Id = Guid.Parse("19bc0378-b248-4f72-b827-ebd4e6818b56"), Code = "lat", Name="Latin" },
-                new Language { Id = Guid.Parse("bbeb43aa-8b3b-4902-a91c-68b08e396afe"), Code = "eng", Name="English" },
+                new Language { Id = LatinLanguageId, Code = "lat", Name="Latin" },
+                new Language { Id = EnglishLanguageId, Code = "eng", Name="English" },
                 new Language { Id = Guid.Parse("f4ed4153-e816-462f-b97f-a97c54d9dcc6"), Code = "ita", Name="Italian" },
                 new Language { Id = Guid.Parse("beeab01b-7861-4759-942d-369f74a1f318"), Code = "spa", Name="Castilian, Spanish" },
                 new Language { Id = Guid.Parse("955d6d79-e96a-4cdf-b06e-dec4d995d309"), Code = "fra", Name="French" },
