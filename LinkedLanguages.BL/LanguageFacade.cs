@@ -41,6 +41,7 @@ namespace LinkedLanguages.BL
                 UserId = userId,
                 KnownLanguages = await appContext.KnownLanguageToUsers
                 .AsNoTracking()
+                .Where(a => a.ApplicationUserId == userId)
                 .Select(kl => new LanguageDto {
                     Value = kl.LanguageId,
                     Label = kl.Language.Name
@@ -49,6 +50,7 @@ namespace LinkedLanguages.BL
 
                 UnknownLanguages = await appContext.UnknownLanguageToUsers
                 .AsNoTracking()
+                .Where(a => a.ApplicationUserId == userId)
                 .Select(kl => new LanguageDto {
                     Value = kl.LanguageId,
                     Label = kl.Language.Name
@@ -59,10 +61,17 @@ namespace LinkedLanguages.BL
 
         public async Task SaveUserProfile(UserProfileDto userProfile)
         {
+            var userId = appUserProvider.GetUserId();
+
             using (appContext)
             {
-                var savedKnown = await appContext.KnownLanguageToUsers.Where(k => k.ApplicationUserId == userProfile.UserId).ToListAsync();
-                var savedUnknown = await appContext.UnknownLanguageToUsers.Where(u => u.ApplicationUserId == userProfile.UserId).ToListAsync();
+                var savedKnown = await appContext.KnownLanguageToUsers
+                    .Where(k => k.ApplicationUserId == userProfile.UserId)
+                    .ToListAsync();
+
+                var savedUnknown = await appContext.UnknownLanguageToUsers
+                    .Where(u => u.ApplicationUserId == userProfile.UserId)
+                    .ToListAsync();
 
                 if (savedKnown.Any())
                 {
@@ -75,12 +84,22 @@ namespace LinkedLanguages.BL
 
                 foreach (var lang in userProfile.KnownLanguages)
                 {
-                    await appContext.KnownLanguageToUsers.AddAsync(new DAL.Models.KnownLanguageToUser() { ApplicationUserId = userProfile.UserId, LanguageId = lang.Value });
+                    await appContext.KnownLanguageToUsers
+                        .AddAsync(new DAL.Models.KnownLanguageToUser()
+                        { 
+                            ApplicationUserId = userId,
+                            LanguageId = lang.Value
+                        });
                 }
 
                 foreach (var lang in userProfile.UnknownLanguages)
                 {
-                    await appContext.UnknownLanguageToUsers.AddAsync(new DAL.Models.UnknownLanguageToUser() { ApplicationUserId = userProfile.UserId, LanguageId = lang.Value });
+                    await appContext.UnknownLanguageToUsers
+                        .AddAsync(new DAL.Models.UnknownLanguageToUser()
+                        {
+                            ApplicationUserId = userId,
+                            LanguageId = lang.Value
+                        });
                 }
                 await appContext.SaveChangesAsync();
             }

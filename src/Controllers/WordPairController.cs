@@ -28,25 +28,25 @@ namespace LinkedLanguages.Controllers
             this.wordPairFacade = wordPairFacade;
         }
 
-        [HttpGet("get/{langCode}")]
-        public async Task<WordPairDto> GetWordPair(string langCode)
+        [HttpGet("get/{languageId}")]
+        public async Task<WordPairDto> GetWordPair(Guid languageId)
         {
-            var word = await wordPairFacade.GetNextWord(langCode);
+            var word = await wordPairFacade.GetNextWord(languageId);
             return word;
         }
 
-        [HttpPost("approve/{id:guid}")]
+        [HttpPost("approve/{wordPairId}")]
         public async Task ApproveWordPair(Guid wordPairId)
         {
             logger.LogInformation("Word approved");
             await wordPairFacade.Approve(wordPairId);
         }
 
-        [HttpPost("decline/{id:guid}")]
-        public async Task DeclineWordPair(Guid wordPairId)
+        [HttpPost("reject/{wordPairId}")]
+        public async Task RejectWordPair(Guid wordPairId)
         {
-            logger.LogInformation("Word declined");
-            await wordPairFacade.Decline(wordPairId);
+            logger.LogInformation("Word rejected");
+            await wordPairFacade.Reject(wordPairId);
         }
     }
 }

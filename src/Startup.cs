@@ -60,6 +60,9 @@ namespace LinkedLanguages
             services.AddTransient<UnusedUserWordPairsQuery>();
 
             services.AddTransient<LanguageFacade>();
+            services.AddTransient<WordPairFacade>();
+            services.AddTransient<WordPairPump>();
+            services.AddTransient<SparqlPairsQuery>();
 
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);

@@ -84,19 +84,19 @@ namespace LinkedLanguages.Tests
                 var facade = new WordPairFacade(dbContext, wordPairPump, appUserProvider.Object, unusedUserWordPairsQuery);
 
 
-                var firstWordPair = await facade.GetNextWord("lat");
+                var firstWordPair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
                 Assert.NotNull(firstWordPair);
                 await facade.Approve(firstWordPair.Id);
 
-                var secondWordPair = await facade.GetNextWord("lat");
+                var secondWordPair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
                 Assert.AreNotSame(firstWordPair.UnknownWord, secondWordPair.UnknownWord);
                 await facade.Approve(secondWordPair.Id);
 
-                var thirdWordPair = await facade.GetNextWord("lat");
+                var thirdWordPair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
                 Assert.AreNotSame(secondWordPair.UnknownWord, thirdWordPair.UnknownWord);
                 await facade.Approve(thirdWordPair.Id);
 
-                var forthWordPair = await facade.GetNextWord("lat");
+                var forthWordPair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
                 Assert.AreNotSame(thirdWordPair.UnknownWord, forthWordPair.UnknownWord);
                 await facade.Approve(forthWordPair.Id);
 

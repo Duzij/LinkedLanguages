@@ -14,7 +14,9 @@ namespace LinkedLanguages.BL
             }
 
             var claim = principal.FindFirst(ClaimTypes.NameIdentifier);
-            return claim != null ? Guid.Parse(claim.Value) : throw new InvalidOperationException("UserId claim not found");
+            return claim != null && claim.Value != Guid.Empty.ToString() ?
+                    Guid.Parse(claim.Value) :
+                    throw new InvalidOperationException("UserId claim not found");
         }
     }
 }

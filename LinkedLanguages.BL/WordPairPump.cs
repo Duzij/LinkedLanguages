@@ -1,6 +1,7 @@
 ﻿using LinkedLanguages.DAL;
 
 using Microsoft.Extensions.Caching.Memory;
+
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -46,11 +47,7 @@ namespace LinkedLanguages.BL
             if (!remainingUnusedWords.Any())
             {
                 memoryCache.TryGetValue("offset", out int offset);
-                if (offset == 0)
-                {
-                    offset = 1;
-                    memoryCache.Set("offset", offset++);
-                }
+                memoryCache.Set("offset", offset + 1);
 
                 var results = pairsQuery.Execute(knownLangCode, knownLangugageId, unknownLangCode, unknownLangugageId, offset, 3);
 

@@ -27,9 +27,12 @@ namespace LinkedLanguages.BL
             this.unusedUserWordPairs = unusedUserWordPairs;
         }
 
-        public async Task<WordPairDto> GetNextWord(string unknownLangCode)
+        public async Task<WordPairDto> GetNextWord(Guid unknownLangId)
         {
             string knownLang = appUserProvider.GetUserKnownLanguage();
+
+            var unknownLangCode = dbContext.Languages.First(a => a.Id == unknownLangId).Code;
+
             await wordPairPump.Pump(knownLang, unknownLangCode);
 
             return unusedUserWordPairs.GetQueryable(unknownLangCode)
@@ -64,7 +67,7 @@ namespace LinkedLanguages.BL
             }
         }
 
-        public async Task Decline(Guid wordPairId)
+        public async Task Reject(Guid wordPairId)
         {
             var wp = new WordPairToApplicationUser()
             {

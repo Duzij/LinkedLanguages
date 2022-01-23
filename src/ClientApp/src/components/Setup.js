@@ -38,7 +38,7 @@ export class Setup extends Component {
                         <h1 id="tabelLabel" >User profile</h1>
                         <p>Here you can modify your profile and change known and unknown languages</p>
                         <div className="alert alert-info" role="alert">
-                            For public alpha only one known language and one unknown language are supported.
+                            For public alpha only one known language and one unknown language is supported.
                         </div>
                     </div>
                     <div className="form-group col-md-6">
@@ -46,10 +46,11 @@ export class Setup extends Component {
                         <Select
                             makeAnimated={animated}
                             //isMulti uncomment when ready for multilanguage support
+                            //className="basic-multi-select"
+                            className="basic-select"
                             value={this.state.profile.knownLanguages}
                             onChange={handleKnownChange}
                             options={this.state.languages}
-                            className="basic-multi-select"
                             classNamePrefix="select" />
 
                     </div>
@@ -58,10 +59,11 @@ export class Setup extends Component {
                         <Select
                             makeAnimated={animated}
                             //isMulti uncomment when ready for multilanguage support
+                            //className="basic-multi-select"
+                            className="basic-select"
                             value={this.state.profile.unknownLanguages}
                             onChange={handleUnknownChange}
                             options={this.state.languages}
-                            className="basic-multi-select"
                             classNamePrefix="select" />
                     </div>
 
@@ -83,7 +85,7 @@ export class Setup extends Component {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ knownLanguages: this.state.profile.knownLanguages, unknownLanguages: this.state.profile.unknownLanguages })
+            body: JSON.stringify({ knownLanguages: [this.state.profile.knownLanguages], unknownLanguages: [this.state.profile.unknownLanguages] })
         });
 
         const data = await languagesResponse.json();
@@ -103,6 +105,7 @@ export class Setup extends Component {
     async fetchProfile() {
         const token = await authService.getAccessToken();
         const response = await fetch('profile', {
+            method: 'GET',
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         });
 
