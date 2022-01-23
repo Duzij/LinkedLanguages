@@ -1,17 +1,20 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using IdentityServer4.EntityFramework.Options;
+
+using LinkedLanguages.DAL;
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 
 using Moq;
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace LinkedLanguages.Tests
 {
-    public static class MockMemoryCacheService
+    public static class TestServices
     {
+        public static Guid GetUserId { get; set; } = Guid.Parse("52d742a9-9240-4542-bdfa-64bfe3f979b9");
+
         public static IMemoryCache GetMemoryCache()
         {
             var memoryCache = Mock.Of<IMemoryCache>();
@@ -23,23 +26,24 @@ namespace LinkedLanguages.Tests
                 .Returns(cachEntry);
             return memoryCache;
         }
-    }
 
-    public static class TestExtensions
-    {
-        public static TItem Set<TItem>(this IMemoryCache cache, object key, TItem value, MemoryCacheEntryOptions options)
+        public static ApplicationDbContext GetNewTestDbContext()
         {
-            using (var entry = cache.CreateEntry(key))
-            {
-                if (options != null)
-                {
-                    entry.SetOptions(options);
-                }
+            var builder = new DbContextOptionsBuilder<ApplicationDbContext>();
+            OperationalStoreOptions storeOptions = new OperationalStoreOptions();
 
-                entry.Value = value;
-            }
+            IOptions<OperationalStoreOptions> operationalStoreOptions = Options.Create(storeOptions);
 
-            return value;
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
+
+            var dbContext = new ApplicationDbContext(options, operationalStoreOptions);
+
+            dbContext.Languages.AddRange(LanguageSeed.GetStaticLanguages());
+            dbContext.SaveChanges();
+
+            return dbContext;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using LinkedLanguages.DAL;
+using LinkedLanguages.DAL.Models;
 
 using System;
 using System.Collections.Generic;
@@ -10,17 +11,17 @@ namespace LinkedLanguages.BL
 {
     public partial class WordPairFacade
     {
-        private readonly ApplicationDbContext appDbContext;
+        private readonly ApplicationDbContext dbContext;
         private readonly WordPairPump wordPairPump;
         private readonly IAppUserProvider appUserProvider;
         private readonly UnusedUserWordPairsQuery unusedUserWordPairs;
 
-        public WordPairFacade(ApplicationDbContext appContext,
+        public WordPairFacade(ApplicationDbContext dbContext,
                               WordPairPump wordPairPump,
                               IAppUserProvider appUserProvider,
                               UnusedUserWordPairsQuery unusedUserWordPairs)
         {
-            this.appDbContext = appContext;
+            this.dbContext = dbContext;
             this.wordPairPump = wordPairPump;
             this.appUserProvider = appUserProvider;
             this.unusedUserWordPairs = unusedUserWordPairs;
@@ -40,14 +41,41 @@ namespace LinkedLanguages.BL
                 .First();
         }
 
-        public Task Approve(Guid wordPairId)
+        public async Task Approve(Guid wordPairId)
         {
-            throw new NotImplementedException();
+            ThrowExceptionIfNotExists(wordPairId);
+
+            var wp = new WordPairToApplicationUser()
+            {
+                ApplicationUserId = appUserProvider.GetUserId(),
+                Id = Guid.NewGuid(),
+                WordPairId = wordPairId
+            };
+
+            await dbContext.WordPairToApplicationUsers.AddAsync(wp);
+            await dbContext.SaveChangesAsync();
         }
 
-        public Task Decline(Guid wordPairId)
+        private void ThrowExceptionIfNotExists(Guid wordPairId)
         {
-            throw new NotImplementedException();
+            if (!dbContext.WordPairs.Any(wp => wp.Id == wordPairId))
+            {
+                throw new InvalidOperationException($"Word pair with id {wordPairId} not found");
+            }
+        }
+
+        public async Task Decline(Guid wordPairId)
+        {
+            var wp = new WordPairToApplicationUser()
+            {
+                ApplicationUserId = appUserProvider.GetUserId(),
+                Id = Guid.NewGuid(),
+                WordPairId = wordPairId,
+                Rejected = true
+            };
+
+            await dbContext.WordPairToApplicationUsers.AddAsync(wp);
+            await dbContext.SaveChangesAsync();
         }
     }
 }

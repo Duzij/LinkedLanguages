@@ -19,7 +19,12 @@ namespace LinkedLanguages.BL
 
         }
 
-        public List<WordPair> Execute(string myLangCode, string foreignLangCode, int page, int itemsOnPage)
+        public List<WordPair> Execute(string knownCode,
+                                      Guid knownLangId,
+                                      string unknownLangCode,
+                                      Guid unknownLangId,
+                                      int page,
+                                      int itemsOnPage)
         {
             var results = new List<WordPair>();
 
@@ -44,8 +49,8 @@ namespace LinkedLanguages.BL
 
             queryString.CommandText += $"LIMIT {itemsOnPage} OFFSET {page * itemsOnPage}";
 
-            queryString.SetLiteral("myLang", myLangCode);
-            queryString.SetLiteral("forLang", foreignLangCode);
+            queryString.SetLiteral("myLang", knownCode);
+            queryString.SetLiteral("forLang", unknownLangCode);
 
             SparqlQuery query = parser.ParseFromString(queryString);
             var resultSet = endpoint.QueryWithResultSet(query.ToString());
@@ -61,7 +66,11 @@ namespace LinkedLanguages.BL
                     {
                         Id = Guid.NewGuid(),
                         KnownWord = mw,
-                        UnknownWord = fw
+                        UnknownWord = fw,
+                        KnownLanguageId = knownLangId,
+                        KnownLanguage = knownCode,
+                        UnknownLanguageId = unknownLangId,
+                        UnknownLanguageCode = unknownLangCode
                     });
                 }
             }

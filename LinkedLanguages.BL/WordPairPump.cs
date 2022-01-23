@@ -27,11 +27,21 @@ namespace LinkedLanguages.BL
         /// <summary>
         /// New words pump will be performed only when neccessary
         /// </summary>
-        /// <param name="knownLang"></param>
-        /// <param name="foreignLang"></param>
-        public async Task Pump(string knownLang, string foreignLang)
+        /// <param name="knownLangCode"></param>
+        /// <param name="unknownLangCode"></param>
+        public async Task Pump(string knownLangCode, string unknownLangCode)
         {
-            var remainingUnusedWords = unusedUserWordPairs.GetQueryable(foreignLang);
+            var knownLangugageId = dbContext.Languages
+                .Where(l => l.Code == knownLangCode)
+                .Select(l => l.Id)
+                .Single();
+
+            var unknownLangugageId = dbContext.Languages
+                .Where(l => l.Code == unknownLangCode)
+                .Select(l => l.Id)
+                .Single();
+
+            var remainingUnusedWords = unusedUserWordPairs.GetQueryable(unknownLangCode);
 
             if (!remainingUnusedWords.Any())
             {
@@ -42,10 +52,10 @@ namespace LinkedLanguages.BL
                     memoryCache.Set("offset", offset++);
                 }
 
-                var results = pairsQuery.Execute(knownLang, foreignLang, offset, 3);
+                var results = pairsQuery.Execute(knownLangCode, knownLangugageId, unknownLangCode, unknownLangugageId, offset, 3);
 
                 //Add new words to database
-                await dbContext.UnusedWordPairs.AddRangeAsync(results);
+                await dbContext.WordPairs.AddRangeAsync(results);
                 await dbContext.SaveChangesAsync();
             }
 

@@ -5,7 +5,6 @@ using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 
 using Moq;
@@ -15,8 +14,9 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+
+using static LinkedLanguages.Tests.TestServices;
 
 namespace LinkedLanguages.Tests
 {
@@ -24,7 +24,6 @@ namespace LinkedLanguages.Tests
     public class WordPairPumpTests
     {
         public Guid TestUserTest { get; set; } = Guid.Parse("52d742a9-9240-4542-bdfa-64bfe3f979b9");
-
 
         [Test]
         public async Task PumpNotPerformedIfNotNeeded()
@@ -42,18 +41,18 @@ namespace LinkedLanguages.Tests
                     },
                 };
 
-                dbContext.UnusedWordPairs.AddRange(wordPairs);
+                dbContext.WordPairs.AddRange(wordPairs);
                 dbContext.SaveChanges();
 
                 var appUserProvider = new Mock<IAppUserProvider>();
                 appUserProvider.Setup(a => a.GetUserId()).Returns(TestUserTest);
                 var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, appUserProvider.Object);
 
-                var wordPairPump = new WordPairPump(new SparqlPairsQuery(), MockMemoryCacheService.GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
+                var wordPairPump = new WordPairPump(new SparqlPairsQuery(), GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
 
-                await wordPairPump.Pump("eng", "ll");
+                await wordPairPump.Pump("eng", "lat");
 
-                Assert.AreEqual(1, dbContext.UnusedWordPairs.Count());
+                Assert.AreEqual(1, dbContext.WordPairs.Count());
             }
 
         }
@@ -66,10 +65,10 @@ namespace LinkedLanguages.Tests
                 var appUserProvider = new Mock<IAppUserProvider>();
                 var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, appUserProvider.Object);
 
-                var wordPairPump = new WordPairPump(new SparqlPairsQuery(), MockMemoryCacheService.GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
-                await wordPairPump.Pump("eng", "ll");
+                var wordPairPump = new WordPairPump(new SparqlPairsQuery(), TestServices.GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
+                await wordPairPump.Pump("eng", "lat");
 
-                Assert.AreEqual(3, dbContext.UnusedWordPairs.Count());
+                Assert.AreEqual(3, dbContext.WordPairs.Count());
             }
         }
 
@@ -94,28 +93,11 @@ namespace LinkedLanguages.Tests
                 var appUserProvider = new Mock<IAppUserProvider>();
                 var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, appUserProvider.Object);
 
-                var wordPairPump = new WordPairPump(new SparqlPairsQuery(), MockMemoryCacheService.GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
-                await wordPairPump.Pump("eng", "ll");
+                var wordPairPump = new WordPairPump(new SparqlPairsQuery(), TestServices.GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
+                await wordPairPump.Pump("eng", "lat");
 
-                Assert.AreEqual(3, dbContext.UnusedWordPairs.Count());
+                Assert.AreEqual(3, dbContext.WordPairs.Count());
             }
-        }
-
-        private ApplicationDbContext GetNewTestDbContext()
-        {
-            var builder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            OperationalStoreOptions storeOptions = new OperationalStoreOptions
-            {
-                //populate needed members
-            };
-
-            IOptions<OperationalStoreOptions> operationalStoreOptions = Options.Create(storeOptions);
-
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-
-            return new ApplicationDbContext(options, operationalStoreOptions);
         }
     }
 }

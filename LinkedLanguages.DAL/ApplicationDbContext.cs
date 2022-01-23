@@ -20,7 +20,7 @@ namespace LinkedLanguages.DAL
         public DbSet<UnknownLanguageToUser> UnknownLanguageToUsers { get; set; }
         public DbSet<Language> Languages { get; set; }
 
-        public DbSet<WordPair> UnusedWordPairs { get; set; }
+        public DbSet<WordPair> WordPairs { get; set; }
         public DbSet<WordPairToApplicationUser> WordPairToApplicationUsers { get; set; }
 
 
