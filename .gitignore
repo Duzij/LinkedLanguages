@@ -11,3 +11,6 @@
 /LinkedLanguages.DAL/obj
 /LinkedLanguages.Tests/obj
 /LinkedLanguages.Tests/bin/Debug
+/LinkedLanguages.BL/bin/Release/net5.0
+/LinkedLanguages.DAL/bin/Release/net5.0
+/LinkedLanguages.Tests/bin/Release/net5.0
