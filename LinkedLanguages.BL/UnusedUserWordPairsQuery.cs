@@ -31,7 +31,9 @@ namespace LinkedLanguages.BL
               .Where(wp => wp.WordPair.UnknownLanguageCode == unknownLanguageCode)
               .Where(wp => wp.ApplicationUserId == appUserProvider.GetUserId());
 
-            return appDbContext.WordPairs.Where(uwp => !userWordPairIds.Select(uwp => uwp.WordPairId).Contains(uwp.Id));
+            return appDbContext.WordPairs
+                .Where(wp => wp.UnknownLanguageCode == unknownLanguageCode)
+                .Where(uwp => !userWordPairIds.Select(uwp => uwp.WordPairId).Contains(uwp.Id));
         }
     }
 }

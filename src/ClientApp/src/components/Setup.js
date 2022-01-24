@@ -23,12 +23,14 @@ export class Setup extends Component {
             var profile = this.state.profile;
             profile.knownLanguages = selectedKnownLanguages;
             this.setState({ profile: profile });
+            console.log(profile);
         }
 
         const handleUnknownChange = (selectedUnknownLanguages) => {
             var profile = this.state.profile;
             profile.unknownLanguages = selectedUnknownLanguages;
             this.setState({ profile: profile });
+            console.log(profile);
         }
 
         return (
@@ -79,13 +81,26 @@ export class Setup extends Component {
 
     async saveLanguages() {
         const token = await authService.getAccessToken();
+
+        if (!Array.isArray(this.state.profile.unknownLanguages)) {
+            var profile = this.state.profile;
+            profile.unknownLanguages = [this.state.profile.unknownLanguages];
+            this.setState({ profile: profile });
+        }
+
+        if (!Array.isArray(this.state.profile.knownLanguages)) {
+            var profile = this.state.profile;
+            profile.knownLanguages = [this.state.profile.knownLanguages];
+            this.setState({ profile: profile });
+        }
+
         const languagesResponse = await fetch('profile', {
             method: 'POST',
             headers: !token ? {} : {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ knownLanguages: [this.state.profile.knownLanguages], unknownLanguages: [this.state.profile.unknownLanguages] })
+            body: JSON.stringify({ knownLanguages: this.state.profile.knownLanguages, unknownLanguages: this.state.profile.unknownLanguages })
         });
 
         const data = await languagesResponse.json();

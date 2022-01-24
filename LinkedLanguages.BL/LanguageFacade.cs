@@ -2,7 +2,6 @@
 
 using Microsoft.EntityFrameworkCore;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -66,11 +65,11 @@ namespace LinkedLanguages.BL
             using (appContext)
             {
                 var savedKnown = await appContext.KnownLanguageToUsers
-                    .Where(k => k.ApplicationUserId == userProfile.UserId)
+                    .Where(k => k.ApplicationUserId == userId)
                     .ToListAsync();
 
                 var savedUnknown = await appContext.UnknownLanguageToUsers
-                    .Where(u => u.ApplicationUserId == userProfile.UserId)
+                    .Where(u => u.ApplicationUserId == userId)
                     .ToListAsync();
 
                 if (savedKnown.Any())
@@ -104,19 +103,5 @@ namespace LinkedLanguages.BL
                 await appContext.SaveChangesAsync();
             }
         }
-    }
-
-    public class UserProfileDto
-    {
-        public Guid UserId { get; set; }
-        public List<LanguageDto> KnownLanguages { get; set; }
-        public List<LanguageDto> UnknownLanguages { get; set; }
-    }
-
-
-    public class LanguageDto
-    {
-        public Guid Value { get; set; }
-        public string Label { get; set; }
     }
 }

@@ -46,6 +46,7 @@ namespace LinkedLanguages.BL
 
             if (!remainingUnusedWords.Any())
             {
+                //Offset will have to be reparated per language
                 memoryCache.TryGetValue("offset", out int offset);
                 memoryCache.Set("offset", offset + 1);
 
