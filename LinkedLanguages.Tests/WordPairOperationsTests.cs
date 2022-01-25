@@ -18,7 +18,7 @@ namespace LinkedLanguages.Tests
     public class WordPairOperationsTests
     {
         [Test]
-        public async Task UnusedUserWordPairsQuery()
+        public void UnusedUserWordPairsQuery()
         {
             using (var dbContext = GetNewTestDbContext())
             {
