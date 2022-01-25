@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Linq;
 using System.Security.Claims;
 
 namespace LinkedLanguages.BL
@@ -13,10 +14,17 @@ namespace LinkedLanguages.BL
                 throw new ArgumentNullException(nameof(principal));
             }
 
-            var claim = principal.FindFirst(ClaimTypes.NameIdentifier);
-            return claim != null && claim.Value != Guid.Empty.ToString() ?
-                    Guid.Parse(claim.Value) :
-                    throw new InvalidOperationException("UserId claim not found");
+            var claim = principal.Claims.ToList().FirstOrDefault(c => c.Type == "sub");
+            if (claim == null)
+            {
+                throw new InvalidOperationException("UserId claim not found");
+            }
+            if (claim.Value == Guid.Empty.ToString())
+            {
+                throw new InvalidOperationException("UserId claim is empty Guid");
+            }
+
+            return Guid.Parse(claim.Value);
         }
     }
 }

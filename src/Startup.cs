@@ -1,8 +1,12 @@
+using IdentityServer4.Configuration;
+
 using LinkedLanguages.BL;
 using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
 
+using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -12,8 +16,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
+using static LinkedLanguages.SigningCredentialExtension;
 using System.Security.Claims;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.ApplicationInsights;
 
 namespace LinkedLanguages
 {
@@ -34,17 +43,31 @@ namespace LinkedLanguages
                     Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDatabaseDeveloperPageExceptionFilter();
-            services.AddTransient(s => s.GetService<IHttpContextAccessor>().HttpContext.User);
+            services.AddHttpContextAccessor();
+            services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
+            services.Configure<IdentityOptions>(options =>
+    options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier);
+
             services.AddTransient<IAppUserProvider, AppUserProvider>();
-
-            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-
-            services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+            services.AddDefaultIdentity<ApplicationUser>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = true;
+            }).AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
+
+            services.Configure<JwtBearerOptions>(IdentityServerJwtConstants.IdentityServerJwtBearerScheme, options =>
+            {
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                {
+                    ValidIssuers = new string[] { "https://linkedlanguages.azurewebsites.net/" }
+                };
+            });
+
+            services.AddIdentityServer()
+                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -67,10 +90,12 @@ namespace LinkedLanguages
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
             services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext dbContext)
         {
             if (env.IsDevelopment())
             {
@@ -82,7 +107,10 @@ namespace LinkedLanguages
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
-            }
+
+               }
+
+            dbContext.Database.Migrate();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

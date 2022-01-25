@@ -35,6 +35,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="cert.cer" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\LinkedLanguages.BL\LinkedLanguages.BL.csproj" />
 		<ProjectReference Include="..\LinkedLanguages.DAL\LinkedLanguages.DAL.csproj" />
 	</ItemGroup>

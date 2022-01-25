@@ -1,6 +1,8 @@
 ﻿
 using LinkedLanguages.DAL;
 
+using Microsoft.AspNetCore.Http;
+
 using System;
 using System.Linq;
 using System.Security.Claims;
@@ -9,23 +11,23 @@ namespace LinkedLanguages.BL
 {
     public class AppUserProvider : IAppUserProvider
     {
-        private readonly ClaimsPrincipal claimsPrincipal;
         private readonly ApplicationDbContext dbContext;
+        private readonly IHttpContextAccessor httpContext;
 
-        public AppUserProvider(ClaimsPrincipal claimsPrincipal, ApplicationDbContext dbContext)
+        public AppUserProvider(ApplicationDbContext dbContext, IHttpContextAccessor httpContext)
         {
-            this.claimsPrincipal = claimsPrincipal;
             this.dbContext = dbContext;
+            this.httpContext = httpContext;
         }
         public Guid GetUserId()
         {
-            return claimsPrincipal.GetUserId();
+            return httpContext.HttpContext.User.GetUserId();
         }
 
         public string GetUserKnownLanguage()
         {
             return dbContext.KnownLanguageToUsers
-                .Where(kltu => kltu.ApplicationUserId == claimsPrincipal.GetUserId())
+                .Where(kltu => kltu.ApplicationUserId == httpContext.HttpContext.User.GetUserId())
                 .Select(k => k.Language.Code)
                 .FirstOrDefault();
         }
