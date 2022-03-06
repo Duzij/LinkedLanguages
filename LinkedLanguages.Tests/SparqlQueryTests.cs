@@ -20,7 +20,7 @@ namespace LinkedLanguages.Tests
         [Test]
         public void PumpEnglishAndLatin()
         {
-            var results = sparqlQuery.Execute("eng", LanguageSeed.EnglishLanguageId, "lat", LanguageSeed.LatinLanguageId, 0,10);
+            var results = sparqlQuery.Execute("eng", LanguageSeed.EnglishLanguageId, "lat", LanguageSeed.LatinLanguageId, 0, 10);
             Assert.AreEqual(10, results.Count);
         }
 

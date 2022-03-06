@@ -3,22 +3,13 @@
 using System;
 using System.Collections.Generic;
 
-using VDS.RDF;
-using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-
-using static LinkedLanguages.BL.WordPairFacade;
 
 namespace LinkedLanguages.BL
 {
     public class SparqlPairsQuery
     {
-        public SparqlPairsQuery()
-        {
-
-        }
-
         public List<WordPair> Execute(string knownCode,
                                       Guid knownLangId,
                                       string unknownLangCode,
@@ -39,7 +30,7 @@ namespace LinkedLanguages.BL
             queryString.CommandText = @"
             SELECT DISTINCT  ?myLanguageLabel ?myWord ?foreignWord ?foreignWordLabel
             WHERE
-              { ?name  a ety:EtymologyEntry ;
+              { ?myWord a ety:EtymologyEntry ;
                        ety:etymologicallyRelatedTo  ?foreignWord ;
                        rdf:label ?myLanguageLabel .
                 ?foreignWord     rdf:label ?foreignWordLabel
@@ -62,6 +53,10 @@ namespace LinkedLanguages.BL
                     var fw = t.GetLiteral("foreignWordLabel");
                     var mw = t.GetLiteral("myLanguageLabel");
 
+                    var furi = t.GetLiteral("foreignWord");
+                    var muri = t.GetLiteral("myWord");
+
+
                     results.Add(new WordPair()
                     {
                         Id = Guid.NewGuid(),
@@ -70,7 +65,9 @@ namespace LinkedLanguages.BL
                         KnownLanguageId = knownLangId,
                         KnownLanguage = knownCode,
                         UnknownLanguageId = unknownLangId,
-                        UnknownLanguageCode = unknownLangCode
+                        UnknownLanguageCode = unknownLangCode,
+                        KnownWordUri = muri,
+                        UnknownWordUri = furi
                     });
                 }
             }
