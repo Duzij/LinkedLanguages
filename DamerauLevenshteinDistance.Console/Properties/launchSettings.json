@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DamerauLevenshteinDistance.Console": {
+      "commandName": "Project",
+      "commandLineArgs": "book back"
+    }
+  }
+}

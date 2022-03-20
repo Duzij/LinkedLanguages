@@ -14,3 +14,5 @@
 /LinkedLanguages.BL/bin/Release/net5.0
 /LinkedLanguages.DAL/bin/Release/net5.0
 /LinkedLanguages.Tests/bin/Release/net5.0
+/DamerauLevenshteinDistance.Console/bin/Debug/net6.0
+/DamerauLevenshteinDistance.Console/obj
