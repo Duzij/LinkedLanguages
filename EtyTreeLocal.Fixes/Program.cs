@@ -1,9 +1,7 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
 
-var path = @"F:\DEV\LinkedLanguages\EtyTreeLocal.Fixes\enwkt-20180301.etymology.bad.ttl";
+var path = @"F:\DEV\LinkedLanguages\EtyTreeLocal.Fixes\enwkt-20180301.etymology.original.ttl";
 
 File.WriteAllLines(
         @"F:\DEV\LinkedLanguages\EtyTreeLocal.Fixes\enwkt-20180301.etymology.ttl",
@@ -13,7 +11,7 @@ File.WriteAllLines(
 
 static string changeLine(string line)
 {
-    var pattern = @"/wiki/.+ ";
+    var pattern = @"/wiki/[\S]+ [\S]+>";
     if (Regex.IsMatch(line, pattern))
     {
         var replace = Regex.Replace(line, pattern, replaceSpacesWithUnderscore);
@@ -25,5 +23,5 @@ static string changeLine(string line)
 
 static string replaceSpacesWithUnderscore(Match match)
 {
-    return match.Groups[0].Value.Trim() + "_";
+    return match.Groups[0].Value.Replace(" ", "_");
 }
