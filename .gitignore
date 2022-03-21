@@ -16,3 +16,10 @@
 /LinkedLanguages.Tests/bin/Release/net5.0
 /DamerauLevenshteinDistance.Console/bin/Debug/net6.0
 /DamerauLevenshteinDistance.Console/obj
+/EtyTreeLocal.Fixes/bin/Debug/net6.0
+/EtyTreeLocal.Fixes/obj
+/EtyTreeLocal.Fixes/enwkt-20180301_x_3600000_6000000.etymology.ttl
+/EtyTreeLocal.Fixes/enwkt-20180301_x_1800000_3600000.etymology.ttl
+/EtyTreeLocal.Fixes/enwkt-20180301_x_0_1800000.etymology.ttl
+/EtyTreeLocal.Fixes/enwkt-20180301.etymology.ttl
+/EtyTreeLocal.Fixes/enwkt-20180301.etymology.bad.ttl
