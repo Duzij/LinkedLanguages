@@ -1,5 +1,7 @@
 ﻿using LinkedLanguages.DAL.Models;
 
+using Microsoft.Extensions.Options;
+
 using System;
 using System.Collections.Generic;
 
@@ -10,6 +12,13 @@ namespace LinkedLanguages.BL
 {
     public class SparqlPairsQuery
     {
+        private readonly SparqlEndpointOptions options;
+
+        public SparqlPairsQuery(IOptions<SparqlEndpointOptions> options)
+        {
+            this.options = options.Value;
+        }
+
         public List<WordPair> Execute(string knownCode,
                                       Guid knownLangId,
                                       string unknownLangCode,
@@ -19,7 +28,7 @@ namespace LinkedLanguages.BL
         {
             var results = new List<WordPair>();
 
-            var endpoint = new SparqlRemoteEndpoint(new Uri("https://etytree-virtuoso.wmflabs.org/sparql/"));
+            var endpoint = new SparqlRemoteEndpoint(new Uri(options.EndpointUrl));
 
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlParameterizedString queryString = new SparqlParameterizedString();

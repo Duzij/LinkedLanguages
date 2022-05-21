@@ -14,7 +14,7 @@ namespace LinkedLanguages.Tests
         [SetUp]
         public void Setup()
         {
-            sparqlQuery = new SparqlPairsQuery();
+            sparqlQuery = new SparqlPairsQuery(TestServices.GetMoqOptions());
         }
 
         [Test]

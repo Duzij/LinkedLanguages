@@ -79,7 +79,7 @@ namespace LinkedLanguages.Tests
 
                 var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, appUserProvider.Object);
 
-                var wordPairPump = new WordPairPump(new SparqlPairsQuery(), GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
+                var wordPairPump = new WordPairPump(new SparqlPairsQuery(GetMoqOptions()), GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
 
                 var facade = new WordPairFacade(dbContext, wordPairPump, appUserProvider.Object, unusedUserWordPairsQuery);
 

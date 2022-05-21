@@ -1,11 +1,7 @@
-﻿using IdentityServer4.EntityFramework.Options;
-
+﻿
 using LinkedLanguages.BL;
 using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 using Moq;
 
@@ -48,7 +44,7 @@ namespace LinkedLanguages.Tests
                 appUserProvider.Setup(a => a.GetUserId()).Returns(TestUserTest);
                 var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, appUserProvider.Object);
 
-                var wordPairPump = new WordPairPump(new SparqlPairsQuery(), GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
+                var wordPairPump = new WordPairPump(new SparqlPairsQuery(GetMoqOptions()), GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
 
                 await wordPairPump.Pump("eng", "lat");
 
@@ -65,7 +61,7 @@ namespace LinkedLanguages.Tests
                 var appUserProvider = new Mock<IAppUserProvider>();
                 var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, appUserProvider.Object);
 
-                var wordPairPump = new WordPairPump(new SparqlPairsQuery(), TestServices.GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
+                var wordPairPump = new WordPairPump(new SparqlPairsQuery(GetMoqOptions()), GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
                 await wordPairPump.Pump("eng", "lat");
 
                 Assert.AreEqual(3, dbContext.WordPairs.Count());
@@ -79,7 +75,8 @@ namespace LinkedLanguages.Tests
             {
                 var wordPairsToAppUser = new List<WordPairToApplicationUser>
                 {
-                    new WordPairToApplicationUser {
+                    new()
+                    {
                         Id = Guid.NewGuid(),
                         ApplicationUserId = TestUserTest,
                         Rejected = true,
@@ -93,7 +90,7 @@ namespace LinkedLanguages.Tests
                 var appUserProvider = new Mock<IAppUserProvider>();
                 var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, appUserProvider.Object);
 
-                var wordPairPump = new WordPairPump(new SparqlPairsQuery(), TestServices.GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
+                var wordPairPump = new WordPairPump(new SparqlPairsQuery(GetMoqOptions()), GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
                 await wordPairPump.Pump("eng", "lat");
 
                 Assert.AreEqual(3, dbContext.WordPairs.Count());

@@ -85,6 +85,7 @@ namespace LinkedLanguages
 
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
+            services.Configure<SparqlEndpointOptions>(Configuration.GetSection("SparqlEndpointOptions"));
             services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
 
 
