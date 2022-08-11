@@ -89,7 +89,6 @@ export class Setup extends Component {
         }
 
         if (!Array.isArray(this.state.profile.knownLanguages)) {
-            var profile = this.state.profile;
             profile.knownLanguages = [this.state.profile.knownLanguages];
             this.setState({ profile: profile });
         }
