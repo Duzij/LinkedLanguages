@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.UI.Services;
+﻿
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 
 using SendGrid;
@@ -10,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LinkedLanguages.BL
+namespace LinkedLanguages.BL.Services
 {
     public class EmailSender : IEmailSender
     {
@@ -19,7 +20,7 @@ namespace LinkedLanguages.BL
             Options = optionsAccessor.Value;
         }
 
-        public AuthMessageSenderOptions Options { get; } 
+        public AuthMessageSenderOptions Options { get; }
 
         public Task SendEmailAsync(string email, string subject, string message)
         {

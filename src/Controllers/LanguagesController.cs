@@ -1,4 +1,5 @@
 ﻿using LinkedLanguages.BL;
+using LinkedLanguages.BL.DTO;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,10 +29,18 @@ namespace LinkedLanguages.Controllers
 
 
         [HttpGet()]
-        public async Task<IEnumerable<LanguageDto>> GetUserProfile()
+        public async Task<IEnumerable<LanguageDto>> GetAllLanguages()
         {
             logger.LogInformation("Getting all languages");
             return await languageFacade.GetLanguages();
+        }
+
+        [HttpPost("statistics")]
+        public async Task<int> GetLanguageStatistics(UserProfileDto statisticsDto)
+        {
+            logger.LogInformation("Getting statistics");
+            var count = await languageFacade.GetCountOfPredicates(statisticsDto);
+            return count;
         }
     }
 }

@@ -1,7 +1,10 @@
-﻿using LinkedLanguages.DAL;
+﻿using LinkedLanguages.BL.DTO;
+using LinkedLanguages.DAL;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,11 +16,13 @@ namespace LinkedLanguages.BL
     {
         private readonly ApplicationDbContext appContext;
         private readonly IAppUserProvider appUserProvider;
+        private readonly SparqlPairsStatisticsQuery sparqlPairsStatisticsQuery;
 
-        public LanguageFacade(ApplicationDbContext appContext, IAppUserProvider appUserProvider)
+        public LanguageFacade(ApplicationDbContext appContext, IAppUserProvider appUserProvider, SparqlPairsStatisticsQuery sparqlPairsStatisticsQuery)
         {
             this.appContext = appContext;
             this.appUserProvider = appUserProvider;
+            this.sparqlPairsStatisticsQuery = sparqlPairsStatisticsQuery;
         }
 
         public async Task<List<LanguageDto>> GetLanguages()
@@ -56,6 +61,21 @@ namespace LinkedLanguages.BL
                 })
                 .ToListAsync(),
             };
+        }
+
+        public async Task<int> GetCountOfPredicates(UserProfileDto statisticsDto)
+        {
+            var unknownCode = appContext.Languages
+                .AsNoTracking()
+                .First(a => a.Id == statisticsDto.UnknownLanguages.First().Value)
+                .Code;
+
+            var knownCode = appContext.Languages
+                .AsNoTracking()
+                .First(a => a.Id == statisticsDto.KnownLanguages.First().Value)
+                .Code;
+
+            return sparqlPairsStatisticsQuery.Execute(unknownCode, knownCode);
         }
 
         public async Task SaveUserProfile(UserProfileDto userProfile)

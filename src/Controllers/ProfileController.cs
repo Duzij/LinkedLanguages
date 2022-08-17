@@ -1,4 +1,5 @@
 ﻿using LinkedLanguages.BL;
+using LinkedLanguages.BL.DTO;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

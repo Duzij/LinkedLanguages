@@ -10,11 +10,13 @@ namespace LinkedLanguages.Tests
     public class SparqlQueryTests
     {
         private SparqlPairsQuery sparqlQuery;
+        private SparqlPairsStatisticsQuery statisticsQuery;
 
         [SetUp]
         public void Setup()
         {
             sparqlQuery = new SparqlPairsQuery(TestServices.GetMoqOptions());
+            statisticsQuery = new SparqlPairsStatisticsQuery(TestServices.GetMoqOptions());
         }
 
         [Test]
@@ -32,6 +34,13 @@ namespace LinkedLanguages.Tests
             Assert.AreEqual(3, firstPageResults.Count);
             Assert.AreEqual(3, secondPageResults.Count);
             Assert.True(!firstPageResults.Intersect(secondPageResults).Any());
+        }
+
+        [Test]
+        public void GetCount()
+        {
+            var result = statisticsQuery.Execute("eng", "lat");
+            Assert.AreEqual(7575, result);
         }
     }
 }

@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace LinkedLanguages.BL
+namespace LinkedLanguages.BL.DTO
 {
     public class UserProfileDto
     {

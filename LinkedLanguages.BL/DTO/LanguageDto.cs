@@ -1,7 +1,7 @@
 ﻿
 using System;
 
-namespace LinkedLanguages.BL
+namespace LinkedLanguages.BL.DTO
 {
     public class LanguageDto
     {

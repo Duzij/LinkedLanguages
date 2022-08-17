@@ -13,7 +13,8 @@ export class Setup extends Component {
 
     componentDidMount() {
         this.fetchLanguages();
-        this.fetchProfile();
+        this.fetchProfile()
+            .then(() => this.fetchStatistics());
     }
 
     render() {
@@ -21,16 +22,14 @@ export class Setup extends Component {
 
         const handleKnownChange = (selectedKnownLanguages) => {
             var profile = this.state.profile;
-            profile.knownLanguages = selectedKnownLanguages;
-            this.setState({ profile: profile });
-            console.log(profile);
+            profile.knownLanguages = [selectedKnownLanguages];
+            this.fetchStatistics();
         }
 
         const handleUnknownChange = (selectedUnknownLanguages) => {
             var profile = this.state.profile;
-            profile.unknownLanguages = selectedUnknownLanguages;
-            this.setState({ profile: profile });
-            console.log(profile);
+            profile.unknownLanguages = [selectedUnknownLanguages];
+            this.fetchStatistics();
         }
 
         return (
@@ -39,9 +38,13 @@ export class Setup extends Component {
                     <div className='form-group col-md-12'>
                         <h1 id="tabelLabel" >User profile</h1>
                         <p>Here you can modify your profile and change known and unknown languages</p>
-                        <div className="alert alert-info" role="alert">
+                        <div className="alert alert-warning" role="alert">
                             For public alpha only one known language and one unknown language is supported.
                         </div>
+                        <button className="btn btn-primary" type="button">
+                            <span className="visually-hidden">Total number of relations:{this.state.predicatesCount}</span>
+                            <span className="spinner-grow spinner-grow-sm" hidden={!this.state.loading} role="status" aria-hidden="true"></span>
+                        </button>
                     </div>
                     <div className="form-group col-md-6">
                         <label>Known languages</label>
@@ -75,23 +78,12 @@ export class Setup extends Component {
 
                 </form>
 
-            </div>
+            </div >
         );
     }
 
     async saveLanguages() {
         const token = await authService.getAccessToken();
-
-        if (!Array.isArray(this.state.profile.unknownLanguages)) {
-            var profile = this.state.profile;
-            profile.unknownLanguages = [this.state.profile.unknownLanguages];
-            this.setState({ profile: profile });
-        }
-
-        if (!Array.isArray(this.state.profile.knownLanguages)) {
-            profile.knownLanguages = [this.state.profile.knownLanguages];
-            this.setState({ profile: profile });
-        }
 
         const languagesResponse = await fetch('profile', {
             method: 'POST',
@@ -106,6 +98,27 @@ export class Setup extends Component {
         this.setState({ languages: data, loading: false });
     }
 
+    async fetchStatistics() {
+        if (this.state.profile !== undefined) {
+            this.setState({ loading: true, predicatesCount: undefined });
+            console.log("Statistics getting");
+            const token = await authService.getAccessToken();
+            fetch('languages/statistics', {
+                method: 'POST',
+                headers: !token ? {} : {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ knownLanguages: this.state.profile.knownLanguages, unknownLanguages: this.state.profile.unknownLanguages })
+            }).then((response) => {
+                return response.text();
+            }).then((data) => {
+                this.setState({ loading: false });
+                this.setState({ predicatesCount: data, loading: false });
+            });
+        }
+    }
+
     async fetchLanguages() {
         const token = await authService.getAccessToken();
         const languagesResponse = await fetch('languages', {
@@ -113,7 +126,7 @@ export class Setup extends Component {
         });
 
         const data = await languagesResponse.json();
-        this.setState({ languages: data, loading: false });
+        this.setState({ languages: data });
     }
 
     async fetchProfile() {

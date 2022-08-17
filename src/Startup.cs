@@ -1,5 +1,6 @@
 
 using LinkedLanguages.BL;
+using LinkedLanguages.BL.Services;
 using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
 
@@ -82,6 +83,7 @@ namespace LinkedLanguages
             services.AddTransient<WordPairFacade>();
             services.AddTransient<WordPairPump>();
             services.AddTransient<SparqlPairsQuery>();
+            services.AddTransient<SparqlPairsStatisticsQuery>();
 
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);

@@ -17,7 +17,7 @@ namespace LinkedLanguages.Tests
     {
         public static IOptions<SparqlEndpointOptions> GetMoqOptions()
         {
-            return Options.Create(new SparqlEndpointOptions() { EndpointUrl = "https://0030-89-176-163-95.eu.ngrok.io/etytree/query" });
+            return Options.Create(new SparqlEndpointOptions() { EndpointUrl = "https://xtest.vse.cz/sparql" });
         }
 
 
