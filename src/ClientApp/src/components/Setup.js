@@ -41,10 +41,12 @@ export class Setup extends Component {
                         <div className="alert alert-warning" role="alert">
                             For public alpha only one known language and one unknown language is supported.
                         </div>
-                        <button className="btn btn-primary" type="button">
-                            <span className="visually-hidden">Total number of relations:{this.state.predicatesCount}</span>
-                            <span className="spinner-grow spinner-grow-sm" hidden={!this.state.loading} role="status" aria-hidden="true"></span>
-                        </button>
+                        <div className="alert alert-primary d-flex align-items-center" role="alert">
+                            <div>
+                                <span className="visually-hidden">Total number of relations:{this.state.predicatesCount}</span>
+                                <span className="spinner-grow spinner-grow-sm" hidden={!this.state.loading} role="status" aria-hidden="true"></span>
+                            </div>
+                        </div>
                     </div>
                     <div className="form-group col-md-6">
                         <label>Known languages</label>
