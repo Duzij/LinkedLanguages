@@ -42,7 +42,7 @@ namespace LinkedLanguages.BL
                 .Select(l => l.Id)
                 .Single();
 
-            var remainingUnusedWords = unusedUserWordPairs.GetQueryable(unknownLangCode);
+            var remainingUnusedWords = unusedUserWordPairs.GetQueryable(knownLangCode, unknownLangCode);
 
             if (!remainingUnusedWords.Any())
             {

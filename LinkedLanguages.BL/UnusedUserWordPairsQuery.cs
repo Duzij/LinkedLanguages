@@ -25,14 +25,16 @@ namespace LinkedLanguages.BL
         /// </summary>
         /// <param name="unknownLanguageCode"></param>
         /// <returns></returns>
-        public IQueryable<WordPair> GetQueryable(string unknownLanguageCode)
+        public IQueryable<WordPair> GetQueryable(string knownLanguageCode, string unknownLanguageCode)
         {
             var userWordPairIds = appDbContext.WordPairToApplicationUsers
               .Where(wp => wp.WordPair.UnknownLanguageCode == unknownLanguageCode)
+              .Where(wp => wp.WordPair.KnownLanguage == knownLanguageCode)
               .Where(wp => wp.ApplicationUserId == appUserProvider.GetUserId());
 
             return appDbContext.WordPairs
                 .Where(wp => wp.UnknownLanguageCode == unknownLanguageCode)
+                .Where(wp => wp.KnownLanguage == knownLanguageCode)
                 .Where(uwp => !userWordPairIds.Select(uwp => uwp.WordPairId).Contains(uwp.Id));
         }
     }

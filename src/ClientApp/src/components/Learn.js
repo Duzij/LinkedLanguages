@@ -7,10 +7,15 @@ export class Learn extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { word: {}, loading: true, unknownLanguageId: {} };
+        this.state = {
+            word: {},
+            loading: true,
+            unknownLanguageId: {},
+            canFetchNext: true
+        };
     }
 
-    async  componentDidMount() {
+    async componentDidMount() {
         const token = await authService.getAccessToken();
 
         axios.get('profile', {
@@ -20,7 +25,7 @@ export class Learn extends Component {
             console.log(profile);
             this.setState({ unknownLanguageId: profile.unknownLanguages[0].value });
 
-           this.fetchNextWord();
+            this.fetchNextWord();
         });
     }
 
@@ -28,16 +33,19 @@ export class Learn extends Component {
 
         return (
             <div>
-                <form>
-                    <div className="row">
-                        <div className='form-group col-md-12'>
-                            <h1 id="tabelLabel" >Learn</h1>
-                            <p>In this section you can learn some new words</p>
-                            <div className="alert alert-info" role="alert">
-                                For public alpha only one known language and one unknown language is supported.
-                            </div>
+                <div className="row">
+                    <div className='form-group col-md-12'>
+                        <h1 id="tabelLabel" >Learn</h1>
+                        <p>In this section you can learn some new words</p>
+                        <div className="alert alert-primary" role="alert">
+                            For public alpha only one known language and one unknown language is supported.
+                            <span hidden={this.state.canFetchNext} className="visually-hidden">
+                                Congratulations, you managed to learn all word pairs.
+                                Continue to the test section ✨</span>
                         </div>
                     </div>
+                </div>
+                <form hidden={!this.state.canFetchNext}>
                     <div className="row">
                         <div className="form-group col-md-6 text-right">
                             <div>
@@ -101,15 +109,23 @@ export class Learn extends Component {
     }
 
     async fetchNextWord() {
-        const token = await authService.getAccessToken();
+        if (this.state.canFetchNext) {
+            const token = await authService.getAccessToken();
 
-        const response = await fetch(`wordpair/get/${this.state.unknownLanguageId}`, {
-            method: 'GET',
-            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-        });
-
-        const data = await response.json();
-        console.log(data);
-        this.setState({ word: data });
+            fetch(`wordpair/get/${this.state.unknownLanguageId}`, {
+                method: 'GET',
+                headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+            }).then((response) => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Something went wrong');
+            }).then((data) => {
+                this.setState({ word: data });
+            }).catch((error) => {
+                console.log(error);
+                this.setState({ canFetchNext: false })
+            });
+        }
     }
 }

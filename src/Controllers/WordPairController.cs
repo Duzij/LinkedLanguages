@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 using System;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -18,7 +19,7 @@ namespace LinkedLanguages.Controllers
     [Route("wordpair")]
     [Consumes("application/json")]
     [Produces("application/json")]
-    public class WordPairController : ControllerBase
+    public class WordPairController : Controller
     {
         private readonly ILogger<WordPairController> logger;
         private readonly WordPairFacade wordPairFacade;
@@ -30,10 +31,17 @@ namespace LinkedLanguages.Controllers
         }
 
         [HttpGet("get/{languageId}")]
-        public async Task<WordPairDto> GetWordPair(Guid languageId)
+        public async Task<IActionResult> GetWordPair(Guid languageId)
         {
-            var word = await wordPairFacade.GetNextWord(languageId);
-            return word;
+            try
+            {
+                var word = await wordPairFacade.GetNextWord(languageId);
+                return Ok(word);
+            }
+            catch (WordNotFoundException)
+            {
+                return NotFound("Word does not exist.");
+            }
         }
 
         [HttpPost("approve/{wordPairId}")]

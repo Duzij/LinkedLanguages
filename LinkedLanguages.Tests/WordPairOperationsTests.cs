@@ -57,7 +57,7 @@ namespace LinkedLanguages.Tests
 
                 var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, appUserProvider.Object);
 
-                var unusedUserWordPairs = unusedUserWordPairsQuery.GetQueryable("lat").ToList();
+                var unusedUserWordPairs = unusedUserWordPairsQuery.GetQueryable("eng", "lat").ToList();
                 Assert.AreEqual(0, unusedUserWordPairs.Count);
             }
         }

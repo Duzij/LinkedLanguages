@@ -75,7 +75,7 @@ namespace LinkedLanguages.BL
                 .First(a => a.Id == statisticsDto.KnownLanguages.First().Value)
                 .Code;
 
-            return sparqlPairsStatisticsQuery.Execute(unknownCode, knownCode);
+            return sparqlPairsStatisticsQuery.Execute(knownCode, unknownCode);
         }
 
         public async Task SaveUserProfile(UserProfileDto userProfile)
