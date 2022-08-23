@@ -2,19 +2,24 @@ import React, { Component } from 'react';
 import authService from './api-authorization/AuthorizeService'
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
+import LoadingSpinner from './LoadingSpinner';
 
 export class Setup extends Component {
     static displayName = Setup.name;
 
     constructor(props) {
         super(props);
-        this.state = { profile: {}, languages: [], loading: true };
+        this.state = { 
+        profile: {},
+        languages: [],
+        loading: true,
+        isLoadingStatistics: true
+     };
     }
 
     componentDidMount() {
         this.fetchLanguages();
-        this.fetchProfile()
-            .then(() => this.fetchStatistics());
+        this.fetchProfile();
     }
 
     render() {
@@ -34,6 +39,7 @@ export class Setup extends Component {
 
         return (
             <div>
+                <LoadingSpinner loading={this.state.loading} />
                 <form>
                     <div className='form-group col-md-12'>
                         <h1 id="tabelLabel" >User profile</h1>
@@ -44,7 +50,7 @@ export class Setup extends Component {
                         <div className="alert alert-primary d-flex align-items-center" role="alert">
                             <div>
                                 <span>Total number of relations:{this.state.predicatesCount}</span>
-                                <span className="spinner-grow spinner-grow-sm" hidden={!this.state.loading} role="status" aria-hidden="true"></span>
+                                <span className="spinner-border spinner-border-sm" hidden={!this.state.isLoadingStatistics} role="status" aria-hidden="true"></span>
                             </div>
                         </div>
                     </div>
@@ -77,7 +83,6 @@ export class Setup extends Component {
                     <div className='form-group col-md-12'>
                         <button type="button" className="btn btn-primary" onClick={this.saveLanguages.bind(this)}>Save</button>
                     </div>
-
                 </form>
 
             </div >
@@ -97,12 +102,12 @@ export class Setup extends Component {
         });
 
         const data = await languagesResponse.json();
-        this.setState({ languages: data, loading: false });
+        this.setState({ languages: data });
     }
 
     async fetchStatistics() {
         if (this.state.profile !== undefined) {
-            this.setState({ loading: true, predicatesCount: undefined });
+            this.setState({ isLoadingStatistics: true, predicatesCount: undefined });
             const token = await authService.getAccessToken();
             fetch('languages/statistics', {
                 method: 'POST',
@@ -114,7 +119,7 @@ export class Setup extends Component {
             }).then((response) => {
                 return response.text();
             }).then((data) => {
-                this.setState({ predicatesCount: data, loading: false });
+                this.setState({ predicatesCount: data, isLoadingStatistics: false });
             });
         }
     }
@@ -126,7 +131,7 @@ export class Setup extends Component {
         }).then((response) => {
             return response.json();
         }).then((data) => {
-            this.setState({ languages: data });
+            this.setState({ languages: data, loading: false });
         });
     }
 
@@ -137,7 +142,10 @@ export class Setup extends Component {
         }).then((response) => {
             return response.json();
         }).then((data) => {
-            this.setState({ profile: data });
+            this.setState(
+                { profile: data },
+                () => this.fetchStatistics()
+            );
         });
     }
 }
