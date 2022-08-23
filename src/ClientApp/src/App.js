@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router';
+import { Route, Routes } from 'react-router-dom';
 import { Layout } from './components/Layout';
-import { Home } from './components/Home';
 import AuthorizeRoute from './components/api-authorization/AuthorizeRoute';
-import ApiAuthorizationRoutes from './components/api-authorization/ApiAuthorizationRoutes';
-import { ApplicationPaths } from './components/api-authorization/ApiAuthorizationConstants';
-
+import AppRoutes from './AppRoutes';
 import './custom.css'
-import { Setup } from './components/Setup';
-import { Learn } from './components/Learn';
 
 export default class App extends Component {
   static displayName = App.name;
@@ -16,10 +11,12 @@ export default class App extends Component {
   render () {
     return (
       <Layout>
-        <Route exact path='/' component={Home} />
-        <AuthorizeRoute path='/setup' component={Setup} />
-        <AuthorizeRoute path='/learn' component={Learn} />
-        <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
+        <Routes>
+        {AppRoutes.map((route, index) => {
+            const { element, requireAuth, ...rest } = route;
+            return <Route key={index} {...rest} element={requireAuth ? <AuthorizeRoute {...rest} element={element} /> : element} />;
+          })}
+        </Routes>
       </Layout>
     );
   }

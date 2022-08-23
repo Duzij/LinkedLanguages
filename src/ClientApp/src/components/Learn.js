@@ -39,8 +39,8 @@ export class Learn extends Component {
                         <p>In this section you can learn some new words</p>
                         <div className="alert alert-primary" role="alert">
                             For public alpha only one known language and one unknown language is supported.
-                            <span hidden={this.state.canFetchNext} className="visually-hidden">
-                                Congratulations, you managed to learn all word pairs.
+                            <span hidden={this.state.canFetchNext}>
+                                 Congratulations, you managed to learn all word pairs.
                                 Continue to the test section ✨</span>
                         </div>
                     </div>
@@ -119,7 +119,10 @@ export class Learn extends Component {
                 if (response.ok) {
                     return response.json();
                 }
-                throw new Error('Something went wrong');
+                else{
+                    console.log(response);
+                    throw new Error('Something went wrong');
+                }
             }).then((data) => {
                 this.setState({ word: data });
             }).catch((error) => {

@@ -34,8 +34,12 @@ namespace LinkedLanguages.Controllers
         public async Task<int> GetLanguageStatistics(UserProfileDto statisticsDto)
         {
             logger.LogInformation("Getting statistics");
-            var count = await languageFacade.GetCountOfPredicates(statisticsDto);
-            return count;
+            if (statisticsDto.UnknownLanguages is not null && statisticsDto.KnownLanguages is not null)
+            {
+                var count = await languageFacade.GetCountOfPredicates(statisticsDto);
+                return count;
+            }
+            return 0;
         }
     }
 }

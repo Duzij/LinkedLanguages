@@ -43,7 +43,7 @@ export class Setup extends Component {
                         </div>
                         <div className="alert alert-primary d-flex align-items-center" role="alert">
                             <div>
-                                <span className="visually-hidden">Total number of relations:{this.state.predicatesCount}</span>
+                                <span>Total number of relations:{this.state.predicatesCount}</span>
                                 <span className="spinner-grow spinner-grow-sm" hidden={!this.state.loading} role="status" aria-hidden="true"></span>
                             </div>
                         </div>
@@ -103,7 +103,6 @@ export class Setup extends Component {
     async fetchStatistics() {
         if (this.state.profile !== undefined) {
             this.setState({ loading: true, predicatesCount: undefined });
-            console.log("Statistics getting");
             const token = await authService.getAccessToken();
             fetch('languages/statistics', {
                 method: 'POST',
@@ -111,11 +110,10 @@ export class Setup extends Component {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ knownLanguages: this.state.profile.knownLanguages, unknownLanguages: this.state.profile.unknownLanguages })
+                body: JSON.stringify(this.state.profile)
             }).then((response) => {
                 return response.text();
             }).then((data) => {
-                this.setState({ loading: false });
                 this.setState({ predicatesCount: data, loading: false });
             });
         }
@@ -123,23 +121,23 @@ export class Setup extends Component {
 
     async fetchLanguages() {
         const token = await authService.getAccessToken();
-        const languagesResponse = await fetch('languages', {
+        await fetch('languages', {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+        }).then((response) => {
+            return response.json();
+        }).then((data) => {
+            this.setState({ languages: data });
         });
-
-        const data = await languagesResponse.json();
-        this.setState({ languages: data });
     }
 
     async fetchProfile() {
         const token = await authService.getAccessToken();
-        const response = await fetch('profile', {
-            method: 'GET',
+        await fetch('profile', {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+        }).then((response) => {
+            return response.json();
+        }).then((data) => {
+            this.setState({ profile: data });
         });
-
-        const data = await response.json();
-        console.log(data);
-        this.setState({ profile: data });
     }
 }

@@ -65,6 +65,11 @@ namespace LinkedLanguages.BL
 
         public async Task<int> GetCountOfPredicates(UserProfileDto statisticsDto)
         {
+            if (statisticsDto is null)
+            {
+                throw new ArgumentNullException(nameof(statisticsDto));
+            }
+
             var unknownCode = appContext.Languages
                 .AsNoTracking()
                 .First(a => a.Id == statisticsDto.UnknownLanguages.First().Value)
