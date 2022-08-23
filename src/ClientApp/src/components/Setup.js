@@ -9,12 +9,12 @@ export class Setup extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { 
-        profile: {},
-        languages: [],
-        loading: true,
-        isLoadingStatistics: true
-     };
+        this.state = {
+            profile: {},
+            languages: [],
+            loading: true,
+            isLoadingStatistics: true
+        };
     }
 
     componentDidMount() {
@@ -54,23 +54,21 @@ export class Setup extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="form-group col-md-6">
-                        <label>Known languages</label>
-                        <Select
-                            makeAnimated={animated}
-                            //isMulti uncomment when ready for multilanguage support
-                            //className="basic-multi-select"
-                            className="basic-select"
-                            value={this.state.profile.knownLanguages}
-                            onChange={handleKnownChange}
-                            options={this.state.languages}
-                            classNamePrefix="select" />
-
-                    </div>
-                    <div className="form-group col-md-6">
+                    <div className="d-flex justify-content-center">
+                        <div className='d-flex flex-column m-3 justify-content-end'>
+                            <label>Known languages</label>
+                            <Select makeAnimated={animated}
+                                //isMulti uncomment when ready for multilanguage support
+                                //className="basic-multi-select"
+                                className="basic-select"
+                                value={this.state.profile.knownLanguages}
+                                onChange={handleKnownChange}
+                                options={this.state.languages}
+                                classNamePrefix="select" />
+                        </div>
+                        <div className='d-flex flex-column m-3 justify-content-start'>
                         <label>Unknown languages</label>
-                        <Select
-                            makeAnimated={animated}
+                        <Select makeAnimated={animated}
                             //isMulti uncomment when ready for multilanguage support
                             //className="basic-multi-select"
                             className="basic-select"
@@ -78,8 +76,8 @@ export class Setup extends Component {
                             onChange={handleUnknownChange}
                             options={this.state.languages}
                             classNamePrefix="select" />
+                        </div>
                     </div>
-
                     <div className='form-group col-md-12'>
                         <button type="button" className="btn btn-primary" onClick={this.saveLanguages.bind(this)}>Save</button>
                     </div>

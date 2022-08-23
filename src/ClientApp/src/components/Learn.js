@@ -89,6 +89,7 @@ export class Learn extends Component {
     }
 
     async approve() {
+        this.setState({ loading: true });
         const token = await authService.getAccessToken();
         const approveResponse = await fetch(`wordpair/approve/${this.state.word.id}`, {
             method: 'POST',
@@ -104,6 +105,7 @@ export class Learn extends Component {
     }
 
     async reject() {
+        this.setState({ loading: true });
         const token = await authService.getAccessToken();
         const rejectResponse = await fetch(`wordpair/reject/${this.state.word.id}`, {
             method: 'POST',
