@@ -40,7 +40,7 @@ namespace LinkedLanguages.Tests
         public void GetCount()
         {
             var result = statisticsQuery.Execute("eng", "lat");
-            Assert.AreEqual(7575, result);
+            Assert.AreEqual(8038, result);
         }
     }
 }

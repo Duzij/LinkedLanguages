@@ -1,4 +1,5 @@
-﻿using LinkedLanguages.DAL.Models;
+﻿using LinkedLanguages.BL.SPARQL;
+using LinkedLanguages.DAL.Models;
 
 using Microsoft.Extensions.Options;
 
@@ -36,16 +37,8 @@ namespace LinkedLanguages.BL
             queryString.Namespaces.AddNamespace("ety", new Uri("http://etytree-virtuoso.wmflabs.org/dbnaryetymology#"));
             queryString.Namespaces.AddNamespace("rdf", new Uri("http://www.w3.org/2000/01/rdf-schema#"));
 
-            queryString.CommandText = @"
-            SELECT DISTINCT  ?myLanguageLabel ?myWord ?foreignWord ?foreignWordLabel
-            WHERE
-              { ?myWord a ety:EtymologyEntry ;
-                       ety:etymologicallyRelatedTo  ?foreignWord ;
-                       rdf:label ?myLanguageLabel .
-                ?foreignWord     rdf:label ?foreignWordLabel
-                FILTER langMatches(lang(?myLanguageLabel), @myLang)
-                FILTER langMatches(lang(?foreignWordLabel), @forLang)
-              }  ";
+            queryString.CommandText = @"SELECT DISTINCT  ?myLanguageLabel ?myWord ?foreignWord ?foreignWordLabel";
+            queryString.CommandText += EtyTreeEtymologyQuery.GetTwoWayLanguageWhereUnionQuery();
 
             queryString.CommandText += $"LIMIT {itemsOnPage} OFFSET {page * itemsOnPage}";
 

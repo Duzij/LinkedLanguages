@@ -2,6 +2,7 @@
 using LinkedLanguages.DAL;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 
 using System;
@@ -17,12 +18,18 @@ namespace LinkedLanguages.BL
         private readonly ApplicationDbContext appContext;
         private readonly IAppUserProvider appUserProvider;
         private readonly SparqlPairsStatisticsQuery sparqlPairsStatisticsQuery;
+        private readonly IMemoryCache memoryCache;
 
-        public LanguageFacade(ApplicationDbContext appContext, IAppUserProvider appUserProvider, SparqlPairsStatisticsQuery sparqlPairsStatisticsQuery)
+        public LanguageFacade(ApplicationDbContext appContext,
+                              IAppUserProvider appUserProvider,
+                              SparqlPairsStatisticsQuery sparqlPairsStatisticsQuery,
+                              IMemoryCache memoryCache
+        )
         {
             this.appContext = appContext;
             this.appUserProvider = appUserProvider;
             this.sparqlPairsStatisticsQuery = sparqlPairsStatisticsQuery;
+            this.memoryCache = memoryCache;
         }
 
         public async Task<List<LanguageDto>> GetLanguages()
@@ -63,7 +70,7 @@ namespace LinkedLanguages.BL
             };
         }
 
-        public async Task<int> GetCountOfPredicates(UserProfileDto statisticsDto)
+        public int GetCountOfPredicates(UserProfileDto statisticsDto)
         {
             if (statisticsDto is null)
             {
@@ -80,7 +87,15 @@ namespace LinkedLanguages.BL
                 .First(a => a.Id == statisticsDto.KnownLanguages.First().Value)
                 .Code;
 
-            return sparqlPairsStatisticsQuery.Execute(knownCode, unknownCode);
+            var key = $"{knownCode}-{unknownCode}";
+            if (memoryCache.TryGetValue(key, out int value))
+            {
+                return value;
+            }
+            else
+            {
+                return sparqlPairsStatisticsQuery.Execute(knownCode, unknownCode);
+            }
         }
 
         public async Task SaveUserProfile(UserProfileDto userProfile)

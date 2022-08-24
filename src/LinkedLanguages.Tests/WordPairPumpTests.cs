@@ -19,7 +19,7 @@ namespace LinkedLanguages.Tests
 
     public class WordPairPumpTests
     {
-        public Guid TestUserTest { get; set; } = Guid.Parse("52d742a9-9240-4542-bdfa-64bfe3f979b9");
+        public Guid TestUserId { get; set; } = Guid.Parse("52d742a9-9240-4542-bdfa-64bfe3f979b9");
 
         [Test]
         public async Task PumpNotPerformedIfNotNeeded()
@@ -33,7 +33,9 @@ namespace LinkedLanguages.Tests
                         KnownLanguageId = LanguageSeed.EnglishLanguageId,
                         UnknownLanguageId = LanguageSeed.LatinLanguageId,
                         KnownWord = "testEnglish",
-                        UnknownWord = "testLatin"
+                        UnknownWord = "testLatin",
+                        KnownLanguage = "eng",
+                        UnknownLanguageCode = "lat"
                     },
                 };
 
@@ -41,14 +43,14 @@ namespace LinkedLanguages.Tests
                 dbContext.SaveChanges();
 
                 var appUserProvider = new Mock<IAppUserProvider>();
-                appUserProvider.Setup(a => a.GetUserId()).Returns(TestUserTest);
+                appUserProvider.Setup(a => a.GetUserId()).Returns(TestUserId);
                 var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, appUserProvider.Object);
 
                 var wordPairPump = new WordPairPump(new SparqlPairsQuery(GetMoqOptions()), GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
 
                 await wordPairPump.Pump("eng", "lat");
 
-                Assert.AreEqual(1, dbContext.WordPairs.Count());
+                Assert.That(dbContext.WordPairs.Count(), Is.EqualTo(1));
             }
 
         }
@@ -64,7 +66,7 @@ namespace LinkedLanguages.Tests
                 var wordPairPump = new WordPairPump(new SparqlPairsQuery(GetMoqOptions()), GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
                 await wordPairPump.Pump("eng", "lat");
 
-                Assert.AreEqual(3, dbContext.WordPairs.Count());
+                Assert.That(dbContext.WordPairs.Count(), Is.EqualTo(3));
             }
         }
 
@@ -78,7 +80,7 @@ namespace LinkedLanguages.Tests
                     new()
                     {
                         Id = Guid.NewGuid(),
-                        ApplicationUserId = TestUserTest,
+                        ApplicationUserId = TestUserId,
                         Rejected = true,
                         WordPairId = Guid.NewGuid()
                     },
@@ -93,7 +95,7 @@ namespace LinkedLanguages.Tests
                 var wordPairPump = new WordPairPump(new SparqlPairsQuery(GetMoqOptions()), GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
                 await wordPairPump.Pump("eng", "lat");
 
-                Assert.AreEqual(3, dbContext.WordPairs.Count());
+                Assert.That(dbContext.WordPairs.Count(), Is.EqualTo(3));
             }
         }
     }
