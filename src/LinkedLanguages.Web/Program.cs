@@ -1,3 +1,4 @@
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -20,10 +21,7 @@ namespace LinkedLanguages
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-            .ConfigureLogging((hostingContext, logging) => {
-                logging.AddApplicationInsights(hostingContext.Configuration.GetValue<string>("APPINSIGHTS_CONNECTIONSTRING"));
-                logging.AddFilter<ApplicationInsightsLoggerProvider>("", LogLevel.Information);
-            }).ConfigureWebHostDefaults(webBuilder =>
+            .ConfigureWebHostDefaults(webBuilder =>
             {
                 webBuilder.UseStartup<Startup>();
             });

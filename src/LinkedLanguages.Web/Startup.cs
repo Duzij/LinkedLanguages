@@ -4,6 +4,7 @@ using LinkedLanguages.BL.Services;
 using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
 
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -88,9 +89,8 @@ namespace LinkedLanguages
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
             services.Configure<SparqlEndpointOptions>(Configuration.GetSection("SparqlEndpointOptions"));
-            services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
 
-
+            services.AddApplicationInsightsTelemetry(options: new ApplicationInsightsServiceOptions { ConnectionString = Configuration.GetValue<string>("APPINSIGHTS_CONNECTIONSTRING") });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

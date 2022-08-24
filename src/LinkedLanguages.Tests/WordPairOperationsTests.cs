@@ -58,7 +58,7 @@ namespace LinkedLanguages.Tests
                 var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, appUserProvider.Object);
 
                 var unusedUserWordPairs = unusedUserWordPairsQuery.GetQueryable("eng", "lat").ToList();
-                Assert.AreEqual(0, unusedUserWordPairs.Count);
+                Assert.That(unusedUserWordPairs.Count, Is.EqualTo(0));
             }
         }
 
@@ -89,18 +89,18 @@ namespace LinkedLanguages.Tests
                 await facade.Approve(firstWordPair.Id);
 
                 var secondWordPair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
-                Assert.AreNotSame(firstWordPair.UnknownWord, secondWordPair.UnknownWord);
+                Assert.That(secondWordPair.UnknownWord, Is.Not.SameAs(firstWordPair.UnknownWord));
                 await facade.Approve(secondWordPair.Id);
 
                 var thirdWordPair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
-                Assert.AreNotSame(secondWordPair.UnknownWord, thirdWordPair.UnknownWord);
+                Assert.That(thirdWordPair.UnknownWord, Is.Not.SameAs(secondWordPair.UnknownWord));
                 await facade.Approve(thirdWordPair.Id);
 
                 var forthWordPair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
-                Assert.AreNotSame(thirdWordPair.UnknownWord, forthWordPair.UnknownWord);
+                Assert.That(forthWordPair.UnknownWord, Is.Not.SameAs(thirdWordPair.UnknownWord));
                 await facade.Approve(forthWordPair.Id);
 
-                Assert.AreEqual(6, dbContext.WordPairs.Count());
+                Assert.That(dbContext.WordPairs.Count(), Is.EqualTo(6));
             }
 
         }
