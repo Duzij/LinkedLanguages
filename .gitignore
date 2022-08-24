@@ -26,3 +26,12 @@
 /DamerauLevenshteinDistance.Console/bin/Debug/net5.0
 /LinkedLanguages.BL/bin/Debug/net6.0
 /LinkedLanguages.DAL/bin/Debug/net6.0
+/src/.vs/LinkedLanguages/v17
+/src/DamerauLevenshteinDistance.Console/bin/Debug
+/src/DamerauLevenshteinDistance.Console/obj
+/src/LinkedLanguages.BL/bin
+/src/LinkedLanguages.BL/obj
+/src/LinkedLanguages.DAL/bin
+/src/LinkedLanguages.DAL/obj
+/src/LinkedLanguages.Tests/bin/Debug
+/src/LinkedLanguages.Tests/obj
