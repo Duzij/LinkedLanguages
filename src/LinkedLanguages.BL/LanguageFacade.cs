@@ -36,7 +36,8 @@ namespace LinkedLanguages.BL
         {
             return await appContext.Languages
                 .AsNoTracking()
-                .Select(l => new LanguageDto {
+                .Select(l => new LanguageDto
+                {
                     Value = l.Id,
                     Label = l.Name
                 })
@@ -53,7 +54,8 @@ namespace LinkedLanguages.BL
                 KnownLanguages = await appContext.KnownLanguageToUsers
                 .AsNoTracking()
                 .Where(a => a.ApplicationUserId == userId)
-                .Select(kl => new LanguageDto {
+                .Select(kl => new LanguageDto
+                {
                     Value = kl.LanguageId,
                     Label = kl.Language.Name
                 })
@@ -62,7 +64,8 @@ namespace LinkedLanguages.BL
                 UnknownLanguages = await appContext.UnknownLanguageToUsers
                 .AsNoTracking()
                 .Where(a => a.ApplicationUserId == userId)
-                .Select(kl => new LanguageDto {
+                .Select(kl => new LanguageDto
+                {
                     Value = kl.LanguageId,
                     Label = kl.Language.Name
                 })
@@ -94,7 +97,9 @@ namespace LinkedLanguages.BL
             }
             else
             {
-                return sparqlPairsStatisticsQuery.Execute(knownCode, unknownCode);
+                var queryValue = sparqlPairsStatisticsQuery.Execute(knownCode, unknownCode);
+                memoryCache.Set(key, queryValue);
+                return queryValue;
             }
         }
 
@@ -125,7 +130,7 @@ namespace LinkedLanguages.BL
                 {
                     await appContext.KnownLanguageToUsers
                         .AddAsync(new DAL.Models.KnownLanguageToUser()
-                        { 
+                        {
                             ApplicationUserId = userId,
                             LanguageId = lang.Value
                         });

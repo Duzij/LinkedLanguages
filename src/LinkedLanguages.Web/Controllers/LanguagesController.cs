@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace LinkedLanguages.Controllers
@@ -34,7 +35,7 @@ namespace LinkedLanguages.Controllers
         public int GetLanguageStatistics(UserProfileDto statisticsDto)
         {
             logger.LogInformation("Getting statistics");
-            if (statisticsDto.UnknownLanguages is not null && statisticsDto.KnownLanguages is not null)
+            if (statisticsDto.UnknownLanguages.Any() && statisticsDto.KnownLanguages.Any())
             {
                 var count = languageFacade.GetCountOfPredicates(statisticsDto);
                 return count;
