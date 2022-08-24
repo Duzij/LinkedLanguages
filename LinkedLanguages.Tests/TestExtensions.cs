@@ -1,4 +1,4 @@
-﻿using IdentityServer4.EntityFramework.Options;
+﻿using Duende.IdentityServer.EntityFramework.Options;
 
 using LinkedLanguages.BL;
 using LinkedLanguages.DAL;

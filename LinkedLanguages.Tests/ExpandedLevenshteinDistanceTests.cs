@@ -6,8 +6,6 @@ using LinkedLanguages.BL;
 using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
 
-using Lucene.Net.Analysis;
-
 using NUnit.Framework;
 
 using System;

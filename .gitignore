@@ -24,3 +24,5 @@
 /EtyTreeLocal.Fixes/enwkt-20180301.etymology.ttl
 /EtyTreeLocal.Fixes/enwkt-20180301.etymology.bad.ttl
 /DamerauLevenshteinDistance.Console/bin/Debug/net5.0
+/LinkedLanguages.BL/bin/Debug/net6.0
+/LinkedLanguages.DAL/bin/Debug/net6.0
