@@ -31,12 +31,12 @@ namespace LinkedLanguages.Controllers
         }
 
         [HttpPost("statistics")]
-        public async Task<int> GetLanguageStatistics(UserProfileDto statisticsDto)
+        public int GetLanguageStatistics(UserProfileDto statisticsDto)
         {
             logger.LogInformation("Getting statistics");
             if (statisticsDto.UnknownLanguages is not null && statisticsDto.KnownLanguages is not null)
             {
-                var count = await languageFacade.GetCountOfPredicates(statisticsDto);
+                var count = languageFacade.GetCountOfPredicates(statisticsDto);
                 return count;
             }
             return 0;

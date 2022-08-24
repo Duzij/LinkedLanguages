@@ -23,7 +23,7 @@ namespace LinkedLanguages.Tests
         public void PumpEnglishAndLatin()
         {
             var results = sparqlQuery.Execute("eng", LanguageSeed.EnglishLanguageId, "lat", LanguageSeed.LatinLanguageId, 0, 10);
-            Assert.AreEqual(10, results.Count);
+            Assert.That(results.Count, Is.EqualTo(10));
         }
 
         [Test]
@@ -31,8 +31,8 @@ namespace LinkedLanguages.Tests
         {
             var firstPageResults = sparqlQuery.Execute("eng", LanguageSeed.EnglishLanguageId, "lat", LanguageSeed.LatinLanguageId, 0, 3);
             var secondPageResults = sparqlQuery.Execute("eng", LanguageSeed.EnglishLanguageId, "lat", LanguageSeed.LatinLanguageId, 1, 3);
-            Assert.AreEqual(3, firstPageResults.Count);
-            Assert.AreEqual(3, secondPageResults.Count);
+            Assert.That(firstPageResults.Count, Is.EqualTo(3));
+            Assert.That(secondPageResults.Count, Is.EqualTo(3));
             Assert.True(!firstPageResults.Intersect(secondPageResults).Any());
         }
 
@@ -40,7 +40,7 @@ namespace LinkedLanguages.Tests
         public void GetCount()
         {
             var result = statisticsQuery.Execute("eng", "lat");
-            Assert.AreEqual(8038, result);
+            Assert.That(result, Is.EqualTo(8038));
         }
     }
 }
