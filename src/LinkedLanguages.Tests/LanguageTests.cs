@@ -1,10 +1,13 @@
-﻿using LinkedLanguages.DAL;
+﻿using LinkedLanguages.BL.Languages;
+using LinkedLanguages.DAL;
 
 using NUnit.Framework;
 
 using System;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace LinkedLanguages.Tests
 {
@@ -159,26 +162,51 @@ namespace LinkedLanguages.Tests
         }
 
         [Test]
-        public void RunAllTests()
+        public void ReadFromFileTest()
         {
             var allLangs = CultureInfo
                     .GetCultures(CultureTypes.NeutralCultures);
 
             foreach (var item in EtyTteeLangs)
             {
-                var lang = allLangs
-                    .Where(ci => string.Equals(ci.ThreeLetterISOLanguageName, item, StringComparison.OrdinalIgnoreCase))
-                    .FirstOrDefault();
+                const string separator = "|";
 
-                if (lang != null)
-                { 
-                    Console.WriteLine($"{lang.EnglishName}, {lang.NativeName}");
-                }
-                else
+                var stream = typeof(LanguageTests).GetTypeInfo().Assembly.GetManifestResourceStream("LinkedLanguages.Tests.ISO-639-2_utf-8.txt");
+                using (var reader = new StreamReader(stream))
                 {
-                    Console.WriteLine($"{item} NOT FOUND");
+                    while (!reader.EndOfStream)
+                    {
+                        string line = reader.ReadLine();
+                        //two-letter ISO code is in the third column, i.e. after the second separator character
+                        string threeLetterISOCode = line.Substring(0, 3);
+
+                        if (item == threeLetterISOCode)
+                        {
+                            var thirdSeparator = line.Split(separator);
+                            Console.WriteLine(thirdSeparator[3]);
+                        }
+                    }
                 }
             }
         }
+
+        [Test]
+        public void UseCodeGenerator()
+        {
+            foreach (var item in EtyTteeLangs)
+            {
+                if (Enum.TryParse(item, out ISOLanguages result))
+                {
+                    //Console.WriteLine($"{item}:{result.GetDisplayName()}");
+                }
+                else
+                {
+                    Console.WriteLine($"{item}: NOT FOUND");
+                }
+            }
+
+
+        }
+
     }
 }

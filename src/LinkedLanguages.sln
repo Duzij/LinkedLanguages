@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinkedLanguages.Tests", "Li
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinkedLanguages", "LinkedLanguages.Web\LinkedLanguages.csproj", "{70D12180-51FF-4383-8995-FD122E513139}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinkedLanguages.CodeGenerator", "LinkedLanguages.CodeGenerator\LinkedLanguages.CodeGenerator.csproj", "{7FD8CE54-1F07-453F-B51E-2692AE19A202}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinkedLanguages.Resources", "LinkedLanguages.Resources\LinkedLanguages.Resources.csproj", "{EEF8F95C-AD81-48A1-A276-380729591D8A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{70D12180-51FF-4383-8995-FD122E513139}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70D12180-51FF-4383-8995-FD122E513139}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70D12180-51FF-4383-8995-FD122E513139}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FD8CE54-1F07-453F-B51E-2692AE19A202}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FD8CE54-1F07-453F-B51E-2692AE19A202}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FD8CE54-1F07-453F-B51E-2692AE19A202}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FD8CE54-1F07-453F-B51E-2692AE19A202}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEF8F95C-AD81-48A1-A276-380729591D8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEF8F95C-AD81-48A1-A276-380729591D8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEF8F95C-AD81-48A1-A276-380729591D8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEF8F95C-AD81-48A1-A276-380729591D8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
