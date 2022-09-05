@@ -1,11 +1,11 @@
 using LinkedLanguages.BL;
 using LinkedLanguages.DAL;
-
+using LinkedLanguages.Tests.Helpers;
 using NUnit.Framework;
 
 using System.Linq;
 
-namespace LinkedLanguages.Tests
+namespace LinkedLanguages.Tests.SparqlTests
 {
     public class SparqlQueryTests
     {

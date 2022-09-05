@@ -11,9 +11,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-using static LinkedLanguages.Tests.TestServices;
+using static LinkedLanguages.Tests.Helpers.TestServices;
 
-namespace LinkedLanguages.Tests
+namespace LinkedLanguages.Tests.UseCasesTests
 {
     public class WordPairOperationsTests
     {

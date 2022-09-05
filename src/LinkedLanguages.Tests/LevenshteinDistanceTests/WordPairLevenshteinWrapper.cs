@@ -2,51 +2,10 @@
 
 using DamerauLevenshteinDistance.Console;
 
-using LinkedLanguages.BL;
-using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
 
-using NUnit.Framework;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LinkedLanguages.Tests
+namespace LinkedLanguages.Tests.LevenshteinDistanceTests
 {
-    public class ExpandedLevenshteinDistanceTests
-    {
-        private SparqlPairsQuery sparqlQuery;
-
-        [SetUp]
-        public void Setup()
-        {
-            sparqlQuery = new SparqlPairsQuery(TestServices.GetMoqOptions());
-        }
-
-        [Test]
-        public void PumpEnglishAndLatin()
-        {
-            var results = sparqlQuery.Execute("eng", LanguageSeed.EnglishLanguageId, "rus", LanguageSeed.RussianLangaugeId, 1, 100);
-
-            Console.WriteLine("Before normalization");
-
-            foreach (var item in results.Select(i => new WordPairLevenshteinWrapper(i)).OrderBy(d => d.Distance))
-            {
-                Console.WriteLine(item.ToString());
-            }
-
-            Console.WriteLine("After normalization");
-
-            foreach (var item in results.Select(i => new WordPairLevenshteinWrapper(i).RemoveDiacritis()).OrderBy(d => d.Distance))
-            {
-                Console.WriteLine(item.ToString());
-            }
-        }
-    }
-
     public class WordPairLevenshteinWrapper
     {
         public int Distance { get; set; }
@@ -76,8 +35,6 @@ namespace LinkedLanguages.Tests
 
         public WordPairLevenshteinWrapper RemoveDiacritis()
         {
-            //WordPair.KnownWord = $"{WordPair.KnownWord.RemoveDiacritics()}, (previously {WordPair.KnownWord})";
-            //WordPair.UnknownWord = $"{WordPair.UnknownWord.RemoveDiacritics()}, (previously {WordPair.UnknownWord})";
             BeforeTransliteration = new WordPair { KnownWord = WordPair.KnownWord, UnknownWord = WordPair.UnknownWord };
 
             WordPair.KnownWord = $"{WordPair.KnownWord.Transliterate()}";

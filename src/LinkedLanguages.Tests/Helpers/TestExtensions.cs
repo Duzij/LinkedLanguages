@@ -11,7 +11,7 @@ using Moq;
 
 using System;
 
-namespace LinkedLanguages.Tests
+namespace LinkedLanguages.Tests.Helpers
 {
     public static class TestServices
     {
