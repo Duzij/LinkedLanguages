@@ -1,4 +1,5 @@
-﻿using LinkedLanguages.DAL;
+﻿using LinkedLanguages.BL.User;
+using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
 
 using System;

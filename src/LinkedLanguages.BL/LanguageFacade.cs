@@ -1,4 +1,6 @@
 ﻿using LinkedLanguages.BL.DTO;
+using LinkedLanguages.BL.SPARQL;
+using LinkedLanguages.BL.User;
 using LinkedLanguages.DAL;
 
 using Microsoft.EntityFrameworkCore;

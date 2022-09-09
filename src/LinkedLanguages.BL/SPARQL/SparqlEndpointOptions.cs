@@ -1,4 +1,4 @@
-﻿namespace LinkedLanguages.BL
+﻿namespace LinkedLanguages.BL.SPARQL
 {
     public class SparqlEndpointOptions
     {

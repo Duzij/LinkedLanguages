@@ -1,5 +1,4 @@
-﻿using LinkedLanguages.BL.SPARQL;
-using LinkedLanguages.DAL.Models;
+﻿using LinkedLanguages.DAL.Models;
 
 using Microsoft.Extensions.Options;
 
@@ -15,7 +14,7 @@ using VDS.RDF.Query.Algebra;
 
 using static Humanizer.In;
 
-namespace LinkedLanguages.BL
+namespace LinkedLanguages.BL.SPARQL
 {
     public class SparqlPairsStatisticsQuery
     {

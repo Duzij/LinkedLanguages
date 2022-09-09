@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 
-namespace LinkedLanguages.BL
+namespace LinkedLanguages.BL.User
 {
     public static class ClaimsPrincipalExtensions
     {

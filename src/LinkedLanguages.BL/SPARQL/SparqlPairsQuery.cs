@@ -1,5 +1,4 @@
-﻿using LinkedLanguages.BL.SPARQL;
-using LinkedLanguages.DAL.Models;
+﻿using LinkedLanguages.DAL.Models;
 
 using Microsoft.Extensions.Options;
 
@@ -9,7 +8,7 @@ using System.Collections.Generic;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
-namespace LinkedLanguages.BL
+namespace LinkedLanguages.BL.SPARQL
 {
     public class SparqlPairsQuery
     {
