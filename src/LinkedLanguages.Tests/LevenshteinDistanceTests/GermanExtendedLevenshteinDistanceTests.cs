@@ -65,5 +65,35 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
                 Console.WriteLine(item.ToString());
             }
         }
+
+        [Test]
+        public void OnlyDifferencesAppear()
+        {
+            var sparqlQuery = new SparqlPairsQuery(TestServices.GetMoqOptions());
+
+            var list  = new List<WordPairExtendedLevenshteinWrapper>();
+            var index = 0;
+
+            while (list.Count() < 250)
+            {
+                var result = sparqlQuery.Execute("eng", LanguageSeed.EnglishLanguageId, "deu", LanguageSeed.RussianLangaugeId, index++, 1);
+
+                var wp = new WordPairExtendedLevenshteinWrapper(result.First(), removeInvariantsCharactersMapping);
+                if (wp.Distance == 0)
+                {
+                    continue;
+                }
+                else
+                {
+                    var wpWithMapping = new WordPairExtendedLevenshteinWrapper(result.First(), mappingEnglishToGerman);
+                    if(wpWithMapping.Distance != wp.Distance)
+                    {
+                        list.Add(wpWithMapping);
+                        Console.WriteLine($"Mapping distance change:{wp.ToStringWithoutDistanceInfo()}. Before:{wp.Distance}, After{wpWithMapping.Distance}");
+                    }
+                }
+            }
+
+        }
     }
 }

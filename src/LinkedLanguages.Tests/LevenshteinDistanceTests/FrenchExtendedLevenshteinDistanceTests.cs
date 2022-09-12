@@ -17,7 +17,7 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
                 {"e","é" },
                 {"a","â" }
             };
-        private Dictionary<string, string> mappingEnglishToGerman = new Dictionary<string, string>()
+        private Dictionary<string, string> mappingEnglishToFrench = new Dictionary<string, string>()
             {
                 {"c",  "ch" },
                 {"k",  "que"},
@@ -54,7 +54,7 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
         public void FrenchCharactersMappingTest()
         {
             Console.WriteLine("Order after characters mapping");
-            var alteredWordPairWrappers = wordPairWrappers.Select(i => new WordPairExtendedLevenshteinWrapper(i, mappingEnglishToGerman));
+            var alteredWordPairWrappers = wordPairWrappers.Select(i => new WordPairExtendedLevenshteinWrapper(i, mappingEnglishToFrench));
             foreach (var item in alteredWordPairWrappers.OrderBy(d => d.Distance))
             {
                 Console.WriteLine(item.ToString());

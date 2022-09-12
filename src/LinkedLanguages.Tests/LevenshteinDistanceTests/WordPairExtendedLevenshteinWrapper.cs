@@ -42,5 +42,10 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
         {
             return $"KnownWord: {WordPair.KnownWord}, UnknownWord: {WordPair.UnknownWord}, Distance: {Distance}";
         }
+
+        public  string ToStringWithoutDistanceInfo()
+        {
+            return $"KnownWord: {WordPair.KnownWord}, UnknownWord: {WordPair.UnknownWord}";
+        }
     }
 }
