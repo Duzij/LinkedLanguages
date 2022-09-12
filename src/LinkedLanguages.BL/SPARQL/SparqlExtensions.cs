@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ using VDS.RDF;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
 
-namespace LinkedLanguages.BL
+namespace LinkedLanguages.BL.SPARQL
 {
     public static class SparqlExtensions
     {

@@ -1,4 +1,4 @@
-﻿using LinkedLanguages.BL;
+﻿using LinkedLanguages.BL.SPARQL;
 using LinkedLanguages.DAL;
 using LinkedLanguages.Tests.Helpers;
 

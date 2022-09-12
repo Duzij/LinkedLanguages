@@ -1,6 +1,8 @@
 
 using LinkedLanguages.BL;
 using LinkedLanguages.BL.Services;
+using LinkedLanguages.BL.SPARQL;
+using LinkedLanguages.BL.User;
 using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
 

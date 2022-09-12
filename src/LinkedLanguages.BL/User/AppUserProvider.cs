@@ -1,5 +1,4 @@
-﻿
-using LinkedLanguages.DAL;
+﻿using LinkedLanguages.DAL;
 
 using Microsoft.AspNetCore.Http;
 
@@ -7,7 +6,7 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 
-namespace LinkedLanguages.BL
+namespace LinkedLanguages.BL.User
 {
     public class AppUserProvider : IAppUserProvider
     {

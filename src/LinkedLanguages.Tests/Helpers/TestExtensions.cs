@@ -1,6 +1,6 @@
 ﻿using Duende.IdentityServer.EntityFramework.Options;
 
-using LinkedLanguages.BL;
+using LinkedLanguages.BL.SPARQL;
 using LinkedLanguages.DAL;
 
 using Microsoft.EntityFrameworkCore;

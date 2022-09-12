@@ -1,11 +1,12 @@
-﻿using LinkedLanguages.DAL;
+﻿using LinkedLanguages.BL.SPARQL;
+using LinkedLanguages.DAL;
 
 using Microsoft.Extensions.Caching.Memory;
 
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace LinkedLanguages.BL
+namespace LinkedLanguages.BL.Services
 {
     public class WordPairPump
     {
