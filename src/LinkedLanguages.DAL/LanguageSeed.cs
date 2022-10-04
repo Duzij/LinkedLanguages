@@ -2,9 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LinkedLanguages.DAL
 {
@@ -21,7 +18,7 @@ namespace LinkedLanguages.DAL
         /// <returns></returns>
         public static IEnumerable<Language> GetStaticLanguages()
         {
-           return new List<Language>() { 
+            return new List<Language>() {
                 new Language { Id = LatinLanguageId, Code = "lat", Name="Latin" },
                 new Language { Id = EnglishLanguageId, Code = "eng", Name="English" },
                 new Language { Id = Guid.Parse("f4ed4153-e816-462f-b97f-a97c54d9dcc6"), Code = "ita", Name="Italian" },

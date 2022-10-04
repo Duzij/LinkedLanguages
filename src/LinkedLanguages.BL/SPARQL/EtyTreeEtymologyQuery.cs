@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LinkedLanguages.BL.SPARQL
+﻿namespace LinkedLanguages.BL.SPARQL
 {
     public static class EtyTreeEtymologyQuery
     {

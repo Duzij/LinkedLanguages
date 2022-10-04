@@ -1,12 +1,10 @@
 ﻿using LinkedLanguages.BL.Languages;
-using LinkedLanguages.DAL;
 using LinkedLanguages.Resources;
 using NUnit.Framework;
 
 using System;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 
 namespace LinkedLanguages.Tests
@@ -164,7 +162,7 @@ namespace LinkedLanguages.Tests
         [Test]
         public void ReadFromFileTest()
         {
-            var allLangs = CultureInfo
+            _ = CultureInfo
                     .GetCultures(CultureTypes.NeutralCultures);
 
             foreach (var item in EtyTteeLangs)
@@ -172,19 +170,17 @@ namespace LinkedLanguages.Tests
                 const string separator = "|";
 
                 var stream = typeof(Resource).GetTypeInfo().Assembly.GetManifestResourceStream("LinkedLanguages.Resources.ISO-639-2_utf-8.txt");
-                using (var reader = new StreamReader(stream))
+                using var reader = new StreamReader(stream);
+                while (!reader.EndOfStream)
                 {
-                    while (!reader.EndOfStream)
-                    {
-                        string line = reader.ReadLine();
-                        //two-letter ISO code is in the third column, i.e. after the second separator character
-                        string threeLetterISOCode = line.Substring(0, 3);
+                    string line = reader.ReadLine();
+                    //two-letter ISO code is in the third column, i.e. after the second separator character
+                    string threeLetterISOCode = line[..3];
 
-                        if (item == threeLetterISOCode)
-                        {
-                            var thirdSeparator = line.Split(separator);
-                            Console.WriteLine(thirdSeparator[3]);
-                        }
+                    if (item == threeLetterISOCode)
+                    {
+                        var thirdSeparator = line.Split(separator);
+                        Console.WriteLine(thirdSeparator[3]);
                     }
                 }
             }
@@ -195,7 +191,7 @@ namespace LinkedLanguages.Tests
         {
             foreach (var item in EtyTteeLangs)
             {
-                if (Enum.TryParse(item, out ISOLanguages result))
+                if (Enum.TryParse(item, out ISOLanguages _))
                 {
                     //Console.WriteLine($"{item}:{result.GetDisplayName()}");
                 }

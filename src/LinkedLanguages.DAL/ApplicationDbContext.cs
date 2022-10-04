@@ -26,7 +26,7 @@ namespace LinkedLanguages.DAL
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Language>().HasData(LanguageSeed.GetStaticLanguages());
+            _ = builder.Entity<Language>().HasData(LanguageSeed.GetStaticLanguages());
             base.OnModelCreating(builder);
         }
     }

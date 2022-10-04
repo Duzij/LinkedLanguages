@@ -29,7 +29,7 @@ namespace LinkedLanguages.Tests.Helpers
             var cachEntry = Mock.Of<ICacheEntry>();
 
             var mockMemoryCache = Mock.Get(memoryCache);
-            mockMemoryCache
+            _ = mockMemoryCache
                 .Setup(m => m.CreateEntry(It.IsAny<object>()))
                 .Returns(cachEntry);
             return memoryCache;
@@ -49,7 +49,7 @@ namespace LinkedLanguages.Tests.Helpers
             var dbContext = new ApplicationDbContext(options, operationalStoreOptions);
 
             dbContext.Languages.AddRange(LanguageSeed.GetStaticLanguages());
-            dbContext.SaveChanges();
+            _ = dbContext.SaveChanges();
 
             return dbContext;
         }

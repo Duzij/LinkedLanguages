@@ -5,12 +5,10 @@ using LinkedLanguages.DAL;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Options;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LinkedLanguages.BL
@@ -100,7 +98,7 @@ namespace LinkedLanguages.BL
             else
             {
                 var queryValue = sparqlPairsStatisticsQuery.Execute(knownCode, unknownCode);
-                memoryCache.Set(key, queryValue);
+                _ = memoryCache.Set(key, queryValue);
                 return queryValue;
             }
         }
@@ -130,7 +128,7 @@ namespace LinkedLanguages.BL
 
                 foreach (var lang in userProfile.KnownLanguages)
                 {
-                    await appContext.KnownLanguageToUsers
+                    _ = await appContext.KnownLanguageToUsers
                         .AddAsync(new DAL.Models.KnownLanguageToUser()
                         {
                             ApplicationUserId = userId,
@@ -140,14 +138,14 @@ namespace LinkedLanguages.BL
 
                 foreach (var lang in userProfile.UnknownLanguages)
                 {
-                    await appContext.UnknownLanguageToUsers
+                    _ = await appContext.UnknownLanguageToUsers
                         .AddAsync(new DAL.Models.UnknownLanguageToUser()
                         {
                             ApplicationUserId = userId,
                             LanguageId = lang.Value
                         });
                 }
-                await appContext.SaveChangesAsync();
+                _ = await appContext.SaveChangesAsync();
             }
         }
     }

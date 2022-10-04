@@ -38,27 +38,27 @@ namespace LinkedLanguages
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
+            _ = services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDatabaseDeveloperPageExceptionFilter();
-            services.AddHttpContextAccessor();
+            _ = services.AddDatabaseDeveloperPageExceptionFilter();
+            _ = services.AddHttpContextAccessor();
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
-            services.Configure<IdentityOptions>(options =>
+            _ = services.Configure<IdentityOptions>(options =>
     options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier);
 
-            services.AddTransient<IAppUserProvider, AppUserProvider>();
-            services.AddDefaultIdentity<ApplicationUser>(options =>
+            _ = services.AddTransient<IAppUserProvider, AppUserProvider>();
+            _ = services.AddDefaultIdentity<ApplicationUser>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = true;
             }).AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddAuthentication()
+            _ = services.AddAuthentication()
                 .AddIdentityServerJwt();
 
-            services.Configure<JwtBearerOptions>(IdentityServerJwtConstants.IdentityServerJwtBearerScheme, options =>
+            _ = services.Configure<JwtBearerOptions>(IdentityServerJwtConstants.IdentityServerJwtBearerScheme, options =>
             {
                 options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
                 {
@@ -66,11 +66,11 @@ namespace LinkedLanguages
                 };
             });
 
-            services.AddIdentityServer()
+            _ = services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
-            services.AddControllersWithViews();
-            services.AddRazorPages();
+            _ = services.AddControllersWithViews();
+            _ = services.AddRazorPages();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -78,21 +78,21 @@ namespace LinkedLanguages
                 configuration.RootPath = "ClientApp/build";
             });
 
-            services.AddMemoryCache();
+            _ = services.AddMemoryCache();
 
-            services.AddTransient<UnusedUserWordPairsQuery>();
+            _ = services.AddTransient<UnusedUserWordPairsQuery>();
 
-            services.AddTransient<LanguageFacade>();
-            services.AddTransient<WordPairFacade>();
-            services.AddTransient<WordPairPump>();
-            services.AddTransient<SparqlPairsQuery>();
-            services.AddTransient<SparqlPairsStatisticsQuery>();
+            _ = services.AddTransient<LanguageFacade>();
+            _ = services.AddTransient<WordPairFacade>();
+            _ = services.AddTransient<WordPairPump>();
+            _ = services.AddTransient<SparqlPairsQuery>();
+            _ = services.AddTransient<SparqlPairsStatisticsQuery>();
 
-            services.AddTransient<IEmailSender, EmailSender>();
-            services.Configure<AuthMessageSenderOptions>(Configuration);
-            services.Configure<SparqlEndpointOptions>(Configuration.GetSection("SparqlEndpointOptions"));
+            _ = services.AddTransient<IEmailSender, EmailSender>();
+            _ = services.Configure<AuthMessageSenderOptions>(Configuration);
+            _ = services.Configure<SparqlEndpointOptions>(Configuration.GetSection("SparqlEndpointOptions"));
 
-            services.AddApplicationInsightsTelemetry(options: new ApplicationInsightsServiceOptions { ConnectionString = Configuration.GetValue<string>("APPINSIGHTS_CONNECTIONSTRING") });
+            _ = services.AddApplicationInsightsTelemetry(options: new ApplicationInsightsServiceOptions { ConnectionString = Configuration.GetValue<string>("APPINSIGHTS_CONNECTIONSTRING") });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -100,34 +100,34 @@ namespace LinkedLanguages
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
-                app.UseMigrationsEndPoint();
+                _ = app.UseDeveloperExceptionPage();
+                _ = app.UseMigrationsEndPoint();
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                _ = app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                _ = app.UseHsts();
 
             }
 
             dbContext.Database.Migrate();
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            _ = app.UseHttpsRedirection();
+            _ = app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
-            app.UseRouting();
+            _ = app.UseRouting();
 
-            app.UseAuthentication();
-            app.UseIdentityServer();
-            app.UseAuthorization();
-            app.UseEndpoints(endpoints =>
+            _ = app.UseAuthentication();
+            _ = app.UseIdentityServer();
+            _ = app.UseAuthorization();
+            _ = app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
+                _ = endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
+                _ = endpoints.MapRazorPages();
             });
 
             app.UseSpa(spa =>

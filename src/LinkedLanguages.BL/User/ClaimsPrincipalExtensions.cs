@@ -15,16 +15,11 @@ namespace LinkedLanguages.BL.User
             }
 
             var claim = principal.Claims.ToList().FirstOrDefault(c => c.Type == "sub");
-            if (claim == null)
-            {
-                throw new InvalidOperationException("UserId claim not found");
-            }
-            if (claim.Value == Guid.Empty.ToString())
-            {
-                throw new InvalidOperationException("UserId claim is empty Guid");
-            }
-
-            return Guid.Parse(claim.Value);
+            return claim == null
+                ? throw new InvalidOperationException("UserId claim not found")
+                : claim.Value == Guid.Empty.ToString()
+                ? throw new InvalidOperationException("UserId claim is empty Guid")
+                : Guid.Parse(claim.Value);
         }
     }
 }

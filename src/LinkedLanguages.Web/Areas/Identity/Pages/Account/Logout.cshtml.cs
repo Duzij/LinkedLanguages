@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using LinkedLanguages.DAL.Models;
 using Microsoft.AspNetCore.Authorization;
-using LinkedLanguages.DAL.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace LinkedLanguages.Areas.Identity.Pages.Account
 {
@@ -31,14 +28,7 @@ namespace LinkedLanguages.Areas.Identity.Pages.Account
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
-            if (returnUrl != null)
-            {
-                return LocalRedirect(returnUrl);
-            }
-            else
-            {
-                return RedirectToPage();
-            }
+            return returnUrl != null ? LocalRedirect(returnUrl) : RedirectToPage();
         }
     }
 }

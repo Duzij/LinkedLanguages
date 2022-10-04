@@ -23,11 +23,10 @@ namespace LinkedLanguages.Tests.UseCasesTests
         [Test]
         public void UnusedUserWordPairsQuery()
         {
-            using (var dbContext = GetNewTestDbContext())
-            {
-                var wpId = Guid.NewGuid();
+            using var dbContext = GetNewTestDbContext();
+            var wpId = Guid.NewGuid();
 
-                var wordPairs = new List<WordPair>
+            var wordPairs = new List<WordPair>
                 {
                     new WordPair {
                         Id = wpId,
@@ -40,7 +39,7 @@ namespace LinkedLanguages.Tests.UseCasesTests
                     }
                 };
 
-                var usedWordPairs = new List<WordPairToApplicationUser>
+            var usedWordPairs = new List<WordPairToApplicationUser>
                 {
                     new WordPairToApplicationUser {
                         Id = Guid.NewGuid(),
@@ -50,19 +49,18 @@ namespace LinkedLanguages.Tests.UseCasesTests
                     }
                 };
 
-                dbContext.WordPairToApplicationUsers.AddRange(usedWordPairs);
-                dbContext.WordPairs.AddRange(wordPairs);
-                dbContext.SaveChanges();
+            dbContext.WordPairToApplicationUsers.AddRange(usedWordPairs);
+            dbContext.WordPairs.AddRange(wordPairs);
+            _ = dbContext.SaveChanges();
 
-                var appUserProvider = new Mock<IAppUserProvider>();
-                appUserProvider.Setup(a => a.GetUserId()).Returns(GetUserId);
-                appUserProvider.Setup(a => a.GetUserKnownLanguage()).Returns("eng");
+            var appUserProvider = new Mock<IAppUserProvider>();
+            _ = appUserProvider.Setup(a => a.GetUserId()).Returns(GetUserId);
+            _ = appUserProvider.Setup(a => a.GetUserKnownLanguage()).Returns("eng");
 
-                var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, appUserProvider.Object);
+            var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, appUserProvider.Object);
 
-                var unusedUserWordPairs = unusedUserWordPairsQuery.GetQueryable("eng", "lat").ToList();
-                Assert.That(unusedUserWordPairs.Count, Is.EqualTo(0));
-            }
+            var unusedUserWordPairs = unusedUserWordPairsQuery.GetQueryable("eng", "lat").ToList();
+            Assert.That(unusedUserWordPairs.Count, Is.EqualTo(0));
         }
 
 
@@ -74,37 +72,35 @@ namespace LinkedLanguages.Tests.UseCasesTests
         [Test]
         public async Task ApproveThreeWordPair()
         {
-            using (var dbContext = GetNewTestDbContext())
-            {
-                var appUserProvider = new Mock<IAppUserProvider>();
-                appUserProvider.Setup(a => a.GetUserId()).Returns(GetUserId);
-                appUserProvider.Setup(a => a.GetUserKnownLanguage()).Returns("eng");
+            using var dbContext = GetNewTestDbContext();
+            var appUserProvider = new Mock<IAppUserProvider>();
+            _ = appUserProvider.Setup(a => a.GetUserId()).Returns(GetUserId);
+            _ = appUserProvider.Setup(a => a.GetUserKnownLanguage()).Returns("eng");
 
-                var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, appUserProvider.Object);
+            var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, appUserProvider.Object);
 
-                var wordPairPump = new WordPairPump(new SparqlPairsQuery(GetMoqOptions()), GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
+            var wordPairPump = new WordPairPump(new SparqlPairsQuery(GetMoqOptions()), GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
 
-                var facade = new WordPairFacade(dbContext, wordPairPump, appUserProvider.Object, unusedUserWordPairsQuery);
+            var facade = new WordPairFacade(dbContext, wordPairPump, appUserProvider.Object, unusedUserWordPairsQuery);
 
 
-                var firstWordPair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
-                Assert.NotNull(firstWordPair);
-                await facade.Approve(firstWordPair.Id);
+            var firstWordPair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
+            Assert.NotNull(firstWordPair);
+            await facade.Approve(firstWordPair.Id);
 
-                var secondWordPair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
-                Assert.That(secondWordPair.UnknownWord, Is.Not.SameAs(firstWordPair.UnknownWord));
-                await facade.Approve(secondWordPair.Id);
+            var secondWordPair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
+            Assert.That(secondWordPair.UnknownWord, Is.Not.SameAs(firstWordPair.UnknownWord));
+            await facade.Approve(secondWordPair.Id);
 
-                var thirdWordPair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
-                Assert.That(thirdWordPair.UnknownWord, Is.Not.SameAs(secondWordPair.UnknownWord));
-                await facade.Approve(thirdWordPair.Id);
+            var thirdWordPair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
+            Assert.That(thirdWordPair.UnknownWord, Is.Not.SameAs(secondWordPair.UnknownWord));
+            await facade.Approve(thirdWordPair.Id);
 
-                var forthWordPair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
-                Assert.That(forthWordPair.UnknownWord, Is.Not.SameAs(thirdWordPair.UnknownWord));
-                await facade.Approve(forthWordPair.Id);
+            var forthWordPair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
+            Assert.That(forthWordPair.UnknownWord, Is.Not.SameAs(thirdWordPair.UnknownWord));
+            await facade.Approve(forthWordPair.Id);
 
-                Assert.That(dbContext.WordPairs.Count(), Is.EqualTo(6));
-            }
+            Assert.That(dbContext.WordPairs.Count(), Is.EqualTo(6));
 
         }
     }

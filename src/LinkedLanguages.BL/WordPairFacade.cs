@@ -5,9 +5,7 @@ using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LinkedLanguages.BL
@@ -39,19 +37,15 @@ namespace LinkedLanguages.BL
             await wordPairPump.Pump(knownLang, unknownLangCode);
 
             var nextWord = unusedUserWordPairs.GetQueryable(knownLang, unknownLangCode)
-                .Select(u => new WordPairDto() { 
+                .Select(u => new WordPairDto()
+                {
                     Id = u.Id,
                     UnknownWord = u.UnknownWord,
                     KnownWord = u.KnownWord
                 })
                 .FirstOrDefault();
 
-            if (nextWord is null)
-            {
-                throw new WordNotFoundException();
-            }
-
-            return nextWord;
+            return nextWord is null ? throw new WordNotFoundException() : nextWord;
         }
 
         public async Task Approve(Guid wordPairId)
@@ -65,8 +59,8 @@ namespace LinkedLanguages.BL
                 WordPairId = wordPairId
             };
 
-            await dbContext.WordPairToApplicationUsers.AddAsync(wp);
-            await dbContext.SaveChangesAsync();
+            _ = await dbContext.WordPairToApplicationUsers.AddAsync(wp);
+            _ = await dbContext.SaveChangesAsync();
         }
 
         private void ThrowExceptionIfNotExists(Guid wordPairId)
@@ -87,8 +81,8 @@ namespace LinkedLanguages.BL
                 Rejected = true
             };
 
-            await dbContext.WordPairToApplicationUsers.AddAsync(wp);
-            await dbContext.SaveChangesAsync();
+            _ = await dbContext.WordPairToApplicationUsers.AddAsync(wp);
+            _ = await dbContext.SaveChangesAsync();
         }
     }
 }

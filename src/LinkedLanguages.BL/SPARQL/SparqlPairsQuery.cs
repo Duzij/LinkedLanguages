@@ -46,7 +46,7 @@ namespace LinkedLanguages.BL.SPARQL
 
             SparqlQuery query = parser.ParseFromString(queryString);
             var resultSet = endpoint.QueryWithResultSet(query.ToString());
-            if (resultSet is SparqlResultSet)
+            if (resultSet is not null)
             {
                 var trippleCollection = resultSet.Results.ToArray();
                 foreach (var t in trippleCollection)

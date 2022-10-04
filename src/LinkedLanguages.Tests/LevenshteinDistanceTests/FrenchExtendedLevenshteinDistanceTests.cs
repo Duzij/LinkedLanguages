@@ -1,5 +1,4 @@
-﻿using LinkedLanguages.BL;
-using LinkedLanguages.BL.SPARQL;
+﻿using LinkedLanguages.BL.SPARQL;
 using LinkedLanguages.DAL;
 using LinkedLanguages.Tests.Helpers;
 
@@ -18,7 +17,7 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
                 {"e","é" },
                 {"a","â" }
             };
-        private Dictionary<string, string> mappingEnglishToFrench = new Dictionary<string, string>()
+        private readonly Dictionary<string, string> mappingEnglishToFrench = new Dictionary<string, string>()
             {
                 {"c",  "ch" },
                 {"k",  "que"},

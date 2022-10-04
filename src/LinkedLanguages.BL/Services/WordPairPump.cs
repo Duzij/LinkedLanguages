@@ -48,14 +48,14 @@ namespace LinkedLanguages.BL.Services
             if (!remainingUnusedWords.Any())
             {
                 //Offset will have to be reparated per language
-                memoryCache.TryGetValue("offset", out int offset);
-                memoryCache.Set("offset", offset + 1);
+                _ = memoryCache.TryGetValue("offset", out int offset);
+                _ = memoryCache.Set("offset", offset + 1);
 
                 var results = pairsQuery.Execute(knownLangCode, knownLangugageId, unknownLangCode, unknownLangugageId, offset, 3);
 
                 //Add new words to database
                 await dbContext.WordPairs.AddRangeAsync(results);
-                await dbContext.SaveChangesAsync();
+                _ = await dbContext.SaveChangesAsync();
             }
 
         }

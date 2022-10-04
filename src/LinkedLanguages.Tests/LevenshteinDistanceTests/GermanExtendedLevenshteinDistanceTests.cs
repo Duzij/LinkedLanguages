@@ -1,5 +1,4 @@
-﻿using LinkedLanguages.BL;
-using LinkedLanguages.BL.SPARQL;
+﻿using LinkedLanguages.BL.SPARQL;
 using LinkedLanguages.DAL;
 using LinkedLanguages.Tests.Helpers;
 using NUnit.Framework;
@@ -17,7 +16,7 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
                 {"o",  "ö"},
                 {"a",  "ä"}
             };
-        private Dictionary<string, string> mappingEnglishToGerman = new Dictionary<string, string>()
+        private readonly Dictionary<string, string> mappingEnglishToGerman = new Dictionary<string, string>()
             {
                 {"th",  "d" },
                 {"d",  "t"},
@@ -72,7 +71,7 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
         {
             var sparqlQuery = new SparqlPairsQuery(TestServices.GetMoqOptions());
 
-            var list  = new List<WordPairExtendedLevenshteinWrapper>();
+            var list = new List<WordPairExtendedLevenshteinWrapper>();
             var index = 0;
 
             while (list.Count() < 250)
@@ -87,7 +86,7 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
                 else
                 {
                     var wpWithMapping = new WordPairExtendedLevenshteinWrapper(result.First(), mappingEnglishToGerman);
-                    if(wpWithMapping.Distance != wp.Distance)
+                    if (wpWithMapping.Distance != wp.Distance)
                     {
                         list.Add(wpWithMapping);
                         Console.WriteLine($"Mapping distance change:{wp.ToStringWithoutDistanceInfo()}. Before:{wp.Distance}, After{wpWithMapping.Distance}");

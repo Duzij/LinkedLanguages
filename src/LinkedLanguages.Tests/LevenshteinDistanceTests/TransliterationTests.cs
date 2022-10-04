@@ -5,7 +5,6 @@ using LinkedLanguages.Tests.Helpers;
 using NUnit.Framework;
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace LinkedLanguages.Tests.LevenshteinDistanceTests

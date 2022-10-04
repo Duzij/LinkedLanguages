@@ -1,16 +1,11 @@
 ﻿using LinkedLanguages.BL;
-using LinkedLanguages.BL.DTO;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 using System;
-using System.Net;
-using System.Security.Claims;
 using System.Threading.Tasks;
-
-using static LinkedLanguages.BL.WordPairFacade;
 
 namespace LinkedLanguages.Controllers
 {

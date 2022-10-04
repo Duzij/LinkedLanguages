@@ -1,18 +1,10 @@
-﻿using LinkedLanguages.DAL.Models;
-
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Xml.Linq;
 
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-using VDS.RDF.Query.Algebra;
-
-using static Humanizer.In;
 
 namespace LinkedLanguages.BL.SPARQL
 {
@@ -49,7 +41,7 @@ namespace LinkedLanguages.BL.SPARQL
 
             var result = 0;
 
-            if (resultSet is SparqlResultSet)
+            if (resultSet is not null)
             {
                 result = int.Parse(resultSet.ToList().First().GetLiteral("CountOfEtymologies"));
             }
