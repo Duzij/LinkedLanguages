@@ -37,15 +37,10 @@ namespace LinkedLanguages.BL
             await wordPairPump.Pump(knownLang, unknownLangCode);
 
             var nextWord = unusedUserWordPairs.GetQueryable(knownLang, unknownLangCode)
-                .Select(u => new WordPairDto()
-                {
-                    Id = u.Id,
-                    UnknownWord = u.UnknownWord,
-                    KnownWord = u.KnownWord
-                })
+                .Select(u => new WordPairDto(u.Id, u.UnknownWord, u.KnownWord))
                 .FirstOrDefault();
 
-            return nextWord is null ? throw new WordNotFoundException() : nextWord;
+            return nextWord == default(WordPairDto) ? throw new WordNotFoundException() : nextWord;
         }
 
         public async Task Approve(Guid wordPairId)

@@ -1,8 +1,8 @@
 ﻿namespace LinkedLanguages.BL.SPARQL
 {
-    public static class EtyTreeEtymologyQuery
+    public static class EtyTreeEtymologyCommandText
     {
-        public static string GetTwoWayLanguageWhereUnionQuery()
+        public static string GetTwoWayLanguageWhereUnionCommandText()
         {
             return @"
              WHERE {

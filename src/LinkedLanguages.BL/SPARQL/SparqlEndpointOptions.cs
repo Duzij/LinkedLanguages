@@ -1,7 +1,9 @@
-﻿namespace LinkedLanguages.BL.SPARQL
+﻿using System;
+
+namespace LinkedLanguages.BL.SPARQL
 {
     public class SparqlEndpointOptions
     {
-        public string EndpointUrl { get; set; }
+        public Uri EndpointUrl { get; set; }
     }
 }

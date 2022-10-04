@@ -1,4 +1,4 @@
-﻿using LinkedLanguages.BL.SPARQL;
+﻿using LinkedLanguages.BL.SPARQL.Query;
 using LinkedLanguages.DAL;
 using LinkedLanguages.Tests.Helpers;
 using NUnit.Framework;
@@ -37,8 +37,8 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
         [SetUp]
         public void Setup()
         {
-            var sparqlQuery = new SparqlPairsQuery(TestServices.GetMoqOptions());
-            var results = sparqlQuery.Execute("eng", LanguageSeed.EnglishLanguageId, "deu", LanguageSeed.RussianLangaugeId, 1, 100);
+            var sparqlQuery = new WordPairsSparqlQuery(TestServices.GetMoqOptions());
+            var results = sparqlQuery.Execute(new WordPairParameterDto("eng", LanguageSeed.EnglishLanguageId, "deu", LanguageSeed.RussianLangaugeId, 1, 100));
 
             wordPairWrappers = results.Select(i => new WordPairExtendedLevenshteinWrapper(i, removeInvariantsCharactersMapping))
                                       .Where(a => a.Distance != 0);
@@ -69,14 +69,14 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
         [Ignore("Takes up to 30 min")]
         public void OnlyDifferencesAppear()
         {
-            var sparqlQuery = new SparqlPairsQuery(TestServices.GetMoqOptions());
+            var sparqlQuery = new WordPairsSparqlQuery(TestServices.GetMoqOptions());
 
             var list = new List<WordPairExtendedLevenshteinWrapper>();
             var index = 0;
 
             while (list.Count() < 250)
             {
-                var result = sparqlQuery.Execute("eng", LanguageSeed.EnglishLanguageId, "deu", LanguageSeed.RussianLangaugeId, index++, 1);
+                var result = sparqlQuery.Execute(new WordPairParameterDto("eng", LanguageSeed.EnglishLanguageId, "deu", LanguageSeed.RussianLangaugeId, index++, 1));
 
                 var wp = new WordPairExtendedLevenshteinWrapper(result.First(), removeInvariantsCharactersMapping);
                 if (wp.Distance == 0)

@@ -1,12 +1,10 @@
 ﻿using LinkedLanguages.BL.DTO;
-using LinkedLanguages.BL.SPARQL;
+using LinkedLanguages.BL.SPARQL.Query;
 using LinkedLanguages.BL.User;
 using LinkedLanguages.DAL;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,12 +15,12 @@ namespace LinkedLanguages.BL
     {
         private readonly ApplicationDbContext appContext;
         private readonly IAppUserProvider appUserProvider;
-        private readonly SparqlPairsStatisticsQuery sparqlPairsStatisticsQuery;
+        private readonly PairsStatisticsSparqlQuery sparqlPairsStatisticsQuery;
         private readonly IMemoryCache memoryCache;
 
         public LanguageFacade(ApplicationDbContext appContext,
                               IAppUserProvider appUserProvider,
-                              SparqlPairsStatisticsQuery sparqlPairsStatisticsQuery,
+                              PairsStatisticsSparqlQuery sparqlPairsStatisticsQuery,
                               IMemoryCache memoryCache
         )
         {
@@ -75,11 +73,6 @@ namespace LinkedLanguages.BL
 
         public int GetCountOfPredicates(UserProfileDto statisticsDto)
         {
-            if (statisticsDto is null)
-            {
-                throw new ArgumentNullException(nameof(statisticsDto));
-            }
-
             var unknownCode = appContext.Languages
                 .AsNoTracking()
                 .First(a => a.Id == statisticsDto.UnknownLanguages.First().Value)
@@ -97,7 +90,7 @@ namespace LinkedLanguages.BL
             }
             else
             {
-                var queryValue = sparqlPairsStatisticsQuery.Execute(knownCode, unknownCode);
+                var queryValue = sparqlPairsStatisticsQuery.Execute(new LanguageCodesDto(knownCode, unknownCode));
                 _ = memoryCache.Set(key, queryValue);
                 return queryValue;
             }

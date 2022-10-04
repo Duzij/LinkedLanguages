@@ -2,6 +2,7 @@
 using LinkedLanguages.BL;
 using LinkedLanguages.BL.Services;
 using LinkedLanguages.BL.SPARQL;
+using LinkedLanguages.BL.SPARQL.Query;
 using LinkedLanguages.BL.User;
 using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
@@ -85,8 +86,8 @@ namespace LinkedLanguages
             _ = services.AddTransient<LanguageFacade>();
             _ = services.AddTransient<WordPairFacade>();
             _ = services.AddTransient<WordPairPump>();
-            _ = services.AddTransient<SparqlPairsQuery>();
-            _ = services.AddTransient<SparqlPairsStatisticsQuery>();
+            _ = services.AddTransient<WordPairsSparqlQuery>();
+            _ = services.AddTransient<PairsStatisticsSparqlQuery>();
 
             _ = services.AddTransient<IEmailSender, EmailSender>();
             _ = services.Configure<AuthMessageSenderOptions>(Configuration);

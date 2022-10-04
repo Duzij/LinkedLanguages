@@ -1,6 +1,6 @@
 ﻿using LinkedLanguages.BL;
 using LinkedLanguages.BL.Services;
-using LinkedLanguages.BL.SPARQL;
+using LinkedLanguages.BL.SPARQL.Query;
 using LinkedLanguages.BL.User;
 using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
@@ -47,7 +47,7 @@ namespace LinkedLanguages.Tests.UseCasesTests
             _ = appUserProvider.Setup(a => a.GetUserId()).Returns(TestUserId);
             var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, appUserProvider.Object);
 
-            var wordPairPump = new WordPairPump(new SparqlPairsQuery(GetMoqOptions()), GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
+            var wordPairPump = new WordPairPump(new WordPairsSparqlQuery(GetMoqOptions()), GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
 
             await wordPairPump.Pump("eng", "lat");
 
@@ -62,7 +62,7 @@ namespace LinkedLanguages.Tests.UseCasesTests
             var appUserProvider = new Mock<IAppUserProvider>();
             var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, appUserProvider.Object);
 
-            var wordPairPump = new WordPairPump(new SparqlPairsQuery(GetMoqOptions()), GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
+            var wordPairPump = new WordPairPump(new WordPairsSparqlQuery(GetMoqOptions()), GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
             await wordPairPump.Pump("eng", "lat");
 
             Assert.That(dbContext.WordPairs.Count(), Is.EqualTo(3));
@@ -89,7 +89,7 @@ namespace LinkedLanguages.Tests.UseCasesTests
             var appUserProvider = new Mock<IAppUserProvider>();
             var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, appUserProvider.Object);
 
-            var wordPairPump = new WordPairPump(new SparqlPairsQuery(GetMoqOptions()), GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
+            var wordPairPump = new WordPairPump(new WordPairsSparqlQuery(GetMoqOptions()), GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
             await wordPairPump.Pump("eng", "lat");
 
             Assert.That(dbContext.WordPairs.Count(), Is.EqualTo(3));

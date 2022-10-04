@@ -1,4 +1,4 @@
-﻿using LinkedLanguages.BL.SPARQL;
+﻿using LinkedLanguages.BL.SPARQL.Query;
 using LinkedLanguages.DAL;
 using LinkedLanguages.Tests.Helpers;
 
@@ -11,18 +11,18 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
 {
     public class TransliterationTests
     {
-        private SparqlPairsQuery sparqlQuery;
+        private WordPairsSparqlQuery sparqlQuery;
 
         [SetUp]
         public void Setup()
         {
-            sparqlQuery = new SparqlPairsQuery(TestServices.GetMoqOptions());
+            sparqlQuery = new WordPairsSparqlQuery(TestServices.GetMoqOptions());
         }
 
         [Test]
         public void TransliterationToAsciiTest()
         {
-            var results = sparqlQuery.Execute("eng", LanguageSeed.EnglishLanguageId, "rus", LanguageSeed.RussianLangaugeId, 1, 100);
+            var results = sparqlQuery.Execute(new WordPairParameterDto("eng", LanguageSeed.EnglishLanguageId, "rus", LanguageSeed.RussianLangaugeId, 1, 100));
 
             Console.WriteLine("Before normalization");
 

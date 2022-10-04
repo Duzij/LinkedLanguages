@@ -1,6 +1,6 @@
 ﻿using LinkedLanguages.BL;
 using LinkedLanguages.BL.Services;
-using LinkedLanguages.BL.SPARQL;
+using LinkedLanguages.BL.SPARQL.Query;
 using LinkedLanguages.BL.User;
 using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
@@ -79,7 +79,7 @@ namespace LinkedLanguages.Tests.UseCasesTests
 
             var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, appUserProvider.Object);
 
-            var wordPairPump = new WordPairPump(new SparqlPairsQuery(GetMoqOptions()), GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
+            var wordPairPump = new WordPairPump(new WordPairsSparqlQuery(GetMoqOptions()), GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
 
             var facade = new WordPairFacade(dbContext, wordPairPump, appUserProvider.Object, unusedUserWordPairsQuery);
 

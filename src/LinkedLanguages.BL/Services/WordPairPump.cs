@@ -1,4 +1,4 @@
-﻿using LinkedLanguages.BL.SPARQL;
+﻿using LinkedLanguages.BL.SPARQL.Query;
 using LinkedLanguages.DAL;
 
 using Microsoft.Extensions.Caching.Memory;
@@ -10,12 +10,12 @@ namespace LinkedLanguages.BL.Services
 {
     public class WordPairPump
     {
-        private readonly SparqlPairsQuery pairsQuery;
+        private readonly WordPairsSparqlQuery pairsQuery;
         private readonly IMemoryCache memoryCache;
         private readonly UnusedUserWordPairsQuery unusedUserWordPairs;
         private readonly ApplicationDbContext dbContext;
 
-        public WordPairPump(SparqlPairsQuery pairsQuery,
+        public WordPairPump(WordPairsSparqlQuery pairsQuery,
                             IMemoryCache memoryCache,
                             UnusedUserWordPairsQuery unusedUserWordPairs,
                             ApplicationDbContext dbContext)
@@ -51,7 +51,7 @@ namespace LinkedLanguages.BL.Services
                 _ = memoryCache.TryGetValue("offset", out int offset);
                 _ = memoryCache.Set("offset", offset + 1);
 
-                var results = pairsQuery.Execute(knownLangCode, knownLangugageId, unknownLangCode, unknownLangugageId, offset, 3);
+                var results = pairsQuery.Execute(new WordPairParameterDto(knownLangCode, knownLangugageId, unknownLangCode, unknownLangugageId, offset, 3));
 
                 //Add new words to database
                 await dbContext.WordPairs.AddRangeAsync(results);
