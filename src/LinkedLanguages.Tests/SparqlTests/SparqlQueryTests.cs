@@ -25,6 +25,14 @@ namespace LinkedLanguages.Tests.SparqlTests
         {
             var results = sparqlQuery.Execute("eng", LanguageSeed.EnglishLanguageId, "lat", LanguageSeed.LatinLanguageId, 0, 10);
             Assert.That(results.Count, Is.EqualTo(10));
+            Assert.That(results.FirstOrDefault().KnownWordUri, Is.Not.Null);
+            Assert.That(results.FirstOrDefault().UnknownWordUri, Is.Not.Null);
+
+            Assert.That(results.FirstOrDefault().KnownLanguageCode, Is.Not.Null);
+            Assert.That(results.FirstOrDefault().UnknownLanguageCode, Is.Not.Null);
+
+            Assert.That(results.FirstOrDefault().KnownWord, Is.Not.Null);
+            Assert.That(results.FirstOrDefault().UnknownWord, Is.Not.Null);
         }
 
         [Test]
@@ -41,7 +49,7 @@ namespace LinkedLanguages.Tests.SparqlTests
         public void GetCount()
         {
             var result = statisticsQuery.Execute("eng", "lat");
-            Assert.That(result, Is.EqualTo(8038));
+            Assert.That(result, Is.EqualTo(23753));
         }
     }
 }

@@ -67,7 +67,7 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
             }
         }
 
-        [Test]
+        [Ignore("Takes up to 30 min")]
         public void OnlyDifferencesAppear()
         {
             var sparqlQuery = new SparqlPairsQuery(TestServices.GetMoqOptions());

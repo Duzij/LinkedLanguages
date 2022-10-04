@@ -36,7 +36,7 @@ namespace LinkedLanguages.Tests.UseCasesTests
                         UnknownLanguageId = LanguageSeed.LatinLanguageId,
                         KnownWord = "testEnglish",
                         UnknownWord = "testLatin",
-                        KnownLanguage = "eng",
+                        KnownLanguageCode = "eng",
                         UnknownLanguageCode = "lat"
                     },
                 };

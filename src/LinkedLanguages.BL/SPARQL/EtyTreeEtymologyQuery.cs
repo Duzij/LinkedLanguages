@@ -12,34 +12,42 @@ namespace LinkedLanguages.BL.SPARQL
         {
             return @"
              WHERE {
-            {   ?name a ety:EtymologyEntry;
-                ety:etymologicallyRelatedTo ?x;
+            {   ?myWord a ety:EtymologyEntry;
+                ety:etymologicallyRelatedTo ?foreignWord;
                 rdf:label ?myLanguageLabel .
-                ?x rdf:label ?foreignWordLabel
+
+                ?foreignWord rdf:label ?foreignWordLabel
+
                 FILTER langMatches(lang(?myLanguageLabel), @myLang)
                 FILTER langMatches(lang(?foreignWordLabel), @forLang)
             }
                 UNION
-            {   ?name a ety:EtymologyEntry;
-                ety:etymologicallyDerivesFrom ?x;
+            {   ?myWord a ety:EtymologyEntry;
+                ety:etymologicallyDerivesFrom ?foreignWord;
                 rdf:label ?myLanguageLabel .
-                ?x rdf:label ?foreignWordLabel
+
+                ?foreignWord rdf:label ?foreignWordLabel
+
                 FILTER langMatches(lang(?myLanguageLabel), @myLang)
                 FILTER langMatches(lang(?foreignWordLabel), @forLang)
             }
                 UNION
-            {   ?x a ety:EtymologyEntry;
-                ety:etymologicallyRelatedTo ?name;
+            {   ?foreignWord a ety:EtymologyEntry;
+                ety:etymologicallyRelatedTo ?myWord;
                 rdf:label ?foreignWordLabel .
-                ?name rdf:label ?myLanguageLabel
+
+                ?myWord rdf:label ?myLanguageLabel
+
                 FILTER langMatches(lang(?myLanguageLabel), @myLang)
                 FILTER langMatches(lang(?foreignWordLabel), @forLang)
             }
                 UNION
-            {   ?x a ety:EtymologyEntry;
-                ety:etymologicallyDerivesFrom ?name;
+            {   ?foreignWord a ety:EtymologyEntry;
+                ety:etymologicallyDerivesFrom ?myWord;
                 rdf:label ?foreignWordLabel .
-                ?name rdf:label ?myLanguageLabel
+
+                ?myWord rdf:label ?myLanguageLabel
+
                 FILTER langMatches(lang(?myLanguageLabel), @myLang)
                 FILTER langMatches(lang(?foreignWordLabel), @forLang)
             }}";

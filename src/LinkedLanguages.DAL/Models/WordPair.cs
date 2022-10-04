@@ -6,7 +6,7 @@ namespace LinkedLanguages.DAL.Models
     {
         public Guid Id { get; set; }
 
-        public string KnownLanguage { get; set; }
+        public string KnownLanguageCode { get; set; }
         public Guid KnownLanguageId { get; set; }
         public string KnownWord { get; set; }
         public string KnownWordUri { get; set; }

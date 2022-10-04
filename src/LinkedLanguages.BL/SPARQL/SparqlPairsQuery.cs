@@ -36,7 +36,7 @@ namespace LinkedLanguages.BL.SPARQL
             queryString.Namespaces.AddNamespace("ety", new Uri("http://etytree-virtuoso.wmflabs.org/dbnaryetymology#"));
             queryString.Namespaces.AddNamespace("rdf", new Uri("http://www.w3.org/2000/01/rdf-schema#"));
 
-            queryString.CommandText = @"SELECT DISTINCT  ?myLanguageLabel ?myWord ?foreignWord ?foreignWordLabel";
+            queryString.CommandText = @"SELECT DISTINCT ?myLanguageLabel ?myWord ?foreignWord ?foreignWordLabel";
             queryString.CommandText += EtyTreeEtymologyQuery.GetTwoWayLanguageWhereUnionQuery();
 
             queryString.CommandText += $"LIMIT {itemsOnPage} OFFSET {page * itemsOnPage}";
@@ -57,14 +57,13 @@ namespace LinkedLanguages.BL.SPARQL
                     var furi = t.GetLiteral("foreignWord");
                     var muri = t.GetLiteral("myWord");
 
-
                     results.Add(new WordPair()
                     {
                         Id = Guid.NewGuid(),
                         KnownWord = mw,
                         UnknownWord = fw,
                         KnownLanguageId = knownLangId,
-                        KnownLanguage = knownCode,
+                        KnownLanguageCode = knownCode,
                         UnknownLanguageId = unknownLangId,
                         UnknownLanguageCode = unknownLangCode,
                         KnownWordUri = muri,

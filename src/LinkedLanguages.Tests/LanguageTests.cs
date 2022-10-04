@@ -1,6 +1,6 @@
 ﻿using LinkedLanguages.BL.Languages;
 using LinkedLanguages.DAL;
-
+using LinkedLanguages.Resources;
 using NUnit.Framework;
 
 using System;
@@ -171,7 +171,7 @@ namespace LinkedLanguages.Tests
             {
                 const string separator = "|";
 
-                var stream = typeof(LanguageTests).GetTypeInfo().Assembly.GetManifestResourceStream("LinkedLanguages.Tests.ISO-639-2_utf-8.txt");
+                var stream = typeof(Resource).GetTypeInfo().Assembly.GetManifestResourceStream("LinkedLanguages.Resources.ISO-639-2_utf-8.txt");
                 using (var reader = new StreamReader(stream))
                 {
                     while (!reader.EndOfStream)

@@ -16,6 +16,7 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
             {
                 KnownWord = wordPair.KnownWord.ToLowerInvariant().Trim(),
                 UnknownWord = wordPair.UnknownWord.ToLowerInvariant().Trim(),
+                UnknownWordUri = wordPair.UnknownWordUri.ToLowerInvariant().Trim(),
             };
 
             if (wordPair.UnknownWord is not null && wordPair.KnownWord is not null)
@@ -30,6 +31,7 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
             {
                 KnownWord = wrapper.WordPair.KnownWord.ToLowerInvariant().Trim(),
                 UnknownWord = wrapper.WordPair.UnknownWord.ToLowerInvariant().Trim(),
+                UnknownWordUri = wrapper.WordPair.UnknownWordUri.ToLowerInvariant().Trim(),
             };
 
             if (wrapper.WordPair.UnknownWord is not null && wrapper.WordPair.KnownWord is not null)
@@ -40,7 +42,7 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
 
         public override string ToString()
         {
-            return $"KnownWord: {WordPair.KnownWord}, UnknownWord: {WordPair.UnknownWord}, Distance: {Distance}";
+            return $"KnownWord: {WordPair.KnownWord}, UnknownWord: {WordPair.UnknownWord}({WordPair.UnknownWordUri}), Distance: {Distance}";
         }
 
         public  string ToStringWithoutDistanceInfo()

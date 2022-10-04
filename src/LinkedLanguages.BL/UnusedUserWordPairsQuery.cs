@@ -30,12 +30,12 @@ namespace LinkedLanguages.BL
         {
             var userWordPairIds = appDbContext.WordPairToApplicationUsers
               .Where(wp => wp.WordPair.UnknownLanguageCode == unknownLanguageCode)
-              .Where(wp => wp.WordPair.KnownLanguage == knownLanguageCode)
+              .Where(wp => wp.WordPair.KnownLanguageCode == knownLanguageCode)
               .Where(wp => wp.ApplicationUserId == appUserProvider.GetUserId());
 
             return appDbContext.WordPairs
                 .Where(wp => wp.UnknownLanguageCode == unknownLanguageCode)
-                .Where(wp => wp.KnownLanguage == knownLanguageCode)
+                .Where(wp => wp.KnownLanguageCode == knownLanguageCode)
                 .Where(uwp => !userWordPairIds.Select(uwp => uwp.WordPairId).Contains(uwp.Id));
         }
     }
