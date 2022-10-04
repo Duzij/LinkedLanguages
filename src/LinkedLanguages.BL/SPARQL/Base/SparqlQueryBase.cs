@@ -31,7 +31,7 @@ namespace LinkedLanguages.BL.SPARQL.Base
             queryString.Namespaces.AddNamespace("skos", new Uri("http://www.w3.org/2004/02/skos/core#"));
             queryString.Namespaces.AddNamespace("kaiko", new Uri("http://kaiko.getalp.org/dbnary#"));
             queryString.Namespaces.AddNamespace("ety", new Uri("http://etytree-virtuoso.wmflabs.org/dbnaryetymology#"));
-            queryString.Namespaces.AddNamespace("rdf", new Uri("http://www.w3.org/2000/01/rdf-schema#"));
+            queryString.Namespaces.AddNamespace("rdf", new Uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#"));
 
             SetQueryParams(queryString, param);
 
