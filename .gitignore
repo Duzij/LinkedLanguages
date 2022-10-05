@@ -36,3 +36,4 @@ msbuild.wrn
 # Visual Studio 2015
 .vs/
 /src/ClientApp/node_modules
+/src/LinkedLanguages/ClientApp/node_modules
