@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Hosting;
-
-[assembly: HostingStartup(typeof(LinkedLanguages.Areas.Identity.IdentityHostingStartup))]
-namespace LinkedLanguages.Areas.Identity
+﻿[assembly: HostingStartup(typeof(LinkedLanguages.Web.Areas.Identity.IdentityHostingStartup))]
+namespace LinkedLanguages.Web.Areas.Identity
 {
     public class IdentityHostingStartup : IHostingStartup
     {
         public void Configure(IWebHostBuilder builder)
         {
-            _ = builder.ConfigureServices((context, services) =>
+            builder.ConfigureServices((context, services) =>
             {
             });
         }

@@ -2,16 +2,14 @@
 using LinkedLanguages.BL.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace LinkedLanguages.Controllers
+namespace LinkedLanguages.Web.Controllers
 {
     [Authorize]
     [ApiController]
     [Route("languages")]
+    [Consumes("application/json")]
+    [Produces("application/json")]
     public class LanguagesController : ControllerBase
     {
         private readonly LanguageFacade languageFacade;

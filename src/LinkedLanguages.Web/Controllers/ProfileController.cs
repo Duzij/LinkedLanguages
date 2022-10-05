@@ -3,10 +3,8 @@ using LinkedLanguages.BL.DTO;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
-namespace LinkedLanguages.Controllers
+namespace LinkedLanguages.Web.Controllers
 {
     [Authorize]
     [ApiController]

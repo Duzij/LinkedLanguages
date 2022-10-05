@@ -1,6 +1,6 @@
 {
-  "short_name": "LinkedLanguages",
-  "name": "LinkedLanguages",
+  "short_name": "LinkedLanguages.Web",
+  "name": "LinkedLanguages.Web",
   "icons": [
     {
       "src": "favicon.ico",

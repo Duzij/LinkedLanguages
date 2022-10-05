@@ -12,12 +12,12 @@ window.fetch = () => {
     {
       ok: true,
       json: () => Promise.resolve({
-        "authority": "https://localhost:5001",
-        "client_id": "LinkedLanguages",
-        "redirect_uri": "https://localhost:5001/authentication/login-callback",
-        "post_logout_redirect_uri": "https://localhost:5001/authentication/logout-callback",
+        "authority": "https://localhost:7238",
+        "client_id": "LinkedLanguages.Web",
+        "redirect_uri": "https://localhost:7238/authentication/login-callback",
+        "post_logout_redirect_uri": "https://localhost:7238/authentication/logout-callback",
         "response_type": "id_token token",
-        "scope": "LinkedLanguagesAPI openid profile"
+        "scope": "LinkedLanguages.WebAPI openid profile"
      })
     });
 };

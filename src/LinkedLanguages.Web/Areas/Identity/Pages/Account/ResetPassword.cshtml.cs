@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LinkedLanguages.Areas.Identity.Pages.Account
+namespace LinkedLanguages.Web.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class ResetPasswordModel : PageModel

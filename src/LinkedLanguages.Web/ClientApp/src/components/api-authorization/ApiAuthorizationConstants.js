@@ -1,4 +1,4 @@
-export const ApplicationName = 'LinkedLanguages';
+export const ApplicationName = 'LinkedLanguages.Web';
 
 export const QueryParameterNames = {
   ReturnUrl: 'returnUrl',

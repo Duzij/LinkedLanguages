@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LinkedLanguages.Areas.Identity.Pages.Account
+namespace LinkedLanguages.Web.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class ConfirmEmailChangeModel : PageModel

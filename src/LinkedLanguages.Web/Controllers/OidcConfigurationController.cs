@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
-namespace LinkedLanguages.Controllers
+namespace LinkedLanguages.Web.Controllers
 {
     public class OidcConfigurationController : Controller
     {
         private readonly ILogger<OidcConfigurationController> _logger;
 
-        public OidcConfigurationController(IClientRequestParametersProvider clientRequestParametersProvider, ILogger<OidcConfigurationController> logger)
+        public OidcConfigurationController(
+            IClientRequestParametersProvider clientRequestParametersProvider,
+            ILogger<OidcConfigurationController> logger)
         {
             ClientRequestParametersProvider = clientRequestParametersProvider;
             _logger = logger;
