@@ -91,7 +91,7 @@ namespace LinkedLanguages.BL
             else
             {
                 var queryValue = sparqlPairsStatisticsQuery.Execute(new LanguageCodesDto(knownCode, unknownCode));
-                _ = memoryCache.Set(key, queryValue);
+                memoryCache.Set(key, queryValue);
                 return queryValue;
             }
         }
@@ -121,7 +121,7 @@ namespace LinkedLanguages.BL
 
                 foreach (var lang in userProfile.KnownLanguages)
                 {
-                    _ = await appContext.KnownLanguageToUsers
+                    await appContext.KnownLanguageToUsers
                         .AddAsync(new DAL.Models.KnownLanguageToUser()
                         {
                             ApplicationUserId = userId,
@@ -131,14 +131,14 @@ namespace LinkedLanguages.BL
 
                 foreach (var lang in userProfile.UnknownLanguages)
                 {
-                    _ = await appContext.UnknownLanguageToUsers
+                    await appContext.UnknownLanguageToUsers
                         .AddAsync(new DAL.Models.UnknownLanguageToUser()
                         {
                             ApplicationUserId = userId,
                             LanguageId = lang.Value
                         });
                 }
-                _ = await appContext.SaveChangesAsync();
+                await appContext.SaveChangesAsync();
             }
         }
     }

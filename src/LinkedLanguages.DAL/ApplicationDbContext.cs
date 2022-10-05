@@ -22,11 +22,11 @@ namespace LinkedLanguages.DAL
 
         public DbSet<WordPair> WordPairs { get; set; }
         public DbSet<WordPairToApplicationUser> WordPairToApplicationUsers { get; set; }
-
+        public DbSet<LanguagePageNumber> LanguageOffsets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            _ = builder.Entity<Language>().HasData(LanguageSeed.GetStaticLanguages());
+            builder.Entity<Language>().HasData(LanguageSeed.GetStaticLanguages());
             base.OnModelCreating(builder);
         }
     }

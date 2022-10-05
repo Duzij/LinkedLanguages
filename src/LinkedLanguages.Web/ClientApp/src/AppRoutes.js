@@ -2,6 +2,7 @@ import ApiAuthorzationRoutes from './components/api-authorization/ApiAuthorizati
 import { Learn } from "./components/Learn";
 import { Setup } from "./components/Setup";
 import { Home } from "./components/Home";
+import { Test } from './components/Test';
 
 const AppRoutes = [
   {
@@ -12,6 +13,11 @@ const AppRoutes = [
     path: '/learn',
     requireAuth: true,
     element: <Learn />
+  },
+  {
+    path: '/test',
+    requireAuth: true,
+    element: <Test />
   },
   {
     path: '/setup',

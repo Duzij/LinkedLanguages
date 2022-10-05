@@ -1,6 +1,6 @@
 ﻿using LinkedLanguages.BL.SPARQL.Query;
 using LinkedLanguages.DAL;
-
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
 using System.Linq;
@@ -48,14 +48,18 @@ namespace LinkedLanguages.BL.Services
             if (!remainingUnusedWords.Any())
             {
                 //Offset will have to be reparated per language
-                _ = memoryCache.TryGetValue("offset", out int offset);
-                _ = memoryCache.Set("offset", offset + 1);
-
-                var results = pairsQuery.Execute(new WordPairParameterDto(knownLangCode, knownLangugageId, unknownLangCode, unknownLangugageId, offset, 3));
+                var key = $"{knownLangCode}-{unknownLangCode}";
+                var offset = await dbContext.LanguageOffsets.FirstOrDefaultAsync(a => a.Key == key);
+                int pageNumber = offset.PageNumer;
+                if (offset == null)
+                {
+                    await dbContext.LanguageOffsets.AddAsync(new DAL.Models.LanguagePageNumber() { Key = key, PageNumer = 1 });
+                }
+                var results = pairsQuery.Execute(new WordPairParameterDto(knownLangCode, knownLangugageId, unknownLangCode, unknownLangugageId, pageNumber, 3));
 
                 //Add new words to database
                 await dbContext.WordPairs.AddRangeAsync(results);
-                _ = await dbContext.SaveChangesAsync();
+                await dbContext.SaveChangesAsync();
             }
 
         }

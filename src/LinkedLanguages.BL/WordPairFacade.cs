@@ -58,8 +58,8 @@ namespace LinkedLanguages.BL
                 WordPairId = wordPairId
             };
 
-            _ = await dbContext.WordPairToApplicationUsers.AddAsync(wp);
-            _ = await dbContext.SaveChangesAsync();
+            await dbContext.WordPairToApplicationUsers.AddAsync(wp);
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task Reject(Guid wordPairId)
@@ -72,8 +72,8 @@ namespace LinkedLanguages.BL
                 Rejected = true
             };
 
-            _ = await dbContext.WordPairToApplicationUsers.AddAsync(wp);
-            _ = await dbContext.SaveChangesAsync();
+            await dbContext.WordPairToApplicationUsers.AddAsync(wp);
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task<WordPairDto> GetTestWordPair(Guid unknownLangId)

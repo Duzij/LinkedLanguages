@@ -25,7 +25,7 @@ namespace LinkedLanguages.Controllers
             this.testWordPairFacade = testWordPairFacade;
         }
 
-        [HttpGet("get/test/{languageId}")]
+        [HttpGet("get/{languageId}")]
         public async Task<IActionResult> SubmitTestWordPair(Guid wordPairId, string submitedWord)
         {
             try

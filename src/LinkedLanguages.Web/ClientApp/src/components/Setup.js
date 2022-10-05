@@ -55,27 +55,23 @@ export class Setup extends Component {
                         </div>
                     </div>
                     <div className="d-flex justify-content-center">
-                        <div className='d-flex flex-column m-3 justify-content-end'>
+                        <div className='d-flex flex-column m-5 justify-content-end'>
                             <label>Known languages</label>
                             <Select makeAnimated={animated}
-                                //isMulti uncomment when ready for multilanguage support
-                                //className="basic-multi-select"
                                 className="basic-select"
                                 value={this.state.profile.knownLanguages}
                                 onChange={handleKnownChange}
                                 options={this.state.languages}
                                 classNamePrefix="select" />
                         </div>
-                        <div className='d-flex flex-column m-3 justify-content-start'>
-                        <label>Unknown languages</label>
-                        <Select makeAnimated={animated}
-                            //isMulti uncomment when ready for multilanguage support
-                            //className="basic-multi-select"
-                            className="basic-select"
-                            value={this.state.profile.unknownLanguages}
-                            onChange={handleUnknownChange}
-                            options={this.state.languages}
-                            classNamePrefix="select" />
+                        <div className='d-flex flex-column m-5 justify-content-start'>
+                            <label>Unknown languages</label>
+                            <Select makeAnimated={animated}
+                                className="basic-select"
+                                value={this.state.profile.unknownLanguages}
+                                onChange={handleUnknownChange}
+                                options={this.state.languages}
+                                classNamePrefix="select" />
                         </div>
                     </div>
                     <div className='form-group col-md-12'>
