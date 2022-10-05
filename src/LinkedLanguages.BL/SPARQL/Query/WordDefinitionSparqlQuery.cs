@@ -1,7 +1,5 @@
 ﻿using LinkedLanguages.BL.SPARQL.Base;
 using Microsoft.Extensions.Options;
-
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query;
@@ -24,13 +22,13 @@ namespace LinkedLanguages.BL.SPARQL.Query
                     OPTIONAL {
                                 ?o lemon:sense ?def .
                                 ?def skos:definition ?defVal .
-                                ?defVal rdf:value ?value .
+                                ?defVal rdfns:value ?value .
                              }
                     OPTIONAL {
                                 ?o kaiko:describes ?o2 .
                                 ?o2 lemon:sense ?def .
                                 ?def skos:definition ?defVal .
-                                ?defVal rdf:value ?value .
+                                ?defVal rdfns:value ?value .
                              }
             }";
 

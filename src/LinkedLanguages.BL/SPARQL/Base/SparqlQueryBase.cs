@@ -22,7 +22,10 @@ namespace LinkedLanguages.BL.SPARQL.Base
 
         public ReturnT Execute(ParamT param)
         {
-            endpoint = new SparqlRemoteEndpoint(options.EndpointUrl);
+            endpoint = new SparqlRemoteEndpoint(options.EndpointUrl)
+            {
+                Timeout = 50000
+            };
 
             SparqlQueryParser parser = new SparqlQueryParser();
             var queryString = new SparqlParameterizedString(CommandText);
@@ -31,14 +34,15 @@ namespace LinkedLanguages.BL.SPARQL.Base
             queryString.Namespaces.AddNamespace("skos", new Uri("http://www.w3.org/2004/02/skos/core#"));
             queryString.Namespaces.AddNamespace("kaiko", new Uri("http://kaiko.getalp.org/dbnary#"));
             queryString.Namespaces.AddNamespace("ety", new Uri("http://etytree-virtuoso.wmflabs.org/dbnaryetymology#"));
-            queryString.Namespaces.AddNamespace("rdf", new Uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#"));
+            queryString.Namespaces.AddNamespace("rdfns", new Uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#"));
+            queryString.Namespaces.AddNamespace("rdf", new Uri("http://www.w3.org/2000/01/rdf-schema#"));
 
             SetQueryParams(queryString, param);
 
             SparqlQuery query = parser.ParseFromString(queryString);
             var resultSet = endpoint.QueryWithResultSet(query.ToString());
 
-            return resultSet is not null ? ParseResult(resultSet, param) : default;
+            return resultSet is not null || !resultSet.IsEmpty ? ParseResult(resultSet, param) : default;
         }
 
     }
