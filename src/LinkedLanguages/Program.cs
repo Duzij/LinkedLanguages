@@ -6,7 +6,9 @@ using LinkedLanguages.BL.User;
 using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
+using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -43,6 +45,14 @@ namespace LinkedLanguages
             {
                 options.Password.RequireNonAlphanumeric = false;
                 options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier;
+            });
+
+            builder.Services.Configure<JwtBearerOptions>(IdentityServerJwtConstants.IdentityServerJwtBearerScheme, options =>
+            {
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                {
+                    ValidIssuers = new string[] { "https://linkedlanguages.azurewebsites.net/" }
+                };
             });
 
             builder.Services.AddControllersWithViews();
