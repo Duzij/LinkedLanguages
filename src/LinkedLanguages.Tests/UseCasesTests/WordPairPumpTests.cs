@@ -4,7 +4,6 @@ using LinkedLanguages.BL.SPARQL.Query;
 using LinkedLanguages.BL.User;
 using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
-
 using Moq;
 
 using NUnit.Framework;
@@ -21,12 +20,16 @@ namespace LinkedLanguages.Tests.UseCasesTests
 
     public class WordPairPumpTests
     {
+        private ApplicationDbContext dbContext;
+        private Mock<IAppUserProvider> appUserProvider;
+        private ApprovedWordPairsQuery approvedQuery;
+
         public Guid TestUserId { get; set; } = Guid.Parse("52d742a9-9240-4542-bdfa-64bfe3f979b9");
 
-        [Test]
-        public async Task PumpNotPerformedIfNotNeeded()
+        [SetUp]
+        public void Setup()
         {
-            using var dbContext = GetNewTestDbContext();
+            dbContext = GetNewTestDbContext();
             var wordPairs = new List<WordPair>
                 {
                     new WordPair {
@@ -42,25 +45,27 @@ namespace LinkedLanguages.Tests.UseCasesTests
 
             dbContext.WordPairs.AddRange(wordPairs);
             _ = dbContext.SaveChanges();
-
-            var appUserProvider = new Mock<IAppUserProvider>();
+            appUserProvider = new Mock<IAppUserProvider>();
             _ = appUserProvider.Setup(a => a.GetUserId()).Returns(TestUserId);
-            var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, appUserProvider.Object);
+            approvedQuery = new ApprovedWordPairsQuery(dbContext, appUserProvider.Object);
+        }
+
+        [Test]
+        public async Task PumpNotPerformedIfNotNeeded()
+        {
+            var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, approvedQuery);
 
             var wordPairPump = new WordPairPump(new WordPairsSparqlQuery(GetMoqOptions()), GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
 
             await wordPairPump.Pump("eng", "lat");
 
             Assert.That(dbContext.WordPairs.Count(), Is.EqualTo(1));
-
         }
 
         [Test]
         public async Task PumpPerformedWhenDbEmpty()
         {
-            using var dbContext = GetNewTestDbContext();
-            var appUserProvider = new Mock<IAppUserProvider>();
-            var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, appUserProvider.Object);
+            var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, approvedQuery);
 
             var wordPairPump = new WordPairPump(new WordPairsSparqlQuery(GetMoqOptions()), GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
             await wordPairPump.Pump("eng", "lat");
@@ -71,23 +76,8 @@ namespace LinkedLanguages.Tests.UseCasesTests
         [Test]
         public async Task PumpPerformedWhenAllWordsRejected()
         {
-            using var dbContext = GetNewTestDbContext();
-            var wordPairsToAppUser = new List<WordPairToApplicationUser>
-                {
-                    new()
-                    {
-                        Id = Guid.NewGuid(),
-                        ApplicationUserId = TestUserId,
-                        Rejected = true,
-                        WordPairId = Guid.NewGuid()
-                    },
-                };
-
-            dbContext.WordPairToApplicationUsers.AddRange(wordPairsToAppUser);
-            _ = dbContext.SaveChanges();
-
             var appUserProvider = new Mock<IAppUserProvider>();
-            var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, appUserProvider.Object);
+            var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, approvedQuery);
 
             var wordPairPump = new WordPairPump(new WordPairsSparqlQuery(GetMoqOptions()), GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
             await wordPairPump.Pump("eng", "lat");

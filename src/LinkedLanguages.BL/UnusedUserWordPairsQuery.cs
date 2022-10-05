@@ -1,5 +1,4 @@
-﻿using LinkedLanguages.BL.User;
-using LinkedLanguages.DAL;
+﻿using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
 
 using System;
@@ -10,12 +9,12 @@ namespace LinkedLanguages.BL
     public class UnusedUserWordPairsQuery
     {
         private readonly ApplicationDbContext appDbContext;
-        private readonly IAppUserProvider appUserProvider;
+        private readonly ApprovedWordPairsQuery approvedWordPairs;
 
-        public UnusedUserWordPairsQuery(ApplicationDbContext appDbContext, IAppUserProvider appUserProvider)
+        public UnusedUserWordPairsQuery(ApplicationDbContext appDbContext, ApprovedWordPairsQuery approvedWordPairs)
         {
             this.appDbContext = appDbContext;
-            this.appUserProvider = appUserProvider;
+            this.approvedWordPairs = approvedWordPairs;
         }
 
         /// <summary>
@@ -25,15 +24,12 @@ namespace LinkedLanguages.BL
         /// <returns></returns>
         public IQueryable<WordPair> GetQueryable(string knownLanguageCode, string unknownLanguageCode)
         {
-            var userWordPairIds = appDbContext.WordPairToApplicationUsers
-              .Where(wp => wp.WordPair.UnknownLanguageCode == unknownLanguageCode)
-              .Where(wp => wp.WordPair.KnownLanguageCode == knownLanguageCode)
-              .Where(wp => wp.ApplicationUserId == appUserProvider.GetUserId());
+            var userWordPairIds = approvedWordPairs.GetQueryable(knownLanguageCode, unknownLanguageCode).Select(a => a.Id);
 
             return appDbContext.WordPairs
                 .Where(wp => wp.UnknownLanguageCode == unknownLanguageCode)
                 .Where(wp => wp.KnownLanguageCode == knownLanguageCode)
-                .Where(uwp => !userWordPairIds.Select(uwp => uwp.WordPairId).Contains(uwp.Id));
+                .Where(uwp => !userWordPairIds.Contains(uwp.Id));
         }
     }
 }

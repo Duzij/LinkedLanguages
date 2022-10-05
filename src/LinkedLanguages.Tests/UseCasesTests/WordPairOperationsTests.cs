@@ -20,10 +20,14 @@ namespace LinkedLanguages.Tests.UseCasesTests
 {
     public class WordPairOperationsTests
     {
-        [Test]
-        public void UnusedUserWordPairsQuery()
+        private Mock<IAppUserProvider> appUserProvider;
+        private ApplicationDbContext dbContext;
+        private ApprovedWordPairsQuery approvedWordPairsQuery;
+
+        [SetUp]
+        public void Setup()
         {
-            using var dbContext = GetNewTestDbContext();
+            dbContext = GetNewTestDbContext();
             var wpId = Guid.NewGuid();
 
             var wordPairs = new List<WordPair>
@@ -51,13 +55,27 @@ namespace LinkedLanguages.Tests.UseCasesTests
 
             dbContext.WordPairToApplicationUsers.AddRange(usedWordPairs);
             dbContext.WordPairs.AddRange(wordPairs);
-            _ = dbContext.SaveChanges();
+            dbContext.SaveChanges();
 
-            var appUserProvider = new Mock<IAppUserProvider>();
-            _ = appUserProvider.Setup(a => a.GetUserId()).Returns(GetUserId);
-            _ = appUserProvider.Setup(a => a.GetUserKnownLanguage()).Returns("eng");
+            appUserProvider = new Mock<IAppUserProvider>();
+            appUserProvider.Setup(a => a.GetUserId()).Returns(GetUserId);
+            appUserProvider.Setup(a => a.GetUserKnownLanguage()).Returns("eng");
+        }
 
-            var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, appUserProvider.Object);
+
+        [Test]
+        public void ApprovedUserWordPairsQuery()
+        {
+            approvedWordPairsQuery = new ApprovedWordPairsQuery(dbContext, appUserProvider.Object);
+
+            var unusedUserWordPairs = approvedWordPairsQuery.GetQueryable("eng", "lat").ToList();
+            Assert.That(unusedUserWordPairs.Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void UnusedUserWordPairsQuery()
+        {
+            var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, approvedWordPairsQuery);
 
             var unusedUserWordPairs = unusedUserWordPairsQuery.GetQueryable("eng", "lat").ToList();
             Assert.That(unusedUserWordPairs.Count, Is.EqualTo(0));
@@ -72,17 +90,11 @@ namespace LinkedLanguages.Tests.UseCasesTests
         [Test]
         public async Task ApproveThreeWordPair()
         {
-            using var dbContext = GetNewTestDbContext();
-            var appUserProvider = new Mock<IAppUserProvider>();
-            _ = appUserProvider.Setup(a => a.GetUserId()).Returns(GetUserId);
-            _ = appUserProvider.Setup(a => a.GetUserKnownLanguage()).Returns("eng");
-
-            var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, appUserProvider.Object);
+            var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, approvedWordPairsQuery);
 
             var wordPairPump = new WordPairPump(new WordPairsSparqlQuery(GetMoqOptions()), GetMemoryCache(), unusedUserWordPairsQuery, dbContext);
 
-            var facade = new WordPairFacade(dbContext, wordPairPump, appUserProvider.Object, unusedUserWordPairsQuery);
-
+            var facade = new WordPairFacade(dbContext, wordPairPump, appUserProvider.Object, unusedUserWordPairsQuery, approvedWordPairsQuery);
 
             var firstWordPair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
             Assert.NotNull(firstWordPair);
@@ -101,7 +113,6 @@ namespace LinkedLanguages.Tests.UseCasesTests
             await facade.Approve(forthWordPair.Id);
 
             Assert.That(dbContext.WordPairs.Count(), Is.EqualTo(6));
-
         }
     }
 }

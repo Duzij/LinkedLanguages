@@ -9,11 +9,11 @@ using System.Reflection;
 
 namespace LinkedLanguages.Tests
 {
-    public class LanguageTests
+    public class LanguageGeneratorTests
     {
         public string[] EtyTteeLangs { get; }
 
-        public LanguageTests()
+        public LanguageGeneratorTests()
         {
             EtyTteeLangs = new string[]
             {
@@ -200,8 +200,6 @@ namespace LinkedLanguages.Tests
                     Console.WriteLine($"{item}: NOT FOUND");
                 }
             }
-
-
         }
 
     }

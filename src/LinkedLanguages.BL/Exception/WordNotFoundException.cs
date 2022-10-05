@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace LinkedLanguages.BL
+namespace LinkedLanguages.BL.Exception
 {
     [Serializable]
-    public class WordNotFoundException : Exception
+    public class WordNotFoundException : System.Exception
     {
         public WordNotFoundException()
         {
@@ -14,7 +14,7 @@ namespace LinkedLanguages.BL
         {
         }
 
-        public WordNotFoundException(string message, Exception innerException) : base(message, innerException)
+        public WordNotFoundException(string message, System.Exception innerException) : base(message, innerException)
         {
         }
 

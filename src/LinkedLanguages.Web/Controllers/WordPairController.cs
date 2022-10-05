@@ -1,5 +1,5 @@
 ﻿using LinkedLanguages.BL;
-
+using LinkedLanguages.BL.Exception;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -23,6 +23,20 @@ namespace LinkedLanguages.Controllers
         {
             this.logger = logger;
             this.wordPairFacade = wordPairFacade;
+        }
+
+        [HttpGet("get/test/{languageId}")]
+        public async Task<IActionResult> GetTestWordPair(Guid languageId)
+        {
+            try
+            {
+                var word = await wordPairFacade.GetTestWordPair(languageId);
+                return Ok(word);
+            }
+            catch (WordNotFoundException)
+            {
+                return NotFound("Word does not exist.");
+            }
         }
 
         [HttpGet("get/{languageId}")]
