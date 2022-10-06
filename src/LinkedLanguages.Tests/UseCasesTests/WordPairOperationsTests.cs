@@ -25,6 +25,7 @@ namespace LinkedLanguages.Tests.UseCasesTests
         private Mock<IAppUserProvider> appUserProvider;
         private ApplicationDbContext dbContext;
         private WordPairsUserQuery wordPairsUserQuery;
+        private ApprovedWordPairsQuery approvedUserQuery;
 
         [SetUp]
         public void Setup()
@@ -63,6 +64,7 @@ namespace LinkedLanguages.Tests.UseCasesTests
             appUserProvider.Setup(a => a.GetUserId()).Returns(GetUserId);
             appUserProvider.Setup(a => a.GetUserKnownLanguageCode()).Returns("eng");
             wordPairsUserQuery = new WordPairsUserQuery(dbContext, appUserProvider.Object);
+            approvedUserQuery = new ApprovedWordPairsQuery(wordPairsUserQuery);
         }
 
 
@@ -95,7 +97,7 @@ namespace LinkedLanguages.Tests.UseCasesTests
 
             WordPairPump wordPairPump = new WordPairPump(new WordPairsSparqlQuery(GetMoqOptions()), unusedUserWordPairsQuery, dbContext);
 
-            WordPairFacade facade = new WordPairFacade(dbContext, wordPairPump, appUserProvider.Object, unusedUserWordPairsQuery, wordPairsUserQuery);
+            WordPairFacade facade = new WordPairFacade(dbContext, wordPairPump, appUserProvider.Object, unusedUserWordPairsQuery, approvedUserQuery);
 
             WordPairDto firstWordPair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
             Assert.NotNull(firstWordPair);

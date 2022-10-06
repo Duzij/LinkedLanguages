@@ -1,4 +1,5 @@
 ﻿using LinkedLanguages.BL;
+using LinkedLanguages.BL.DTO;
 using LinkedLanguages.BL.Exception;
 using LinkedLanguages.BL.User;
 using LinkedLanguages.DAL;
@@ -58,23 +59,23 @@ namespace LinkedLanguages.Tests.Facades
             _ = appUserProvider.Setup(a => a.GetUserId()).Returns(GetUserId);
             _ = appUserProvider.Setup(a => a.GetUserKnownLanguageCode()).Returns("eng");
 
-            testWordPairFacade = new TestWordPairFacade(dbContext, appUserProvider.Object);
+            testWordPairFacade = new TestWordPairFacade(dbContext);
         }
 
         [Test]
         public void SubmitWordTestSuccessfully()
         {
-            Assert.DoesNotThrowAsync(async () => await testWordPairFacade.SubmitTestWordPair(wpId, "known"));
-            Assert.DoesNotThrowAsync(async () => await testWordPairFacade.SubmitTestWordPair(wpId, "KNOWN"));
-            Assert.DoesNotThrowAsync(async () => await testWordPairFacade.SubmitTestWordPair(wpId, " kNoWn "));
+            Assert.DoesNotThrow(() => testWordPairFacade.SubmitTestWordPair(new BL.DTO.SubmitWordDto(wpId, "known")));
+            Assert.DoesNotThrow(() => testWordPairFacade.SubmitTestWordPair(new SubmitWordDto(wpId, "KNOWN")));
+            Assert.DoesNotThrow(() => testWordPairFacade.SubmitTestWordPair(new SubmitWordDto(wpId, " kNoWn ")));
         }
 
         [Test]
         public void SubmitWordTestUnsuccessfully()
         {
-            Assert.ThrowsAsync<SubmittedWordIncorrectException>(async () =>
+            Assert.Throws<SubmittedWordIncorrectException>(() =>
             {
-                await testWordPairFacade.SubmitTestWordPair(wpId, "unknow0");
+                testWordPairFacade.SubmitTestWordPair(new SubmitWordDto(wpId, "unknow0"));
             });
 
         }
