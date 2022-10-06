@@ -32,13 +32,13 @@ export class Test extends Component {
             if (response.ok) {
                 return response.json();
             }
-            if (response.status == 401) {
+            if (response.status === 401) {
                 return authService.signIn();
             }
-            if (response.status == 404) {
+            if (response.status === 404) {
                 throw new Error('No word found. You can reset the progress or change your current settings to learn some new words. 👀');
             }
-            else if(response.status != 200){
+            else if(response.status !== 200){
                 console.log(response);
                 throw new Error('Something went wrong');
             }
@@ -97,13 +97,13 @@ export class Test extends Component {
             },
             body: JSON.stringify({wordPairId : this.state.word.id, submitedWord: this.state.submitedWord})
         }).then((response) => {
-            if (response.status == 401) {
+            if (response.status === 401) {
                 return authService.signIn();
             }
-            if (response.status == 404) {
+            if (response.status === 404) {
                 throw new Error('No word found. You can reset the progress or change your current settings to learn some new words. 👀');
             }
-            else if(response.status != 200){
+            else if(response.status !== 200){
                 console.log(response);
                 throw new Error('Something went wrong');
             }
