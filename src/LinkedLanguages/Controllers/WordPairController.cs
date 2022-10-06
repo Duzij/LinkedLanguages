@@ -19,19 +19,6 @@ namespace LinkedLanguages.Controllers
             this.wordPairFacade = wordPairFacade;
         }
 
-        [HttpGet("get/test/{languageId}")]
-        public async Task<IActionResult> GetTestWordPair(Guid languageId)
-        {
-            try
-            {
-                var word = await wordPairFacade.GetTestWordPair(languageId);
-                return Ok(word);
-            }
-            catch (WordNotFoundException)
-            {
-                return NotFound("Word does not exist.");
-            }
-        }
 
         [HttpGet("get/{languageId}")]
         public async Task<IActionResult> GetWordPair(Guid languageId)

@@ -6,6 +6,7 @@ namespace LinkedLanguages.BL.User
     public interface IAppUserProvider
     {
         public Guid GetUserId();
-        string GetUserKnownLanguage();
+        string GetUserKnownLanguageCode();
+        string GetUserUnknownLanguageCode();
     }
 }

@@ -49,7 +49,7 @@ namespace LinkedLanguages.Tests.Helpers
             var dbContext = new ApplicationDbContext(options, operationalStoreOptions);
 
             dbContext.Languages.AddRange(LanguageSeed.GetStaticLanguages());
-            _ = dbContext.SaveChanges();
+            dbContext.SaveChanges();
 
             return dbContext;
         }

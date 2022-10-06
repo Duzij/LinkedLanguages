@@ -1,4 +1,5 @@
 ﻿using LinkedLanguages.BL;
+using LinkedLanguages.BL.DTO;
 using LinkedLanguages.BL.Exception;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,19 +13,36 @@ namespace LinkedLanguages.Controllers
     {
         private readonly ILogger<WordPairController> logger;
         private readonly TestWordPairFacade testWordPairFacade;
+        private readonly WordPairFacade wordPairFacade;
 
-        public TestWordPairController(ILogger<WordPairController> logger, TestWordPairFacade testWordPairFacade)
+        public TestWordPairController(ILogger<WordPairController> logger, TestWordPairFacade testWordPairFacade, WordPairFacade wordPairFacade)
         {
             this.logger = logger;
             this.testWordPairFacade = testWordPairFacade;
+            this.wordPairFacade = wordPairFacade;
         }
 
-        [HttpGet("get/{languageId}")]
-        public async Task<IActionResult> SubmitTestWordPair(Guid wordPairId, string submitedWord)
+
+        [HttpGet()]
+        public async Task<IActionResult> GetTestWordPair()
         {
             try
             {
-                await testWordPairFacade.SubmitTestWordPair(wordPairId, submitedWord);
+                BL.DTO.WordPairDto word = await wordPairFacade.GetTestWordPair();
+                return Ok(word);
+            }
+            catch (WordNotFoundException)
+            {
+                return NotFound("Word does not exist.");
+            }
+        }
+
+        [HttpPost()]
+        public IActionResult SubmitTestWordPair(SubmitWordDto submitWord)
+        {
+            try
+            {
+                testWordPairFacade.SubmitTestWordPair(submitWord);
                 logger.LogInformation("Submitted word is correct.");
                 return Ok();
             }

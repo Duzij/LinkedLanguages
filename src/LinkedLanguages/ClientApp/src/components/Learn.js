@@ -21,9 +21,9 @@ export class Learn extends Component {
         {
             headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
         }).then((response) => {
-            const profile = response.data;
-            console.log(profile);
-            this.setState({ unknownLanguageId: profile.unknownLanguages[0].value }, () => { this.fetchNextWord() });
+            return response.json();
+        }).then((data) => {
+            this.setState({ unknownLanguageId: data.unknownLanguages[0].value }, () => { this.fetchNextWord() });
         }).catch((error) => {
             console.log(error);
         });

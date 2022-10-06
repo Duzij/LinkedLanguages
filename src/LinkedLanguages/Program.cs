@@ -1,4 +1,5 @@
 using LinkedLanguages.BL;
+using LinkedLanguages.BL.Query;
 using LinkedLanguages.BL.Services;
 using LinkedLanguages.BL.SPARQL;
 using LinkedLanguages.BL.SPARQL.Query;
@@ -24,10 +25,10 @@ namespace LinkedLanguages
         public static void Main(string[] args)
         {
 
-            var builder = WebApplication.CreateBuilder(args);
+            WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -66,20 +67,23 @@ namespace LinkedLanguages
             builder.Services.AddTransient<UnusedUserWordPairsQuery>();
             builder.Services.AddTransient<LanguageFacade>();
             builder.Services.AddTransient<WordPairFacade>();
+            builder.Services.AddTransient<TestWordPairFacade>();
             builder.Services.AddTransient<WordPairPump>();
             builder.Services.AddTransient<WordPairsSparqlQuery>();
             builder.Services.AddTransient<PairsStatisticsSparqlQuery>();
+            builder.Services.AddTransient<WordPairsUserQuery>();
             builder.Services.AddTransient<ApprovedWordPairsQuery>();
+            builder.Services.AddTransient<RejectedWordPairsQuery>();
             builder.Services.AddTransient<IEmailSender, EmailSender>();
             builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
             builder.Services.Configure<SparqlEndpointOptions>(builder.Configuration.GetSection("SparqlEndpointOptions"));
             builder.Services.AddApplicationInsightsTelemetry(options: new ApplicationInsightsServiceOptions { ConnectionString = builder.Configuration.GetValue<string>("APPINSIGHTS_CONNECTIONSTRING") });
 
-            var app = builder.Build();
+            WebApplication? app = builder.Build();
 
-            using (var scope = app.Services.CreateScope())
+            using (IServiceScope? scope = app.Services.CreateScope())
             {
-                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                ApplicationDbContext? dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 dbContext.Database.Migrate();
             }
 

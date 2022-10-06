@@ -159,18 +159,18 @@ namespace LinkedLanguages.Tests
             };
         }
 
-        [Test]
+        [Ignore("")]
         public void ReadFromFileTest()
         {
             _ = CultureInfo
                     .GetCultures(CultureTypes.NeutralCultures);
 
-            foreach (var item in EtyTteeLangs)
+            foreach (string item in EtyTteeLangs)
             {
                 const string separator = "|";
 
-                var stream = typeof(Resource).GetTypeInfo().Assembly.GetManifestResourceStream("LinkedLanguages.Resources.ISO-639-2_utf-8.txt");
-                using var reader = new StreamReader(stream);
+                Stream stream = typeof(Resource).GetTypeInfo().Assembly.GetManifestResourceStream("LinkedLanguages.Resources.ISO-639-2_utf-8.txt");
+                using StreamReader reader = new StreamReader(stream);
                 while (!reader.EndOfStream)
                 {
                     string line = reader.ReadLine();
@@ -179,17 +179,17 @@ namespace LinkedLanguages.Tests
 
                     if (item == threeLetterISOCode)
                     {
-                        var thirdSeparator = line.Split(separator);
+                        string[] thirdSeparator = line.Split(separator);
                         Console.WriteLine(thirdSeparator[3]);
                     }
                 }
             }
         }
 
-        [Test]
+        [Ignore("")]
         public void UseCodeGenerator()
         {
-            foreach (var item in EtyTteeLangs)
+            foreach (string item in EtyTteeLangs)
             {
                 if (Enum.TryParse(item, out ISOLanguages _))
                 {

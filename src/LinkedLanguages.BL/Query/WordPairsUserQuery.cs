@@ -3,26 +3,25 @@ using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
 using System.Linq;
 
-namespace LinkedLanguages.BL
+namespace LinkedLanguages.BL.Query
 {
-    public class ApprovedWordPairsQuery
+    public class WordPairsUserQuery
     {
         private readonly ApplicationDbContext appDbContext;
         private readonly IAppUserProvider appUserProvider;
 
-        public ApprovedWordPairsQuery(ApplicationDbContext appDbContext, IAppUserProvider appUserProvider)
+        public WordPairsUserQuery(ApplicationDbContext appDbContext, IAppUserProvider appUserProvider)
         {
             this.appDbContext = appDbContext;
             this.appUserProvider = appUserProvider;
         }
 
-        public IQueryable<WordPair> GetQueryable(string knownLanguageCode, string unknownLanguageCode)
+        public IQueryable<WordPairToApplicationUser> GetQueryable(string knownLanguageCode, string unknownLanguageCode)
         {
             return appDbContext.WordPairToApplicationUsers
               .Where(wp => wp.WordPair.UnknownLanguageCode == unknownLanguageCode)
               .Where(wp => wp.WordPair.KnownLanguageCode == knownLanguageCode)
-              .Where(wp => wp.ApplicationUserId == appUserProvider.GetUserId())
-              .Select(wp => wp.WordPair);
+              .Where(wp => wp.ApplicationUserId == appUserProvider.GetUserId());
         }
     }
 }

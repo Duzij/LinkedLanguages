@@ -4,17 +4,17 @@ using LinkedLanguages.DAL.Models;
 using System;
 using System.Linq;
 
-namespace LinkedLanguages.BL
+namespace LinkedLanguages.BL.Query
 {
     public class UnusedUserWordPairsQuery
     {
         private readonly ApplicationDbContext appDbContext;
-        private readonly ApprovedWordPairsQuery approvedWordPairs;
+        private readonly WordPairsUserQuery wordPairUser;
 
-        public UnusedUserWordPairsQuery(ApplicationDbContext appDbContext, ApprovedWordPairsQuery approvedWordPairs)
+        public UnusedUserWordPairsQuery(ApplicationDbContext appDbContext, WordPairsUserQuery approvedWordPairs)
         {
             this.appDbContext = appDbContext;
-            this.approvedWordPairs = approvedWordPairs;
+            wordPairUser = approvedWordPairs;
         }
 
         /// <summary>
@@ -24,7 +24,9 @@ namespace LinkedLanguages.BL
         /// <returns></returns>
         public IQueryable<WordPair> GetQueryable(string knownLanguageCode, string unknownLanguageCode)
         {
-            var userWordPairIds = approvedWordPairs.GetQueryable(knownLanguageCode, unknownLanguageCode).Select(a => a.Id);
+            IQueryable<Guid> userWordPairIds = wordPairUser
+                .GetQueryable(knownLanguageCode, unknownLanguageCode)
+                .Select(a => a.WordPairId);
 
             return appDbContext.WordPairs
                 .Where(wp => wp.UnknownLanguageCode == unknownLanguageCode)

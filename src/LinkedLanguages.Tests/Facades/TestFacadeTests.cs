@@ -9,7 +9,6 @@ using NUnit.Framework;
 
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using static LinkedLanguages.Tests.Helpers.TestServices;
 
 
@@ -21,7 +20,6 @@ namespace LinkedLanguages.Tests.Facades
         private ApplicationDbContext dbContext;
         private Guid wpId;
         private TestWordPairFacade testWordPairFacade;
-        private readonly ApprovedWordPairsQuery approvedWordPairsQuery;
 
         [SetUp]
         public void Setup()
@@ -29,7 +27,7 @@ namespace LinkedLanguages.Tests.Facades
             dbContext = GetNewTestDbContext();
             wpId = Guid.NewGuid();
 
-            var wordPairs = new List<WordPair>
+            List<WordPair> wordPairs = new List<WordPair>
                 {
                     new WordPair {
                         Id = wpId,
@@ -42,7 +40,7 @@ namespace LinkedLanguages.Tests.Facades
                     }
                 };
 
-            var usedWordPairs = new List<WordPairToApplicationUser>
+            List<WordPairToApplicationUser> usedWordPairs = new List<WordPairToApplicationUser>
                 {
                     new WordPairToApplicationUser {
                         Id = Guid.NewGuid(),
@@ -54,17 +52,17 @@ namespace LinkedLanguages.Tests.Facades
 
             dbContext.WordPairToApplicationUsers.AddRange(usedWordPairs);
             dbContext.WordPairs.AddRange(wordPairs);
-            dbContext.SaveChanges();
+            _ = dbContext.SaveChanges();
 
             appUserProvider = new Mock<IAppUserProvider>();
-            appUserProvider.Setup(a => a.GetUserId()).Returns(GetUserId);
-            appUserProvider.Setup(a => a.GetUserKnownLanguage()).Returns("eng");
+            _ = appUserProvider.Setup(a => a.GetUserId()).Returns(GetUserId);
+            _ = appUserProvider.Setup(a => a.GetUserKnownLanguageCode()).Returns("eng");
 
             testWordPairFacade = new TestWordPairFacade(dbContext, appUserProvider.Object);
         }
 
         [Test]
-        public async Task SubmitWordTestSuccessfully()
+        public void SubmitWordTestSuccessfully()
         {
             Assert.DoesNotThrowAsync(async () => await testWordPairFacade.SubmitTestWordPair(wpId, "known"));
             Assert.DoesNotThrowAsync(async () => await testWordPairFacade.SubmitTestWordPair(wpId, "KNOWN"));
@@ -72,7 +70,7 @@ namespace LinkedLanguages.Tests.Facades
         }
 
         [Test]
-        public async Task SubmitWordTestUnsuccessfully()
+        public void SubmitWordTestUnsuccessfully()
         {
             Assert.ThrowsAsync<SubmittedWordIncorrectException>(async () =>
             {

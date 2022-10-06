@@ -1,31 +1,27 @@
-﻿using LinkedLanguages.BL.Exception;
-using LinkedLanguages.BL.User;
+﻿using LinkedLanguages.BL.DTO;
+using LinkedLanguages.BL.Exception;
 using LinkedLanguages.DAL;
-using System;
+using LinkedLanguages.DAL.Models;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace LinkedLanguages.BL
 {
     public class TestWordPairFacade
     {
         private readonly ApplicationDbContext dbContext;
-        private readonly IAppUserProvider appUserProvider;
 
-        public TestWordPairFacade(ApplicationDbContext dbContext,
-                              IAppUserProvider appUserProvider)
+        public TestWordPairFacade(ApplicationDbContext dbContext)
         {
             this.dbContext = dbContext;
-            this.appUserProvider = appUserProvider;
         }
 
-        public async Task SubmitTestWordPair(Guid wordPairId, string submitedWord)
+        public void SubmitTestWordPair(SubmitWordDto submitWord)
         {
-            Guard.ThrowExceptionIfNotExists(dbContext, wordPairId);
+            Guard.ThrowExceptionIfNotExists(dbContext, submitWord.WordPairId);
 
-            var wp = dbContext.WordPairs.First(wp => wp.Id == wordPairId);
+            WordPair wp = dbContext.WordPairs.First(wp => wp.Id == submitWord.WordPairId);
 
-            if (string.Compare(wp.KnownWord, submitedWord, ignoreCase: true) < 0)
+            if (string.Compare(wp.KnownWord, submitWord.SubmitedWord, ignoreCase: true) < 0)
             {
                 throw new SubmittedWordIncorrectException();
             }

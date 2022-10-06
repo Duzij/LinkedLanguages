@@ -22,9 +22,17 @@ namespace LinkedLanguages.BL.User
             return httpContext.HttpContext.User.GetUserId();
         }
 
-        public string GetUserKnownLanguage()
+        public string GetUserKnownLanguageCode()
         {
             return dbContext.KnownLanguageToUsers
+                .Where(kltu => kltu.ApplicationUserId == httpContext.HttpContext.User.GetUserId())
+                .Select(k => k.Language.Code)
+                .FirstOrDefault();
+        }
+
+        public string GetUserUnknownLanguageCode()
+        {
+            return dbContext.UnknownLanguageToUsers
                 .Where(kltu => kltu.ApplicationUserId == httpContext.HttpContext.User.GetUserId())
                 .Select(k => k.Language.Code)
                 .FirstOrDefault();

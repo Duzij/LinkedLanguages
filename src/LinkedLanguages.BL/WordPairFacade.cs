@@ -1,5 +1,6 @@
 ﻿using LinkedLanguages.BL.DTO;
 using LinkedLanguages.BL.Exception;
+using LinkedLanguages.BL.Query;
 using LinkedLanguages.BL.Services;
 using LinkedLanguages.BL.User;
 using LinkedLanguages.DAL;
@@ -34,13 +35,13 @@ namespace LinkedLanguages.BL
 
         public async Task<WordPairDto> GetNextWord(Guid unknownLangId)
         {
-            string knownLang = appUserProvider.GetUserKnownLanguage();
+            string knownLang = appUserProvider.GetUserKnownLanguageCode();
 
-            var unknownLangCode = dbContext.Languages.First(a => a.Id == unknownLangId).Code;
+            string unknownLangCode = dbContext.Languages.First(a => a.Id == unknownLangId).Code;
 
             await wordPairPump.Pump(knownLang, unknownLangCode);
 
-            var nextWord = unusedUserWordPairs.GetQueryable(knownLang, unknownLangCode)
+            WordPairDto nextWord = unusedUserWordPairs.GetQueryable(knownLang, unknownLangCode)
                 .Select(u => new WordPairDto(u.Id, u.UnknownWord, u.KnownWord))
                 .FirstOrDefault();
 
@@ -51,20 +52,20 @@ namespace LinkedLanguages.BL
         {
             Guard.ThrowExceptionIfNotExists(dbContext, wordPairId);
 
-            var wp = new WordPairToApplicationUser()
+            WordPairToApplicationUser wp = new WordPairToApplicationUser()
             {
                 ApplicationUserId = appUserProvider.GetUserId(),
                 Id = Guid.NewGuid(),
                 WordPairId = wordPairId
             };
 
-            await dbContext.WordPairToApplicationUsers.AddAsync(wp);
-            await dbContext.SaveChangesAsync();
+            _ = await dbContext.WordPairToApplicationUsers.AddAsync(wp);
+            _ = await dbContext.SaveChangesAsync();
         }
 
         public async Task Reject(Guid wordPairId)
         {
-            var wp = new WordPairToApplicationUser()
+            WordPairToApplicationUser wp = new WordPairToApplicationUser()
             {
                 ApplicationUserId = appUserProvider.GetUserId(),
                 Id = Guid.NewGuid(),
@@ -72,20 +73,19 @@ namespace LinkedLanguages.BL
                 Rejected = true
             };
 
-            await dbContext.WordPairToApplicationUsers.AddAsync(wp);
-            await dbContext.SaveChangesAsync();
+            _ = await dbContext.WordPairToApplicationUsers.AddAsync(wp);
+            _ = await dbContext.SaveChangesAsync();
         }
 
-        public async Task<WordPairDto> GetTestWordPair(Guid unknownLangId)
+        public async Task<WordPairDto> GetTestWordPair()
         {
-            string knownLang = appUserProvider.GetUserKnownLanguage();
-
-            var unknownLangCode = dbContext.Languages.First(a => a.Id == unknownLangId).Code;
+            string knownLang = appUserProvider.GetUserKnownLanguageCode();
+            string unknownLangCode = appUserProvider.GetUserUnknownLanguageCode();
 
             await wordPairPump.Pump(knownLang, unknownLangCode);
 
-            var nextWord = approvedWordPairs.GetQueryable(knownLang, unknownLangCode)
-                .Select(u => new WordPairDto(u.Id, u.UnknownWord, u.KnownWord))
+            WordPairDto nextWord = approvedWordPairs.GetQueryable(knownLang, unknownLangCode)
+                .Select(u => new WordPairDto(u.Id, u.UnknownWord, ""))
                 .FirstOrDefault();
 
             return nextWord == default(WordPairDto) ? throw new WordNotFoundException() : nextWord;

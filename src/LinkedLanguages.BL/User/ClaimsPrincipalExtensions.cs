@@ -14,7 +14,7 @@ namespace LinkedLanguages.BL.User
                 throw new ArgumentNullException(nameof(principal));
             }
 
-            var claim = principal.Claims.ToList().FirstOrDefault(c => c.Type == "sub");
+            var claim = principal.Claims.ToList().FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
             return claim == null
                 ? throw new InvalidOperationException("UserId claim not found")
                 : claim.Value == Guid.Empty.ToString()
