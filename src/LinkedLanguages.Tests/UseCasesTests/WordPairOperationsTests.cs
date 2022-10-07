@@ -91,7 +91,7 @@ namespace LinkedLanguages.Tests.UseCasesTests
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task ApproveThreeWordPairs()
+        public async Task ApproveWordPairs()
         {
             UnusedUserWordPairsQuery unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, wordPairsUserQuery);
 
@@ -108,14 +108,22 @@ namespace LinkedLanguages.Tests.UseCasesTests
             await facade.Approve(secondWordPair.Id);
 
             WordPairDto thirdWordPair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
+            Assert.That(thirdWordPair.UnknownWord, Is.Not.SameAs(firstWordPair.UnknownWord));
             Assert.That(thirdWordPair.UnknownWord, Is.Not.SameAs(secondWordPair.UnknownWord));
             await facade.Approve(thirdWordPair.Id);
 
             WordPairDto forthWordPair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
+            Assert.That(forthWordPair.UnknownWord, Is.Not.SameAs(firstWordPair.UnknownWord));
+            Assert.That(forthWordPair.UnknownWord, Is.Not.SameAs(secondWordPair.UnknownWord));
             Assert.That(forthWordPair.UnknownWord, Is.Not.SameAs(thirdWordPair.UnknownWord));
             await facade.Approve(forthWordPair.Id);
 
-            Assert.That(dbContext.WordPairs.Count(), Is.EqualTo(7));
+            WordPairDto fifthWordpair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
+            Assert.That(fifthWordpair.UnknownWord, Is.Not.SameAs(firstWordPair.UnknownWord));
+            Assert.That(fifthWordpair.UnknownWord, Is.Not.SameAs(secondWordPair.UnknownWord));
+            Assert.That(fifthWordpair.UnknownWord, Is.Not.SameAs(thirdWordPair.UnknownWord));
+            Assert.That(fifthWordpair.UnknownWord, Is.Not.SameAs(forthWordPair.UnknownWord));
+            await facade.Approve(fifthWordpair.Id);
         }
     }
 }

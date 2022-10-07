@@ -51,7 +51,7 @@ namespace LinkedLanguages.BL.Services
                 int pageNumber = 0;
                 if (offset != null)
                 {
-                    dbContext.LanguageOffsets.Update(new LanguagePageNumber() { Key = key, PageNumer = offset.PageNumer++ });
+                    offset.PageNumer++;
                 }
                 else
                 {
