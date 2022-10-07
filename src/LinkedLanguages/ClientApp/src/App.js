@@ -13,8 +13,7 @@ export default class App extends Component {
       <Layout>
         <Routes>
           {AppRoutes.map((route, index) => {
-              const { element, requireAuth, ...rest } = route;
-              console.log(route);
+            const { element, requireAuth, ...rest } = route;
             return <Route key={index} {...rest} element={requireAuth ? <AuthorizeRoute {...rest} element={element} /> : element} />;
           })}
         </Routes>

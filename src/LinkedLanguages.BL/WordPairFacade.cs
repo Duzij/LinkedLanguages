@@ -5,8 +5,9 @@ using LinkedLanguages.BL.Services;
 using LinkedLanguages.BL.User;
 using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
-
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -82,13 +83,23 @@ namespace LinkedLanguages.BL
             string knownLang = appUserProvider.GetUserKnownLanguageCode();
             string unknownLangCode = appUserProvider.GetUserUnknownLanguageCode();
 
-            await wordPairPump.Pump(knownLang, unknownLangCode);
-
-            WordPairDto nextWord = approvedWordPairs.GetQueryable(knownLang, unknownLangCode)
-                .Select(u => new WordPairDto(u.Id, u.UnknownWord, ""))
-                .FirstOrDefault();
+            WordPairDto nextWord = await approvedWordPairs.GetQueryable(knownLang, unknownLangCode)
+                .Where(w => !w.Larned)
+                .Select(u => new WordPairDto(u.WordPairId, u.WordPair.UnknownWord, ""))
+                .FirstOrDefaultAsync();
 
             return nextWord == default(WordPairDto) ? throw new WordNotFoundException() : nextWord;
         }
+
+        public async Task<IList<WordPairDto>> GetLearnedWordPairs()
+        {
+            return await dbContext.WordPairToApplicationUsers
+                 .AsNoTracking()
+                 .Where(a => a.ApplicationUserId == appUserProvider.GetUserId())
+                 .Where(a => a.Larned)
+                 .Select(a => new WordPairDto(a.WordPairId, a.WordPair.UnknownWord, a.WordPair.KnownWord))
+                 .ToArrayAsync();
+        }
+
     }
 }

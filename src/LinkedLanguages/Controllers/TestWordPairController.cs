@@ -28,7 +28,7 @@ namespace LinkedLanguages.Controllers
         {
             try
             {
-                BL.DTO.WordPairDto word = await wordPairFacade.GetTestWordPair();
+                WordPairDto word = await wordPairFacade.GetTestWordPair();
                 return Ok(word);
             }
             catch (WordNotFoundException)
@@ -37,18 +37,51 @@ namespace LinkedLanguages.Controllers
             }
         }
 
-        [HttpPost()]
-        public IActionResult SubmitTestWordPair(SubmitWordDto submitWord)
+        [HttpGet("learned")]
+        public async Task<IActionResult> GetLearnedWordPairs()
+        {
+            IList<WordPairDto> words = await wordPairFacade.GetLearnedWordPairs();
+            return Ok(words);
+        }
+
+        [HttpPost("reset")]
+        public async Task<IActionResult> ResetTestProgress()
+        {
+            await testWordPairFacade.ResetTestProgressAsync();
+            return Ok();
+        }
+
+        [HttpPost("reveal")]
+        public async Task<IActionResult> RevealTestWordPair(SubmitWordDto submitWord)
         {
             try
             {
-                testWordPairFacade.SubmitTestWordPair(submitWord);
+                var word = await testWordPairFacade.RevealTestWordPair(submitWord);
+                logger.LogInformation($"Submitted word {word.UnknownWord} is revealed.");
+                return Ok(word.KnownWord);
+            }
+            catch (SubmittedWordIncorrectException)
+            {
+                return BadRequest("Submitted word is not correct.");
+            }
+            catch (WordNotFoundException)
+            {
+                return NotFound("Word does not exist.");
+            }
+        }
+
+        [HttpPost()]
+        public async Task<IActionResult> SubmitTestWordPair(SubmitWordDto submitWord)
+        {
+            try
+            {
+                await testWordPairFacade.SubmitTestWordPair(submitWord);
                 logger.LogInformation("Submitted word is correct.");
                 return Ok();
             }
             catch (SubmittedWordIncorrectException)
             {
-                return NotFound("Submitted word is not correct.");
+                return BadRequest("Submitted word is not correct.");
             }
             catch (WordNotFoundException)
             {

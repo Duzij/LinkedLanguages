@@ -12,12 +12,11 @@ namespace LinkedLanguages.BL.Query
             this.wordPairsUserQuery = wordPairsUserQuery;
         }
 
-        public IQueryable<WordPair> GetQueryable(string knownLanguageCode, string unknownLanguageCode)
+        public IQueryable<WordPairToApplicationUser> GetQueryable(string knownLanguageCode, string unknownLanguageCode)
         {
             return wordPairsUserQuery
                 .GetQueryable(knownLanguageCode, unknownLanguageCode)
-                .Where(a => !a.Rejected)
-                .Select(a => a.WordPair);
+                .Where(a => !a.Rejected);
         }
     }
 }

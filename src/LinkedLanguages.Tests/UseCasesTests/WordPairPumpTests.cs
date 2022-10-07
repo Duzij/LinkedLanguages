@@ -63,6 +63,9 @@ namespace LinkedLanguages.Tests.UseCasesTests
         [Test]
         public async Task PumpPerformedWhenDbEmpty()
         {
+            //on the first page, some words are ignored
+            dbContext.LanguageOffsets.Add(new() { Id = Guid.NewGuid(), Key = "eng-lat", PageNumer = 2 });
+
             dbContext.WordPairs.RemoveRange(dbContext.WordPairs);
             dbContext.SaveChanges();
 
@@ -77,6 +80,9 @@ namespace LinkedLanguages.Tests.UseCasesTests
         [Test]
         public async Task PumpPerformedWhenAllWordsRejected()
         {
+            //on the first page, some words are ignored
+            dbContext.LanguageOffsets.Add(new() { Id = Guid.NewGuid(), Key = "eng-lat", PageNumer = 2 });
+
             dbContext.WordPairToApplicationUsers.Add(new()
             {
                 Id = Guid.NewGuid(),

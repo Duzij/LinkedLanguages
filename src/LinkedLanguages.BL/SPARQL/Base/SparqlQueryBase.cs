@@ -42,7 +42,7 @@ namespace LinkedLanguages.BL.SPARQL.Base
             SparqlQuery query = parser.ParseFromString(queryString);
             var resultSet = endpoint.QueryWithResultSet(query.ToString());
 
-            return resultSet is not null || !resultSet.IsEmpty ? ParseResult(resultSet, param) : default;
+            return !resultSet.IsEmpty ? ParseResult(resultSet, param) : throw new InvalidOperationException($"SPARQL result set is empty.");
         }
 
     }
