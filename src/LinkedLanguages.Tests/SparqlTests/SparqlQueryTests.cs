@@ -23,10 +23,10 @@ namespace LinkedLanguages.Tests.SparqlTests
         }
 
         [Test]
-        public void PumpEnglishAndLatin()
+        public void ValidateWordPairPumpDetails()
         {
-            var results = sparqlQuery.Execute(new WordPairParameterDto("eng", LanguageSeed.EnglishLanguageId, "lat", LanguageSeed.LatinLanguageId, 0, 10));
-            Assert.That(results.Count, Is.EqualTo(10));
+            var results = sparqlQuery.Execute(new WordPairParameterDto("eng", LanguageSeed.EnglishLanguageId, "lat", LanguageSeed.LatinLanguageId, 0));
+            Assert.That(results.Count, Is.EqualTo(3));
             Assert.That(results.FirstOrDefault().KnownWordUri, Is.Not.Null);
             Assert.That(results.FirstOrDefault().UnknownWordUri, Is.Not.Null);
 
@@ -40,8 +40,8 @@ namespace LinkedLanguages.Tests.SparqlTests
         [Test]
         public void ValidateEnglishAndLatin()
         {
-            var firstPageResults = sparqlQuery.Execute(new WordPairParameterDto("eng", LanguageSeed.EnglishLanguageId, "lat", LanguageSeed.LatinLanguageId, 0, 3));
-            var secondPageResults = sparqlQuery.Execute(new WordPairParameterDto("eng", LanguageSeed.EnglishLanguageId, "lat", LanguageSeed.LatinLanguageId, 1, 3));
+            var firstPageResults = sparqlQuery.Execute(new WordPairParameterDto("eng", LanguageSeed.EnglishLanguageId, "lat", LanguageSeed.LatinLanguageId, 0));
+            var secondPageResults = sparqlQuery.Execute(new WordPairParameterDto("eng", LanguageSeed.EnglishLanguageId, "lat", LanguageSeed.LatinLanguageId, 1));
             Assert.That(firstPageResults.Count, Is.EqualTo(3));
             Assert.That(secondPageResults.Count, Is.EqualTo(3));
             Assert.True(!firstPageResults.Intersect(secondPageResults).Any());

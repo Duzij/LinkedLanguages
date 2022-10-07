@@ -84,10 +84,25 @@ namespace LinkedLanguages.Tests.UseCasesTests
             Assert.That(unusedUserWordPairs.Count, Is.EqualTo(0));
         }
 
+        [Test]
+        public async Task ApproveWordPair()
+        {
+            UnusedUserWordPairsQuery unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, wordPairsUserQuery);
+
+            WordPairPump wordPairPump = new WordPairPump(new WordPairsSparqlQuery(GetMoqOptions()), unusedUserWordPairsQuery, dbContext);
+
+            WordPairFacade facade = new WordPairFacade(dbContext, wordPairPump, appUserProvider.Object, unusedUserWordPairsQuery, approvedUserQuery);
+
+            WordPairDto firstWordPair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
+            Assert.NotNull(firstWordPair);
+            await facade.Approve(firstWordPair.Id);
+
+            Assert.That(approvedUserQuery.GetQueryable("eng", "lat").Count, Is.EqualTo(1));
+        }
 
         /// <summary>
         /// Three words are retrieved and approved.
-        /// Forth word is pumped automatically
+        /// Next page with another 3 word pairs is pumped automatically
         /// </summary>
         /// <returns></returns>
         [Test]

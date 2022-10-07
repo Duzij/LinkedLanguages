@@ -52,13 +52,15 @@ namespace LinkedLanguages.BL.Services
                 if (offset != null)
                 {
                     offset.PageNumer++;
+                    pageNumber = offset.PageNumer;
                 }
                 else
                 {
-                    await dbContext.LanguageOffsets.AddAsync(new LanguagePageNumber() { Key = key, PageNumer = pageNumber++ });
+                    pageNumber = 1;
+                    await dbContext.LanguageOffsets.AddAsync(new LanguagePageNumber() { Key = key, PageNumer = pageNumber });
                 }
 
-                var results = pairsQuery.Execute(new WordPairParameterDto(knownLangCode, knownLangugageId, unknownLangCode, unknownLangugageId, pageNumber, 3));
+                var results = pairsQuery.Execute(new WordPairParameterDto(knownLangCode, knownLangugageId, unknownLangCode, unknownLangugageId, pageNumber));
 
                 //Add new words to database
                 await dbContext.WordPairs.AddRangeAsync(results);

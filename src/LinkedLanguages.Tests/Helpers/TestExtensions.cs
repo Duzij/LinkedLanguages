@@ -17,7 +17,7 @@ namespace LinkedLanguages.Tests.Helpers
     {
         public static IOptions<SparqlEndpointOptions> GetMoqOptions()
         {
-            return Options.Create(new SparqlEndpointOptions() { EndpointUrl = new Uri("https://xtest.vse.cz/sparql") });
+            return Options.Create(new SparqlEndpointOptions() { EndpointUrl = new Uri("https://xtest.vse.cz/sparql"), ItemsOnPage = 3 });
         }
 
 

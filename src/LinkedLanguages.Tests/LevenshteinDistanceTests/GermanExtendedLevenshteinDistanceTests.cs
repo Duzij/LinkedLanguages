@@ -38,7 +38,7 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
         public void Setup()
         {
             var sparqlQuery = new WordPairsSparqlQuery(TestServices.GetMoqOptions());
-            var results = sparqlQuery.Execute(new WordPairParameterDto("eng", LanguageSeed.EnglishLanguageId, "deu", LanguageSeed.RussianLangaugeId, 1, 100));
+            var results = sparqlQuery.Execute(new WordPairParameterDto("eng", LanguageSeed.EnglishLanguageId, "deu", LanguageSeed.RussianLangaugeId, 1));
 
             wordPairWrappers = results.Select(i => new WordPairExtendedLevenshteinWrapper(i, removeInvariantsCharactersMapping))
                                       .Where(a => a.Distance != 0);
@@ -76,7 +76,7 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
 
             while (list.Count() < 250)
             {
-                var result = sparqlQuery.Execute(new WordPairParameterDto("eng", LanguageSeed.EnglishLanguageId, "deu", LanguageSeed.RussianLangaugeId, index++, 1));
+                var result = sparqlQuery.Execute(new WordPairParameterDto("eng", LanguageSeed.EnglishLanguageId, "deu", LanguageSeed.RussianLangaugeId, index++));
 
                 var wp = new WordPairExtendedLevenshteinWrapper(result.First(), removeInvariantsCharactersMapping);
                 if (wp.Distance == 0)

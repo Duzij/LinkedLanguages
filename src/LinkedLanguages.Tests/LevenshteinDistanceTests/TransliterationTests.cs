@@ -22,7 +22,8 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
         [Test]
         public void TransliterationToAsciiTest()
         {
-            var results = sparqlQuery.Execute(new WordPairParameterDto("eng", LanguageSeed.EnglishLanguageId, "rus", LanguageSeed.RussianLangaugeId, 1, 100));
+            var results = sparqlQuery.Execute(new WordPairParameterDto("eng", LanguageSeed.EnglishLanguageId, "rus",
+                                                                       LanguageSeed.RussianLangaugeId, 1));
 
             Console.WriteLine("Before normalization");
 

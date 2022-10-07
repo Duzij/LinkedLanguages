@@ -11,8 +11,7 @@ namespace LinkedLanguages.BL.SPARQL.Query
                                                        Guid knownLangId,
                                                        string unknownLangCode,
                                                        Guid unknownLangId,
-                                                       int page,
-                                                       int itemsOnPage);
+                                                       int page);
     public class WordPairsSparqlQuery : SparqlQueryBase<List<WordPair>, WordPairParameterDto>
     {
         public WordPairsSparqlQuery(IOptions<SparqlEndpointOptions> options) : base(options)
@@ -24,7 +23,7 @@ namespace LinkedLanguages.BL.SPARQL.Query
 
         protected override void SetQueryParams(SparqlParameterizedString queryString, WordPairParameterDto param)
         {
-            queryString.CommandText += $" LIMIT {param.itemsOnPage} OFFSET {param.page * param.itemsOnPage}";
+            queryString.CommandText += $" LIMIT {options.ItemsOnPage} OFFSET {param.page * options.ItemsOnPage}";
 
             queryString.SetLiteral("myLang", param.knownLangCode);
             queryString.SetLiteral("forLang", param.unknownLangCode);
