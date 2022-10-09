@@ -12,7 +12,6 @@
     "react-dom": "^18.2.0",
     "react-router-bootstrap": "^0.26.1",
     "react-router-dom": "^6.3.0",
-    "react-scripts": "^5.0.1",
     "react-select": "^5.4.0",
     "reactstrap": "^9.1.1",
     "rimraf": "^3.0.2",
@@ -31,6 +30,7 @@
     "workbox-streams": "^6.5.3"
   },
   "devDependencies": {
+    "react-scripts": "^5.0.1",
     "ajv": "^8.11.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.18.0",
