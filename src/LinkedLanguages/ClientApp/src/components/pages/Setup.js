@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import authService from './api-authorization/AuthorizeService'
+import authService from './../api-authorization/AuthorizeService'
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
-import LoadingSpinner from './LoadingSpinner';
+import LoadingSpinner from './../LoadingSpinner';
 
 export class Setup extends Component {
     static displayName = Setup.name;

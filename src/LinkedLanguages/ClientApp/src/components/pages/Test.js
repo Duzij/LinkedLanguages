@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import authService from './api-authorization/AuthorizeService'
-import LoadingSpinner from './LoadingSpinner';
+import authService from '../api-authorization/AuthorizeService'
+import LoadingSpinner from '../LoadingSpinner';
+import { toast } from 'react-toastify';
+import {fetchPost} from './../FetchApi'
 
 export class Test extends Component {
     static displayName = Test.name;
@@ -16,6 +18,18 @@ export class Test extends Component {
             errorMessage: undefined,
         };
         this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    componentDidCatch(error, errorInfo) {
+        toast.error(errorInfo, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: false,
+            progress: undefined,
+        });
     }
 
     componentDidMount() {
@@ -34,12 +48,13 @@ export class Test extends Component {
                 return response.json();
             }
             if (response.status === 401) {
-                return authService.signIn();
+                authService.signIn();
+                this.fetchTestWordPair();
             }
             if (response.status === 404) {
                 throw new Error('No word found. You can reset the progress or change your current settings to learn some new words. 👀');
             }
-            else if (response.status !== 200) {
+            if (!response.ok) {
                 console.log(response);
                 throw new Error('Something went wrong');
             }
@@ -117,79 +132,45 @@ export class Test extends Component {
     }
 
     async reveal() {
-
-        const token = await authService.getAccessToken();
-        fetch('testwordpair/reveal', {
-            method: 'POST',
-            headers: !token ? {} : {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
+        await fetchPost(
+            'testwordpair/reveal',
+            {
+                wordPairId: this.state.word.id,
+                submitedWord: this.state.submitedWord
             },
-            body: JSON.stringify({ wordPairId: this.state.word.id, submitedWord: this.state.submitedWord })
-        }).then((response) => {
-            if (response.ok) {
-                return response.text();
+            (data) => {
+                var input = document.getElementById("knownWord");
+                input.value = data;
+                this.setState({ submitedWord: data });
+                this.setInputValidity();
             }
-            else if (response.status === 401) {
-                return authService.signIn();
-            }
-            else if (!response.ok) {
-                console.log(response);
-                throw new Error('Something went wrong');
-            }
-        }).then((data) => {
-            var input = document.getElementById("knownWord");
-            input.value = data;
-            this.setState({submitedWord:data});
-        }).catch((error) => {
-            console.log(error);
-            this.setState({ errorMessage: error.message, word: "", canFetchNext: false, loading: false })
-        });
+        );
     }
 
     async handleSubmit(event) {
         event.preventDefault();
-
-        const token = await authService.getAccessToken();
-        fetch('testwordpair', {
-            method: 'POST',
-            headers: !token ? {} : {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
+        await fetchPost(
+            'testwordpair',
+            {
+                wordPairId: this.state.word.id,
+                submitedWord: this.state.submitedWord
             },
-            body: JSON.stringify({ wordPairId: this.state.word.id, submitedWord: this.state.submitedWord })
-        }).then((response) => {
-            if (response.ok) {
-                this.setInputValidity(true)
-                return true;
-            }
-            if (response.status === 400) {
+            (data) => {
+                if (data) {
+                    this.setInputValidity(true);
+                    setTimeout(() => {
+                        this.fetchTestWordPair();
+                    }, 3000);
+                }
+            },
+            (error) => {
                 this.setInputValidity(false)
-                return false;
+                if (error.status === 400) {
+                    this.setInputValidity(false)
+                    return false;
+                }
             }
-            else if (response.status === 401) {
-                return authService.signIn();
-            }
-            else if (response.status === 404) {
-                throw new Error('No word found. You can reset the progress or change your current settings to learn some new words. 👀');
-            }
-            else if (!response.ok) {
-                console.log(response);
-                throw new Error('Something went wrong');
-            }
-        }).then((data) => {
-            if (data) {
-                this.setInputValidity(true);
-                setTimeout(() => {
-                    this.fetchTestWordPair();
-                }, 3000);
-            }
-        }).catch((error) => {
-            console.log(error);
-            this.setState({ errorMessage: error.message, word: "", canFetchNext: false, loading: false })
-        });
+        );
     }
-
-
 
 }

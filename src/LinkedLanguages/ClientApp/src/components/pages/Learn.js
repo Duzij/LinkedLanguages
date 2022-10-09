@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import LoadingSpinner from './LoadingSpinner';
-import authService from './api-authorization/AuthorizeService'
+import LoadingSpinner from './../LoadingSpinner';
+import authService from './../api-authorization/AuthorizeService'
 
 export class Learn extends Component {
     static displayName = Learn.name;
