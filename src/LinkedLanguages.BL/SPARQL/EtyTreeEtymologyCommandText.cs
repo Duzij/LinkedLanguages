@@ -10,6 +10,8 @@
                 ety:etymologicallyRelatedTo ?foreignWord;
                 rdf:label ?myLanguageLabel .
 
+                OPTIONAL { ?myWord rdf:seeAlso ?knownSeeAlsoLink }
+
                 ?foreignWord rdf:label ?foreignWordLabel
 
                 FILTER langMatches(lang(?myLanguageLabel), @myLang)
@@ -19,6 +21,8 @@
             {   ?myWord a ety:EtymologyEntry;
                 ety:etymologicallyDerivesFrom ?foreignWord;
                 rdf:label ?myLanguageLabel .
+
+                OPTIONAL { ?myWord rdf:seeAlso ?knownSeeAlsoLink }
 
                 ?foreignWord rdf:label ?foreignWordLabel
 
@@ -30,6 +34,8 @@
                 ety:etymologicallyRelatedTo ?myWord;
                 rdf:label ?foreignWordLabel .
 
+                OPTIONAL { ?foreignWord rdf:seeAlso ?unknownSeeAlsoLink }
+
                 ?myWord rdf:label ?myLanguageLabel
 
                 FILTER langMatches(lang(?myLanguageLabel), @myLang)
@@ -39,6 +45,8 @@
             {   ?foreignWord a ety:EtymologyEntry;
                 ety:etymologicallyDerivesFrom ?myWord;
                 rdf:label ?foreignWordLabel .
+
+                OPTIONAL { ?foreignWord rdf:seeAlso ?unknownSeeAlsoLink }
 
                 ?myWord rdf:label ?myLanguageLabel
 

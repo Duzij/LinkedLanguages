@@ -26,6 +26,7 @@ namespace LinkedLanguages.Tests.UseCasesTests
         private ApplicationDbContext dbContext;
         private WordPairsUserQuery wordPairsUserQuery;
         private ApprovedWordPairsQuery approvedUserQuery;
+        private WordDefinitionSparqlQuery wordDefinitionSparqlQuery;
 
         [SetUp]
         public void Setup()
@@ -65,6 +66,7 @@ namespace LinkedLanguages.Tests.UseCasesTests
             appUserProvider.Setup(a => a.GetUserKnownLanguageCode()).Returns("eng");
             wordPairsUserQuery = new WordPairsUserQuery(dbContext, appUserProvider.Object);
             approvedUserQuery = new ApprovedWordPairsQuery(wordPairsUserQuery);
+            wordDefinitionSparqlQuery = new WordDefinitionSparqlQuery(GetMoqOptions());
         }
 
 
@@ -91,7 +93,7 @@ namespace LinkedLanguages.Tests.UseCasesTests
 
             WordPairPump wordPairPump = new WordPairPump(new WordPairsSparqlQuery(GetMoqOptions()), unusedUserWordPairsQuery, dbContext);
 
-            WordPairFacade facade = new WordPairFacade(dbContext, wordPairPump, appUserProvider.Object, unusedUserWordPairsQuery, approvedUserQuery);
+            WordPairFacade facade = new WordPairFacade(dbContext, wordPairPump, appUserProvider.Object, unusedUserWordPairsQuery, approvedUserQuery, wordDefinitionSparqlQuery);
 
             WordPairDto firstWordPair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
             Assert.NotNull(firstWordPair);
@@ -112,7 +114,7 @@ namespace LinkedLanguages.Tests.UseCasesTests
 
             WordPairPump wordPairPump = new WordPairPump(new WordPairsSparqlQuery(GetMoqOptions()), unusedUserWordPairsQuery, dbContext);
 
-            WordPairFacade facade = new WordPairFacade(dbContext, wordPairPump, appUserProvider.Object, unusedUserWordPairsQuery, approvedUserQuery);
+            WordPairFacade facade = new WordPairFacade(dbContext, wordPairPump, appUserProvider.Object, unusedUserWordPairsQuery, approvedUserQuery, wordDefinitionSparqlQuery);
 
             WordPairDto firstWordPair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
             Assert.NotNull(firstWordPair);
@@ -140,5 +142,6 @@ namespace LinkedLanguages.Tests.UseCasesTests
             Assert.That(fifthWordpair.UnknownWord, Is.Not.SameAs(forthWordPair.UnknownWord));
             await facade.Approve(fifthWordpair.Id);
         }
+
     }
 }

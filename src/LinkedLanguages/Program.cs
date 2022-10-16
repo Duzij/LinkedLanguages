@@ -71,6 +71,7 @@ namespace LinkedLanguages
             builder.Services.AddTransient<WordPairPump>();
             builder.Services.AddTransient<WordPairsSparqlQuery>();
             builder.Services.AddTransient<PairsStatisticsSparqlQuery>();
+            builder.Services.AddTransient<WordDefinitionSparqlQuery>();
             builder.Services.AddTransient<WordPairsUserQuery>();
             builder.Services.AddTransient<ApprovedWordPairsQuery>();
             builder.Services.AddTransient<RejectedWordPairsQuery>();

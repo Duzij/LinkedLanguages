@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import LoadingSpinner from './../LoadingSpinner';
 import authService from './../api-authorization/AuthorizeService'
+import { fetchGet } from '../FetchApi';
 
 export class Learn extends Component {
     static displayName = Learn.name;
@@ -11,42 +12,51 @@ export class Learn extends Component {
             word: {},
             loading: true,
             unknownLanguageId: undefined,
+            knownDefinitions: [],
+            unknownDefinitions: [],
             canFetchNext: true
         };
     }
 
     async componentDidMount() {
-        const token = await authService.getAccessToken();
-        fetch('profile',
-        {
-            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-        }).then((response) => {
-            return response.json();
-        }).then((data) => {
-            this.setState({ unknownLanguageId: data.unknownLanguages[0].value }, () => { this.fetchNextWord() });
-        }).catch((error) => {
-            console.log(error);
-        });
+        fetchGet(
+            "profile",
+            (data) => {
+                this.setState({ unknownLanguageId: data.unknownLanguages[0].value },
+                    () => {
+                        this.fetchNextWord()
+                    });
+            });
     }
 
     async fetchNextWord() {
-        const token = await authService.getAccessToken();
-        fetch(`wordpair/get/${this.state.unknownLanguageId}`,
-            {
-                headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-            }).then((response) => {
-                if (response.ok) {
-                    return response.json();
+        fetchGet(
+            `wordpair/get/${this.state.unknownLanguageId}`,
+            (data) => {
+                this.setState({ word: data },
+                    () => {
+                        this.fetchDefinitions()
+                    });
+            });
+    }
+
+    async fetchDefinitions() {
+        fetchGet(
+            `wordpair/definiton/${this.state.word.id}`,
+            (data) => {
+                this.setState({
+                    knownDefinitions: data.knownDefinitions,
+                    unknownDefinitions: data.unknownDefinitions,
+                    loading: false
+                });
+            },
+            (error) => {
+                if (error.message === '404') {
+                    this.setState({
+                        errorMessage: 'No definitions found. 😶',
+                        loading: false
+                    });
                 }
-                else {
-                    console.log(response);
-                    throw new Error('Something went wrong');
-                }
-            }).then((data) => {
-                this.setState({ word: data, loading: false });
-            }).catch((error) => {
-                console.log(error);
-                this.setState({ canFetchNext: false, loading: false })
             });
     }
 
@@ -67,22 +77,63 @@ export class Learn extends Component {
                     </div>
                 </div>
                 <form hidden={!this.state.canFetchNext}>
+                    <div className="row">
+                        <div className='col align-self-center'>
+                            <div className="list-group">
+                                <div className="list-group-item">
+                                    <div className="d-flex w-100 justify-content-between">
+                                        <h5 className="mb-1">{this.state.word.knownWord}</h5>
+                                        <small className="text-muted">Known word</small>
+                                    </div>
+                                    {
+                                        this.state.knownDefinitions.map(
+                                            (def) => <p key={def.toString()} className="mb-1">{def}</p>
+                                        )
+                                    }
+                                    {
+                                        this.state.word.knownSeeAlsoLink !== undefined && this.state.word.knownSeeAlsoLink.length > 0 ?
+                                            <small className="text-muted">
+                                                <a className='text-reset' href={this.state.word.knownSeeAlsoLink}>See also</a>
+                                            </small> : null
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div className='col align-self-center'>
+                            <div className="list-group">
+                                <div className="list-group-item">
+                                    <div className="d-flex w-100 justify-content-between">
+                                        <h5 className="mb-1">{this.state.word.unknownWord}</h5>
+                                        <small className="text-muted">Unknown word</small>
+                                    </div>
+                                    {
+                                        this.state.unknownDefinitions.map(
+                                            (def) => <p key={def.toString()} className="mb-1">{def}</p>
+                                        )
+                                    }
+                                    {
+                                        this.state.word.unknownSeeAlsoLink !== undefined && this.state.word.unknownSeeAlsoLink.length > 0 ?
+                                            <small className="text-muted">
+                                                <a className='text-reset' href={this.state.word.unknownSeeAlsoLink}>See also</a>
+                                            </small> : null
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div className="d-flex justify-content-center">
                         <div className='d-flex flex-column m-3 justify-content-end'>
-                            <p>Known word</p>
-                            <p><b>{this.state.word.knownWord}</b></p>
                             <button type="button" className="btn btn-outline-danger" onClick={this.reject.bind(this)}>
                                 Reject
                             </button>
                         </div>
                         <div className='d-flex flex-column m-3 justify-content-start'>
-                            <p>Unknown word</p>
-                            <p><b>{this.state.word.unknownWord}</b></p>
                             <button type="button" className="btn btn-outline-success" onClick={this.approve.bind(this)}>
                                 Approve
                             </button>
                         </div>
                     </div>
+
                 </form>
             </div>
         );

@@ -1,5 +1,7 @@
 ﻿using LinkedLanguages.BL;
+using LinkedLanguages.BL.DTO;
 using LinkedLanguages.BL.Exception;
+using LinkedLanguages.BL.SPARQL.Query;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,16 +23,30 @@ namespace LinkedLanguages.Controllers
 
 
         [HttpGet("get/{languageId}")]
-        public async Task<IActionResult> GetWordPair(Guid languageId)
+        public async Task<IActionResult> GetNextWord(Guid languageId)
         {
             try
             {
-                var word = await wordPairFacade.GetNextWord(languageId);
+                WordPairDto word = await wordPairFacade.GetNextWord(languageId);
                 return Ok(word);
             }
             catch (WordNotFoundException)
             {
                 return NotFound("Word does not exist.");
+            }
+        }
+
+        [HttpGet("definiton/{wordPairId}")]
+        public async Task<IActionResult> GetDefinition(Guid wordPairId)
+        {
+            try
+            {
+                WordPairDefinitonsDto definitions = await wordPairFacade.GetDefinition(wordPairId);
+                return Ok(definitions);
+            }
+            catch (WordNotFoundException)
+            {
+                return NotFound("Definition does not exist.");
             }
         }
 

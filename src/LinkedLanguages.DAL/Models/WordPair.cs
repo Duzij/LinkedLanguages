@@ -16,6 +16,7 @@ namespace LinkedLanguages.DAL.Models
         public string UnknownWord { get; set; }
         public string UnknownWordUri { get; set; }
 
-
+        public string KnownSeeAlsoLink { get; set; }
+        public string UnknownSeeAlsoLink { get; set; }
     }
 }

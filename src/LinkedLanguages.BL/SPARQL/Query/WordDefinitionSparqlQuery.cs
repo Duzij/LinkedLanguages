@@ -7,6 +7,7 @@ using VDS.RDF.Query;
 namespace LinkedLanguages.BL.SPARQL.Query
 {
     public readonly record struct WordUriDto(string Uri);
+    public readonly record struct WordPairDefinitonsDto(string[] knownDefinitions, string[] unknownDefinitions);
 
     public class WordDefinitionSparqlQuery : SparqlQueryBase<IEnumerable<string>, WordUriDto>
     {

@@ -25,7 +25,7 @@ namespace LinkedLanguages.Tests.SparqlTests
         [Test]
         public void ValidateWordPairPumpDetails()
         {
-            var results = sparqlQuery.Execute(new WordPairParameterDto("eng", LanguageSeed.EnglishLanguageId, "lat", LanguageSeed.LatinLanguageId, 0));
+            System.Collections.Generic.List<DAL.Models.WordPair> results = sparqlQuery.Execute(new WordPairParameterDto("eng", LanguageSeed.EnglishLanguageId, "lat", LanguageSeed.LatinLanguageId, 0));
             Assert.That(results.Count, Is.EqualTo(3));
             Assert.That(results.FirstOrDefault().KnownWordUri, Is.Not.Null);
             Assert.That(results.FirstOrDefault().UnknownWordUri, Is.Not.Null);
@@ -35,13 +35,15 @@ namespace LinkedLanguages.Tests.SparqlTests
 
             Assert.That(results.FirstOrDefault().KnownWord, Is.Not.Null);
             Assert.That(results.FirstOrDefault().UnknownWord, Is.Not.Null);
+
+            Assert.That(results.FirstOrDefault().KnownSeeAlsoLink, Is.Not.Null);
         }
 
         [Test]
         public void ValidateEnglishAndLatin()
         {
-            var firstPageResults = sparqlQuery.Execute(new WordPairParameterDto("eng", LanguageSeed.EnglishLanguageId, "lat", LanguageSeed.LatinLanguageId, 0));
-            var secondPageResults = sparqlQuery.Execute(new WordPairParameterDto("eng", LanguageSeed.EnglishLanguageId, "lat", LanguageSeed.LatinLanguageId, 1));
+            System.Collections.Generic.List<DAL.Models.WordPair> firstPageResults = sparqlQuery.Execute(new WordPairParameterDto("eng", LanguageSeed.EnglishLanguageId, "lat", LanguageSeed.LatinLanguageId, 0));
+            System.Collections.Generic.List<DAL.Models.WordPair> secondPageResults = sparqlQuery.Execute(new WordPairParameterDto("eng", LanguageSeed.EnglishLanguageId, "lat", LanguageSeed.LatinLanguageId, 1));
             Assert.That(firstPageResults.Count, Is.EqualTo(3));
             Assert.That(secondPageResults.Count, Is.EqualTo(3));
             Assert.True(!firstPageResults.Intersect(secondPageResults).Any());
@@ -50,14 +52,14 @@ namespace LinkedLanguages.Tests.SparqlTests
         [Test]
         public void GetCount()
         {
-            var result = statisticsQuery.Execute(new LanguageCodesDto("eng", "lat"));
-            Assert.That(result, Is.EqualTo(23753));
+            int result = statisticsQuery.Execute(new LanguageCodesDto("eng", "lat"));
+            Assert.That(result, Is.EqualTo(141119));
         }
 
         [Test]
         public void GetDefinition()
         {
-            var results = wordDefinitionQuery.Execute(new WordUriDto("http://etytree-virtuoso.wmflabs.org/dbnary/eng/deu/__ee_Anschauung"));
+            System.Collections.Generic.IEnumerable<string> results = wordDefinitionQuery.Execute(new WordUriDto("http://etytree-virtuoso.wmflabs.org/dbnary/eng/deu/__ee_Anschauung"));
             Assert.That(results.Count, Is.EqualTo(2));
         }
     }

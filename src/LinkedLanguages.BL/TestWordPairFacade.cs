@@ -22,7 +22,7 @@ namespace LinkedLanguages.BL
 
         public async Task ResetTestProgressAsync()
         {
-            var userLearnedWordPairs = dbContext.WordPairToApplicationUsers
+            IQueryable<WordPairToApplicationUser> userLearnedWordPairs = dbContext.WordPairToApplicationUsers
               .Where(uwp => uwp.ApplicationUserId == appUserProvider.GetUserId());
 
             await userLearnedWordPairs.ForEachAsync(a => a.Larned = false);
@@ -34,7 +34,7 @@ namespace LinkedLanguages.BL
         {
             return await dbContext.WordPairToApplicationUsers.AsNoTracking()
                 .Where(a => a.WordPairId == submitWord.WordPairId)
-                .Select(a => new WordPairDto(a.WordPair.Id, a.WordPair.UnknownWord, a.WordPair.KnownWord))
+                .Select(a => new WordPairDto(a.WordPair.Id, a.WordPair.UnknownWord, a.WordPair.KnownWord, a.WordPair.KnownSeeAlsoLink, a.WordPair.UnknownSeeAlsoLink))
                 .FirstAsync();
         }
 
@@ -49,7 +49,7 @@ namespace LinkedLanguages.BL
                 throw new SubmittedWordIncorrectException();
             }
 
-            var userWordPair = dbContext.WordPairToApplicationUsers
+            WordPairToApplicationUser userWordPair = dbContext.WordPairToApplicationUsers
                 .Where(uwp => uwp.ApplicationUserId == appUserProvider.GetUserId())
                 .FirstOrDefault(uwp => uwp.WordPairId == wp.Id);
 

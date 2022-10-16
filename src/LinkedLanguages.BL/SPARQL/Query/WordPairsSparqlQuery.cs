@@ -18,7 +18,7 @@ namespace LinkedLanguages.BL.SPARQL.Query
         {
         }
 
-        public override string CommandText { get; set; } = string.Concat("SELECT DISTINCT ?myLanguageLabel ?myWord ?foreignWord ?foreignWordLabel ",
+        public override string CommandText { get; set; } = string.Concat("SELECT DISTINCT ?myLanguageLabel ?myWord ?foreignWord ?foreignWordLabel ?unknownSeeAlsoLink ?knownSeeAlsoLink ",
                                                                           EtyTreeEtymologyCommandText.GetTwoWayLanguageWhereUnionCommandText());
 
         protected override void SetQueryParams(SparqlParameterizedString queryString, WordPairParameterDto param)
@@ -31,16 +31,19 @@ namespace LinkedLanguages.BL.SPARQL.Query
 
         protected override List<WordPair> ParseResult(SparqlResultSet resultSet, WordPairParameterDto param)
         {
-            var results = new List<WordPair>();
+            List<WordPair> results = new List<WordPair>();
 
-            var trippleCollection = resultSet.Results.ToArray();
-            foreach (var t in trippleCollection)
+            SparqlResult[] trippleCollection = resultSet.Results.ToArray();
+            foreach (SparqlResult t in trippleCollection)
             {
-                var fw = t.GetLiteral("foreignWordLabel");
-                var mw = t.GetLiteral("myLanguageLabel");
+                string fw = t.GetLiteral("foreignWordLabel");
+                string mw = t.GetLiteral("myLanguageLabel");
 
-                var furi = t.GetLiteral("foreignWord");
-                var muri = t.GetLiteral("myWord");
+                string furi = t.GetLiteral("foreignWord");
+                string muri = t.GetLiteral("myWord");
+
+                string knownSeeAlsoLink = t.GetLiteral("knownSeeAlsoLink");
+                string unknownSeeAlsoLink = t.GetLiteral("unknownSeeAlsoLink");
 
                 results.Add(new WordPair()
                 {
@@ -52,7 +55,9 @@ namespace LinkedLanguages.BL.SPARQL.Query
                     UnknownLanguageId = param.unknownLangId,
                     UnknownLanguageCode = param.unknownLangCode,
                     KnownWordUri = muri,
-                    UnknownWordUri = furi
+                    UnknownWordUri = furi,
+                    KnownSeeAlsoLink = knownSeeAlsoLink,
+                    UnknownSeeAlsoLink = unknownSeeAlsoLink
                 });
             }
 

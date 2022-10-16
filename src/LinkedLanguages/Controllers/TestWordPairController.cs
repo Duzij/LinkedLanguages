@@ -56,7 +56,7 @@ namespace LinkedLanguages.Controllers
         {
             try
             {
-                var word = await testWordPairFacade.RevealTestWordPair(submitWord);
+                WordPairDto word = await testWordPairFacade.RevealTestWordPair(submitWord);
                 logger.LogInformation($"Submitted word {word.UnknownWord} is revealed.");
                 return Ok(word.KnownWord);
             }
