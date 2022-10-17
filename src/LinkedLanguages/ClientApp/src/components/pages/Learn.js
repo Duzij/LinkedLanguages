@@ -14,7 +14,9 @@ export class Learn extends Component {
             unknownLanguageId: undefined,
             knownDefinitions: [],
             unknownDefinitions: [],
-            canFetchNext: true
+            canFetchNext: true,
+            knownSeeAlsoLink: undefined,
+            unknownSeeAlsoLink: undefined
         };
     }
 
