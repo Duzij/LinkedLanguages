@@ -3,6 +3,7 @@ import authService from './../api-authorization/AuthorizeService'
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import LoadingSpinner from './../LoadingSpinner';
+import { fetchPost } from '../FetchApi';
 
 export class Setup extends Component {
     static displayName = Setup.name;
@@ -84,19 +85,18 @@ export class Setup extends Component {
     }
 
     async saveLanguages() {
-        const token = await authService.getAccessToken();
 
-        const languagesResponse = await fetch('profile', {
-            method: 'POST',
-            headers: !token ? {} : {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
+        fetchPost('profile',
+            {
+                knownLanguages: this.state.profile.knownLanguages,
+                unknownLanguages: this.state.profile.unknownLanguages
             },
-            body: JSON.stringify({ knownLanguages: this.state.profile.knownLanguages, unknownLanguages: this.state.profile.unknownLanguages })
-        });
-
-        const data = await languagesResponse.json();
-        this.setState({ languages: data });
+            (data) => {
+                this.setState({
+                    languages: data
+                });
+            }
+        );
     }
 
     async fetchStatistics() {

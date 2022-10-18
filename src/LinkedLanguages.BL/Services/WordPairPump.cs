@@ -33,23 +33,23 @@ namespace LinkedLanguages.BL.Services
         /// <param name="unknownLangCode"></param>
         public async Task Pump(string knownLangCode, string unknownLangCode)
         {
-            var knownLangugageId = dbContext.Languages
+            Guid knownLangugageId = dbContext.Languages
                 .Where(l => l.Code == knownLangCode)
                 .Select(l => l.Id)
                 .Single();
 
-            var unknownLangugageId = dbContext.Languages
+            Guid unknownLangugageId = dbContext.Languages
                 .Where(l => l.Code == unknownLangCode)
                 .Select(l => l.Id)
                 .Single();
 
-            var remainingWordsForCurrentUser = unusedUserWordPairs.GetQueryable(knownLangCode, unknownLangCode);
+            IQueryable<WordPair> remainingWordsForCurrentUser = unusedUserWordPairs.GetQueryable(knownLangCode, unknownLangCode);
 
             if (!remainingWordsForCurrentUser.Any())
             {
                 //Offset will have to be reparated per language
-                var key = $"{knownLangCode}-{unknownLangCode}";
-                var offset = await dbContext.LanguageOffsets.FirstOrDefaultAsync(a => a.Key == key);
+                string key = $"{knownLangCode}-{unknownLangCode}";
+                LanguagePageNumber offset = await dbContext.LanguageOffsets.FirstOrDefaultAsync(a => a.Key == key);
                 int pageNumber = 0;
                 if (offset != null)
                 {
@@ -58,9 +58,10 @@ namespace LinkedLanguages.BL.Services
                 else
                 {
                     await dbContext.LanguageOffsets.AddAsync(new LanguagePageNumber() { Key = key, PageNumer = pageNumber });
+                    await dbContext.SaveChangesAsync();
                 }
 
-                var results = pairsQuery.Execute(new WordPairParameterDto(knownLangCode, knownLangugageId, unknownLangCode, unknownLangugageId, pageNumber));
+                List<WordPair> results = pairsQuery.Execute(new WordPairParameterDto(knownLangCode, knownLangugageId, unknownLangCode, unknownLangugageId, pageNumber));
 
                 results = await PostProcessResults(results, knownLangugageId, unknownLangugageId);
 
@@ -81,13 +82,13 @@ namespace LinkedLanguages.BL.Services
 
         private async Task<List<WordPair>> PostProcessResults(List<WordPair> results, Guid knownLangugageId, Guid unknownLanguageId)
         {
-            var postResults = new List<WordPair>();
+            List<WordPair> postResults = new List<WordPair>();
 
-            var languageWords = await dbContext.WordPairs.AsNoTracking()
+            WordPair[] languageWords = await dbContext.WordPairs.AsNoTracking()
                 .Where(a => a.UnknownLanguageId == unknownLanguageId && a.KnownLanguageId == knownLangugageId)
                 .ToArrayAsync();
 
-            foreach (var wp in results)
+            foreach (WordPair wp in results)
             {
                 //Same words are ignored, as they are easy to recognize
                 if (string.Compare(wp.UnknownWord, wp.KnownWord, ignoreCase: true) == 0)
@@ -95,16 +96,25 @@ namespace LinkedLanguages.BL.Services
                     continue;
                 }
 
-                var foundWord = languageWords.FirstOrDefault
+                if (languageWords.FirstOrDefault
                     (
                         a => a.KnownWord.Transliterate() == wp.KnownWord.Transliterate() &&
                         a.UnknownWord.Transliterate() == wp.UnknownWord.Transliterate()
-                    );
-
-                if (foundWord is null)
+                    ) is not null)
                 {
-                    postResults.Add(wp);
+                    continue;
                 }
+
+                if (postResults.FirstOrDefault(
+                        a => a.KnownWord.Transliterate() == wp.KnownWord.Transliterate() &&
+                        a.UnknownWord.Transliterate() == wp.UnknownWord.Transliterate()
+                    ) is not null)
+                {
+                    continue;
+                }
+
+                postResults.Add(wp);
+
             }
             return postResults;
         }
