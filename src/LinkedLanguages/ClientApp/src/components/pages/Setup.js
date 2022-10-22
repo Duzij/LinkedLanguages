@@ -3,6 +3,7 @@ import authService from './../api-authorization/AuthorizeService'
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import LoadingSpinner from './../LoadingSpinner';
+import { toast } from 'react-toastify';
 
 export class Setup extends Component {
     static displayName = Setup.name;
@@ -96,7 +97,9 @@ export class Setup extends Component {
         });
 
         const data = await languagesResponse.json();
-        this.setState({ languages: data });
+        this.setState({ languages: data }, ()=>{
+            toast.success('Profile saved');
+        });
     }
 
     async fetchStatistics() {
