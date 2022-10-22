@@ -43,18 +43,6 @@ export class Setup extends Component {
             <div>
                 <LoadingSpinner loading={this.state.loading} />
                 <form>
-                    <div class="mb-3">
-                        
-                    </div>
-                    <div class="mb-3">
-                        <label for="exampleInputPassword1" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1">
-                    </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                            <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
                     <div className='form-group col-md-12'>
                         <h1 id="tabelLabel" >User profile</h1>
                         <p>Here you can modify your profile and change known and unknown languages</p>
