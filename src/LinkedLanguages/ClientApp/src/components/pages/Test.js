@@ -121,7 +121,7 @@ export class Test extends Component {
                     <h1 id="tabelLabel" >User profile</h1>
                     <p>Here you can learn some of the words you approved in Learn section.</p>
                     <div className="alert alert-warning" role="alert">
-                        Word pairs languages are gathered from your current settings.
+                        Word pairs showed here are based on your current settings.
                     </div>
                 </div>
                 <div className='d-flex justify-content-center'>
