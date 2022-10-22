@@ -24,11 +24,11 @@ namespace LinkedLanguages.BL.SPARQL.Base
         {
             endpoint = new SparqlRemoteEndpoint(options.EndpointUrl)
             {
-                Timeout = 50000
+                Timeout = 75000
             };
 
             SparqlQueryParser parser = new SparqlQueryParser();
-            var queryString = new SparqlParameterizedString(CommandText);
+            SparqlParameterizedString queryString = new SparqlParameterizedString(CommandText);
 
             queryString.Namespaces.AddNamespace("lemon", new Uri("http://www.w3.org/ns/lemon/ontolex#"));
             queryString.Namespaces.AddNamespace("skos", new Uri("http://www.w3.org/2004/02/skos/core#"));
@@ -40,7 +40,7 @@ namespace LinkedLanguages.BL.SPARQL.Base
             SetQueryParams(queryString, param);
 
             SparqlQuery query = parser.ParseFromString(queryString);
-            var resultSet = endpoint.QueryWithResultSet(query.ToString());
+            SparqlResultSet resultSet = endpoint.QueryWithResultSet(query.ToString());
 
             return !resultSet.IsEmpty ? ParseResult(resultSet, param) : throw new InvalidOperationException($"SPARQL result set is empty.");
         }
