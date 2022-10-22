@@ -95,6 +95,8 @@ export class Setup extends Component {
             (data) => {
                 this.setState({
                     languages: data
+                }, () => {
+                    toast.success('Profile saved')
                 });
             }
         );
