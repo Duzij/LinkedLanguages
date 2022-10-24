@@ -21,7 +21,6 @@ export class Learn extends Component {
     }
 
     async componentDidMount() {
-        await authService.signIn();
         fetchGet(
             "profile",
             (data) => {

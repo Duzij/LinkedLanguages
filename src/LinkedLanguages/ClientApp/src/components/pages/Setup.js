@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import authService from './../api-authorization/AuthorizeService'
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import LoadingSpinner from './../LoadingSpinner';
@@ -20,7 +19,6 @@ export class Setup extends Component {
     }
 
     async componentDidMount() {
-        await authService.signIn();
         this.fetchLanguages();
     }
 
@@ -102,22 +100,11 @@ export class Setup extends Component {
     }
 
     async fetchStatistics() {
-        if (this.state.profile !== undefined) {
-            this.setState({ isLoadingStatistics: true, predicatesCount: undefined });
-            const token = await authService.getAccessToken();
-            fetch('languages/statistics', {
-                method: 'POST',
-                headers: !token ? {} : {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(this.state.profile)
-            }).then((response) => {
-                return response.text();
-            }).then((data) => {
+        fetchPost('languages/statistics',
+            this.state.profile,
+            (data) => {
                 this.setState({ predicatesCount: data, isLoadingStatistics: false });
-            });
-        }
+            })
     }
 
     async fetchLanguages() {
