@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import authService from '../api-authorization/AuthorizeService';
 import LoadingSpinner from '../LoadingSpinner';
 import { fetchPost, fetchGet } from './../FetchApi'
 
@@ -20,7 +21,8 @@ export class Test extends Component {
         this.reveal = this.reveal.bind(this);
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        await authService.signIn();
         this.fetchTestWordPair();
     }
 

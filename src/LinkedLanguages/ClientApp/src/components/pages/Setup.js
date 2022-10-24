@@ -3,7 +3,7 @@ import authService from './../api-authorization/AuthorizeService'
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import LoadingSpinner from './../LoadingSpinner';
-import { fetchPost } from '../FetchApi';
+import { fetchGet, fetchPost } from '../FetchApi';
 
 export class Setup extends Component {
     static displayName = Setup.name;
@@ -18,9 +18,9 @@ export class Setup extends Component {
         };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        await authService.signIn();
         this.fetchLanguages();
-        this.fetchProfile();
     }
 
     render() {
@@ -85,7 +85,6 @@ export class Setup extends Component {
     }
 
     async saveLanguages() {
-
         fetchPost('profile',
             {
                 knownLanguages: this.state.profile.knownLanguages,
@@ -119,27 +118,19 @@ export class Setup extends Component {
     }
 
     async fetchLanguages() {
-        const token = await authService.getAccessToken();
-        await fetch('languages', {
-            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-        }).then((response) => {
-            return response.json();
-        }).then((data) => {
-            this.setState({ languages: data, loading: false });
-        });
+        fetchGet('languages',
+            (data) => {
+                this.setState({ languages: data, loading: false }, () => this.fetchProfile());
+            })
     }
 
     async fetchProfile() {
-        const token = await authService.getAccessToken();
-        await fetch('profile', {
-            headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-        }).then((response) => {
-            return response.json();
-        }).then((data) => {
-            this.setState(
-                { profile: data },
-                () => this.fetchStatistics()
-            );
-        });
+        fetchGet('profile',
+            (data) => {
+                this.setState(
+                    { profile: data },
+                    () => this.fetchStatistics()
+                );
+            })
     }
 }
