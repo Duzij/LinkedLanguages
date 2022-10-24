@@ -94,7 +94,7 @@ export class Learn extends Component {
                                         )
                                     }
                                     {
-                                        this.state.word.knownSeeAlsoLink !== undefined && this.state.word.knownSeeAlsoLink.length > 0 ?
+                                        this.state.word.knownSeeAlsoLink !== undefined && this.state.word.knownSeeAlsoLink !== null ?
                                             <small className="text-muted">
                                                 <a className='text-reset' href={this.state.word.knownSeeAlsoLink}>See also</a>
                                             </small> : null
@@ -115,7 +115,7 @@ export class Learn extends Component {
                                         )
                                     }
                                     {
-                                        this.state.word.unknownSeeAlsoLink !== undefined && this.state.word.unknownSeeAlsoLink.length > 0 ?
+                                        this.state.word.unknownSeeAlsoLink !== undefined && this.state.word.unknownSeeAlsoLink !== null ?
                                             <small className="text-muted">
                                                 <a className='text-reset' href={this.state.word.unknownSeeAlsoLink}>See also</a>
                                             </small> : null
