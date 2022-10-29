@@ -3,6 +3,11 @@ import { toast } from 'react-toastify';
 
 export async function fetchPost(address, postObject, onSuccess, onError) {
     const token = await authService.getAccessToken();
+
+    if (token === undefined) {
+        await authService.signIn();
+    }
+
     fetch(address, {
         method: 'POST',
         headers: !token ? {} : {
@@ -36,6 +41,11 @@ export async function fetchPost(address, postObject, onSuccess, onError) {
 
 export async function fetchGet(address, onSuccess, onError) {
     const token = await authService.getAccessToken();
+
+    if (token === undefined) {
+        await authService.signIn();
+    }
+
     fetch(address, {
         headers: !token ? {} : {
             'Authorization': `Bearer ${token}`,

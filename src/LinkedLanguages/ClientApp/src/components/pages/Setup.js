@@ -16,26 +16,31 @@ export class Setup extends Component {
             loading: true,
             isLoadingStatistics: true
         };
+
+        this.handleKnownChange = this.handleKnownChange.bind(this);
+        this.handleUnknownChange = this.handleUnknownChange.bind(this);
+        this.saveLanguages = this.saveLanguages.bind(this);
     }
 
     async componentDidMount() {
         this.fetchLanguages();
     }
 
+    async handleKnownChange(selectedKnownLanguages) {
+        var profile = this.state.profile;
+        profile.knownLanguages = [selectedKnownLanguages];
+        await this.fetchStatistics();
+    }
+
+    async handleUnknownChange(selectedUnknownLanguages) {
+        var profile = this.state.profile;
+        profile.unknownLanguages = [selectedUnknownLanguages];
+        await this.fetchStatistics();
+    }
+
     render() {
         let animated = makeAnimated();
 
-        const handleKnownChange = (selectedKnownLanguages) => {
-            var profile = this.state.profile;
-            profile.knownLanguages = [selectedKnownLanguages];
-            this.fetchStatistics();
-        }
-
-        const handleUnknownChange = (selectedUnknownLanguages) => {
-            var profile = this.state.profile;
-            profile.unknownLanguages = [selectedUnknownLanguages];
-            this.fetchStatistics();
-        }
 
         return (
             <div>
@@ -49,7 +54,7 @@ export class Setup extends Component {
                         </div>
                         <div className="alert alert-primary d-flex align-items-center" role="alert">
                             <div>
-                                <span>Total number of relations:{this.state.predicatesCount}</span>
+                                <span>Total number of relations: </span><span hidden={this.state.isLoadingStatistics}>{this.state.predicatesCount}</span>
                                 <span className="spinner-border spinner-border-sm" hidden={!this.state.isLoadingStatistics} role="status" aria-hidden="true"></span>
                             </div>
                         </div>
@@ -60,7 +65,7 @@ export class Setup extends Component {
                             <Select makeAnimated={animated}
                                 className="basic-select"
                                 value={this.state.profile.knownLanguages}
-                                onChange={handleKnownChange}
+                                onChange={this.handleKnownChange}
                                 options={this.state.languages}
                                 classNamePrefix="select" />
                         </div>
@@ -69,13 +74,13 @@ export class Setup extends Component {
                             <Select makeAnimated={animated}
                                 className="basic-select"
                                 value={this.state.profile.unknownLanguages}
-                                onChange={handleUnknownChange}
+                                onChange={this.handleUnknownChange}
                                 options={this.state.languages}
                                 classNamePrefix="select" />
                         </div>
                     </div>
                     <div className='form-group col-md-12'>
-                        <button type="button" className="btn btn-primary" onClick={this.saveLanguages.bind(this)}>Save</button>
+                        <button type="button" className="btn btn-primary" onClick={this.saveLanguages}>Save</button>
                     </div>
                 </form>
 
@@ -100,7 +105,8 @@ export class Setup extends Component {
     }
 
     async fetchStatistics() {
-        fetchPost('languages/statistics',
+        this.setState({isLoadingStatistics:true})
+        await fetchPost('languages/statistics',
             this.state.profile,
             (data) => {
                 this.setState({ predicatesCount: data, isLoadingStatistics: false });
@@ -108,6 +114,7 @@ export class Setup extends Component {
     }
 
     async fetchLanguages() {
+        this.setState({isLoadingStatistics:true})
         fetchGet('languages',
             (data) => {
                 this.setState({ languages: data, loading: false }, () => this.fetchProfile());
