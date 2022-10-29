@@ -44,6 +44,7 @@ namespace LinkedLanguages
 
             builder.Services.Configure<IdentityOptions>(options =>
             {
+                options.Password.RequiredUniqueChars = 0;
                 options.Password.RequireNonAlphanumeric = false;
                 options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier;
             });
