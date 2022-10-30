@@ -24,7 +24,6 @@ export async function fetchPost(address, postObject, onSuccess, onError) {
             onError(error);
         }
         else {
-            console.error(error);
             toast.error(error.errorMessage, {
                 position: "top-right",
                 autoClose: 5000,
@@ -34,6 +33,7 @@ export async function fetchPost(address, postObject, onSuccess, onError) {
                 draggable: true,
                 progress: undefined,
             });
+            console.error(error);
         }
     });
 }
@@ -60,7 +60,6 @@ export async function fetchGet(address, onSuccess, onError) {
             onError(error);
         }
         else {
-            console.error(error);
             toast.error(error.errorMessage, {
                 position: "top-right",
                 autoClose: 5000,
@@ -70,6 +69,7 @@ export async function fetchGet(address, onSuccess, onError) {
                 draggable: true,
                 progress: undefined,
             });
+            console.error(error);
         }
     });
 }

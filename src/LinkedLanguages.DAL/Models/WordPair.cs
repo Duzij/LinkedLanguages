@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace LinkedLanguages.DAL.Models
 {
+    [Index(nameof(KnownWordTransliterated), nameof(UnknownWordTransliterated))]
     public class WordPair
     {
         public Guid Id { get; set; }
@@ -11,6 +13,8 @@ namespace LinkedLanguages.DAL.Models
         public string KnownWord { get; set; }
         public string KnownWordUri { get; set; }
 
+        public string KnownWordTransliterated { get; set; }
+        public string UnknownWordTransliterated { get; set; }
         public string UnknownLanguageCode { get; set; }
         public Guid UnknownLanguageId { get; set; }
         public string UnknownWord { get; set; }
@@ -18,5 +22,7 @@ namespace LinkedLanguages.DAL.Models
 
         public string KnownSeeAlsoLink { get; set; }
         public string UnknownSeeAlsoLink { get; set; }
+
+        public int Distance { get; set; }
     }
 }

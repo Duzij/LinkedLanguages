@@ -84,7 +84,15 @@ namespace LinkedLanguages.BL
 
             string unknownLangCode = dbContext.Languages.First(a => a.Id == unknownLangId).Code;
 
-            await wordPairPump.Pump(knownLang, unknownLangCode);
+            try
+            {
+                await wordPairPump.Pump(knownLang, unknownLangCode);
+            }
+            catch (InvalidOperationException)
+            {
+                //Empty SPARQL set is returned, no more words to pump
+                throw new WordNotFoundException();
+            }
 
             WordPairDto nextWord = unusedUserWordPairs.GetQueryable(knownLang, unknownLangCode)
                 .Select(u => new WordPairDto(u.Id, u.UnknownWord, u.KnownWord, u.KnownSeeAlsoLink, u.UnknownSeeAlsoLink))
@@ -104,8 +112,8 @@ namespace LinkedLanguages.BL
                 WordPairId = wordPairId
             };
 
-            _ = await dbContext.WordPairToApplicationUsers.AddAsync(wp);
-            _ = await dbContext.SaveChangesAsync();
+            await dbContext.WordPairToApplicationUsers.AddAsync(wp);
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task Reject(Guid wordPairId)
@@ -118,8 +126,8 @@ namespace LinkedLanguages.BL
                 Rejected = true
             };
 
-            _ = await dbContext.WordPairToApplicationUsers.AddAsync(wp);
-            _ = await dbContext.SaveChangesAsync();
+            await dbContext.WordPairToApplicationUsers.AddAsync(wp);
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task<WordPairDto> GetTestWordPair()

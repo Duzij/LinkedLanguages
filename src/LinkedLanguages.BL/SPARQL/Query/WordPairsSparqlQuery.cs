@@ -57,7 +57,7 @@ namespace LinkedLanguages.BL.SPARQL.Query
                     KnownWordUri = muri,
                     UnknownWordUri = furi,
                     KnownSeeAlsoLink = knownSeeAlsoLink,
-                    UnknownSeeAlsoLink = unknownSeeAlsoLink
+                    UnknownSeeAlsoLink = unknownSeeAlsoLink,
                 });
             }
 

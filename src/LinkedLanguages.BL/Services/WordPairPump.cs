@@ -1,4 +1,5 @@
 ﻿using AnyAscii;
+using LinkedLanguages.BL.CLLD;
 using LinkedLanguages.BL.Query;
 using LinkedLanguages.BL.SPARQL.Query;
 using LinkedLanguages.DAL;
@@ -50,7 +51,7 @@ namespace LinkedLanguages.BL.Services
                 //Offset will have to be reparated per language
                 string key = $"{knownLangCode}-{unknownLangCode}";
                 LanguagePageNumber offset = await dbContext.LanguageOffsets.FirstOrDefaultAsync(a => a.Key == key);
-                int pageNumber = 0;
+                int pageNumber = 1;
                 if (offset != null)
                 {
                     pageNumber = offset.PageNumer++;
@@ -58,8 +59,10 @@ namespace LinkedLanguages.BL.Services
                 else
                 {
                     await dbContext.LanguageOffsets.AddAsync(new LanguagePageNumber() { Key = key, PageNumer = pageNumber });
-                    await dbContext.SaveChangesAsync();
                 }
+
+                await dbContext.SaveChangesAsync();
+
 
                 List<WordPair> results = pairsQuery.Execute(new WordPairParameterDto(knownLangCode, knownLangugageId, unknownLangCode, unknownLangugageId, pageNumber));
 
@@ -73,7 +76,7 @@ namespace LinkedLanguages.BL.Services
                 }
                 else
                 {
-                    //Pump some more words
+                    //Pump more words
                     await Pump(knownLangCode, unknownLangCode);
                 }
             }
@@ -82,7 +85,7 @@ namespace LinkedLanguages.BL.Services
 
         private async Task<List<WordPair>> PostProcessResults(List<WordPair> results, Guid knownLangugageId, Guid unknownLanguageId)
         {
-            List<WordPair> postResults = new List<WordPair>();
+            List<WordPair> returnedResults = new List<WordPair>();
 
             WordPair[] languageWords = await dbContext.WordPairs.AsNoTracking()
                 .Where(a => a.UnknownLanguageId == unknownLanguageId && a.KnownLanguageId == knownLangugageId)
@@ -96,27 +99,71 @@ namespace LinkedLanguages.BL.Services
                     continue;
                 }
 
-                if (languageWords.FirstOrDefault
-                    (
-                        a => a.KnownWord.Transliterate() == wp.KnownWord.Transliterate() &&
-                        a.UnknownWord.Transliterate() == wp.UnknownWord.Transliterate()
-                    ) is not null)
+                //Suffixes and prefixes are ignored
+                if (wp.UnknownWord.First() == '-' || wp.UnknownWord.Last() == '-' ||
+                    wp.KnownWord.First() == '-' || wp.KnownWord.Last() == '-')
                 {
                     continue;
                 }
 
-                if (postResults.FirstOrDefault(
-                        a => a.KnownWord.Transliterate() == wp.KnownWord.Transliterate() &&
-                        a.UnknownWord.Transliterate() == wp.UnknownWord.Transliterate()
-                    ) is not null)
+                wp.KnownWordTransliterated = wp.KnownWord.Transliterate();
+                wp.UnknownWordTransliterated = wp.UnknownWord.Transliterate();
+
+                //Words with same transliterated known and unknown words are ignored
+                bool predicate(WordPair a)
+                {
+                    return a.KnownWordTransliterated == wp.KnownWordTransliterated &&
+                                        a.UnknownWordTransliterated == wp.UnknownWordTransliterated;
+                }
+
+                //Ignored from database
+                if (languageWords.FirstOrDefault(predicate) is not null)
                 {
                     continue;
                 }
 
-                postResults.Add(wp);
+                //Ignored from previously saved results
+                if (returnedResults.FirstOrDefault(predicate) is not null)
+                {
+                    continue;
+                }
 
+                CalculateCLLD(knownLangugageId, unknownLanguageId, wp);
+
+                returnedResults.Add(wp);
             }
-            return postResults;
+
+            return returnedResults;
+        }
+
+        /// <summary>
+        /// Static predefined dictionary of characters is used only for  German, French and English languages
+        /// </summary>
+        /// <param name="knownLangugageId"></param>
+        /// <param name="unknownLanguageId"></param>
+        /// <param name="wp"></param>
+        private static void CalculateCLLD(Guid knownLangugageId, Guid unknownLanguageId, WordPair wp)
+        {
+            Dictionary<string, string> characterMapping = new Dictionary<string, string>();
+
+            if (unknownLanguageId == LanguageSeed.FrenchLanguageId && knownLangugageId == LanguageSeed.EnglishLanguageId)
+            {
+                characterMapping = FrenchCharacterMapper.FrenchToEnglishMapping;
+            }
+            else if (unknownLanguageId == LanguageSeed.EnglishLanguageId && knownLangugageId == LanguageSeed.FrenchLanguageId)
+            {
+                characterMapping = FrenchCharacterMapper.EnglishToFrenchMapping;
+            }
+            if (unknownLanguageId == LanguageSeed.GermanLanguageId && knownLangugageId == LanguageSeed.EnglishLanguageId)
+            {
+                characterMapping = GermanCharacterMapper.GermanToEnglishMapping;
+            }
+            else if (unknownLanguageId == LanguageSeed.EnglishLanguageId && knownLangugageId == LanguageSeed.GermanLanguageId)
+            {
+                characterMapping = GermanCharacterMapper.EnglishToGermanMapping;
+            }
+
+            wp.Distance = CrossLingualLevenshteinDistanceCalculator.Calc(wp.KnownWordTransliterated, wp.UnknownWordTransliterated, characterMapping);
         }
     }
 }

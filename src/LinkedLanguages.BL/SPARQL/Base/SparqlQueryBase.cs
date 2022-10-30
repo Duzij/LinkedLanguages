@@ -14,6 +14,7 @@ namespace LinkedLanguages.BL.SPARQL.Base
         protected abstract void SetQueryParams(SparqlParameterizedString queryString, ParamT param);
 
         public SparqlRemoteEndpoint endpoint { get; private set; }
+        public virtual int TimeOut => 40000;
 
         public SparqlQueryBase(IOptions<SparqlEndpointOptions> options)
         {
@@ -24,7 +25,7 @@ namespace LinkedLanguages.BL.SPARQL.Base
         {
             endpoint = new SparqlRemoteEndpoint(options.EndpointUrl)
             {
-                Timeout = 75000
+                Timeout = TimeOut
             };
 
             SparqlQueryParser parser = new SparqlQueryParser();
@@ -40,9 +41,16 @@ namespace LinkedLanguages.BL.SPARQL.Base
             SetQueryParams(queryString, param);
 
             SparqlQuery query = parser.ParseFromString(queryString);
-            SparqlResultSet resultSet = endpoint.QueryWithResultSet(query.ToString());
+            try
+            {
+                SparqlResultSet resultSet = endpoint.QueryWithResultSet(query.ToString());
+                return !resultSet.IsEmpty ? ParseResult(resultSet, param) : throw new InvalidOperationException($"SPARQL result set is empty.");
+            }
+            catch (System.Exception ex)
+            {
+                throw new InvalidOperationException($"Timeout", ex);
+            }
 
-            return !resultSet.IsEmpty ? ParseResult(resultSet, param) : throw new InvalidOperationException($"SPARQL result set is empty.");
         }
 
     }

@@ -10,6 +10,7 @@ namespace LinkedLanguages.BL.SPARQL.Query
 
     public class PairsStatisticsSparqlQuery : SparqlQueryBase<int, LanguageCodesDto>
     {
+        public override int TimeOut => 75000;
         public PairsStatisticsSparqlQuery(IOptions<SparqlEndpointOptions> options) : base(options)
         {
         }
