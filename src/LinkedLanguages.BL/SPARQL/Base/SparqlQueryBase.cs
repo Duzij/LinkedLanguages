@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
+using System.Diagnostics;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
@@ -8,6 +10,8 @@ namespace LinkedLanguages.BL.SPARQL.Base
     public abstract class SparqlQueryBase<ReturnT, ParamT>
     {
         public readonly SparqlEndpointOptions options;
+        private readonly Stopwatch stopWatch;
+        private readonly ILogger<SparqlQueryBase<ReturnT, ParamT>> logger;
 
         public abstract string CommandText { get; set; }
         protected abstract ReturnT ParseResult(SparqlResultSet resultSet, ParamT param);
@@ -16,12 +20,57 @@ namespace LinkedLanguages.BL.SPARQL.Base
         public SparqlRemoteEndpoint endpoint { get; private set; }
         public virtual int TimeOut => 40000;
 
-        public SparqlQueryBase(IOptions<SparqlEndpointOptions> options)
+        public SparqlQueryBase(IOptions<SparqlEndpointOptions> options, ILogger<SparqlQueryBase<ReturnT, ParamT>> logger)
         {
             this.options = options.Value;
+            stopWatch = new Stopwatch();
+            this.logger = logger;
         }
 
         public ReturnT Execute(ParamT param)
+        {
+            stopWatch.Start();
+            SparqlQuery query = PrepareQuery(param);
+
+            SparqlResultSet resultSet;
+            try
+            {
+                resultSet = endpoint.QueryWithResultSet(query.ToString());
+                stopWatch.Stop();
+                logger.LogInformation($"SPQRQL query execution took {stopWatch.ElapsedMilliseconds} miliseconds.");
+
+            }
+            catch (System.Exception ex)
+            {
+                logger.LogWarning($"{nameof(ex)} timeouted.");
+                throw new InvalidOperationException($"Timeout", ex);
+            }
+
+            if (resultSet.IsEmpty)
+            {
+                logger.LogWarning($"SPARQL result set is empty.");
+                throw new InvalidOperationException($"SPARQL result set is empty.");
+            }
+
+            return ParseResult(resultSet, param);
+        }
+
+
+        public ReturnT ExecuteDontThrow(ParamT param)
+        {
+            SparqlQuery query = PrepareQuery(param);
+            try
+            {
+                SparqlResultSet resultSet = endpoint.QueryWithResultSet(query.ToString());
+                return !resultSet.IsEmpty ? ParseResult(resultSet, param) : default;
+            }
+            catch (System.Exception)
+            {
+                return default;
+            }
+        }
+
+        private SparqlQuery PrepareQuery(ParamT param)
         {
             endpoint = new SparqlRemoteEndpoint(options.EndpointUrl)
             {
@@ -41,17 +90,7 @@ namespace LinkedLanguages.BL.SPARQL.Base
             SetQueryParams(queryString, param);
 
             SparqlQuery query = parser.ParseFromString(queryString);
-            try
-            {
-                SparqlResultSet resultSet = endpoint.QueryWithResultSet(query.ToString());
-                return !resultSet.IsEmpty ? ParseResult(resultSet, param) : throw new InvalidOperationException($"SPARQL result set is empty.");
-            }
-            catch (System.Exception ex)
-            {
-                throw new InvalidOperationException($"Timeout", ex);
-            }
-
+            return query;
         }
-
     }
 }

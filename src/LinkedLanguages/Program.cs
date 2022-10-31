@@ -24,7 +24,6 @@ namespace LinkedLanguages
     {
         public static void Main(string[] args)
         {
-
             WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
@@ -59,24 +58,32 @@ namespace LinkedLanguages
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
-
+            builder.Services.AddMemoryCache();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddTransient<IAppUserProvider, AppUserProvider>();
             builder.Services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
 
-            builder.Services.AddMemoryCache();
-            builder.Services.AddTransient<UnusedUserWordPairsQuery>();
+            //Facades and services
             builder.Services.AddTransient<LanguageFacade>();
+            builder.Services.AddTransient<SeeAlsoLinksFacade>();
             builder.Services.AddTransient<WordPairFacade>();
             builder.Services.AddTransient<TestWordPairFacade>();
             builder.Services.AddTransient<WordPairPump>();
+
+            //SPARQL queries
             builder.Services.AddTransient<WordPairsSparqlQuery>();
             builder.Services.AddTransient<PairsStatisticsSparqlQuery>();
             builder.Services.AddTransient<WordDefinitionSparqlQuery>();
+            builder.Services.AddTransient<WordSeeAlsoLinkSparqlQuery>();
+
+            //EF Core queries
+            builder.Services.AddTransient<UnusedUserWordPairsQuery>();
             builder.Services.AddTransient<WordPairsUserQuery>();
             builder.Services.AddTransient<ApprovedWordPairsQuery>();
             builder.Services.AddTransient<RejectedWordPairsQuery>();
-            builder.Services.AddTransient<IEmailSender, EmailSender>();
+            builder.Services.AddTransient<TransliteratedWordParisQuery>();
+
             builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
             builder.Services.Configure<SparqlEndpointOptions>(builder.Configuration.GetSection("SparqlEndpointOptions"));
             builder.Services.AddApplicationInsightsTelemetry(options: new ApplicationInsightsServiceOptions { ConnectionString = builder.Configuration.GetValue<string>("APPINSIGHTS_CONNECTIONSTRING") });

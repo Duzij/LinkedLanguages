@@ -16,8 +16,10 @@ export class Learn extends Component {
             knownDefinitions: [],
             unknownDefinitions: [],
             canFetchNext: true,
-            knownSeeAlsoLink: undefined,
-            unknownSeeAlsoLink: undefined,
+            knownLinks: [],
+            unknownLinks: [],
+            knownLanguageLabel: undefined,
+            unknownLanguageLabel: undefined,
             errorMessage: undefined
         };
     }
@@ -26,7 +28,11 @@ export class Learn extends Component {
         fetchGet(
             "profile",
             (data) => {
-                this.setState({ unknownLanguageId: data.unknownLanguages[0].value },
+                this.setState({
+                    unknownLanguageId: data.unknownLanguages[0].value,
+                    unknownLanguageLabel: data.unknownLanguages[0].label,
+                    knownLanguageLabel: data.knownLanguages[0].label,
+                },
                     () => {
                         this.fetchNextWord()
                     });
@@ -37,7 +43,7 @@ export class Learn extends Component {
         fetchGet(
             `wordpair/get/${this.state.unknownLanguageId}`,
             (data) => {
-                this.setState({ word: data },
+                this.setState({ word: data, loading: false },
                     () => {
                         this.fetchDefinitions()
                     });
@@ -50,14 +56,35 @@ export class Learn extends Component {
             });
     }
 
+    async fetchLinks() {
+        fetchGet(
+            `wordpair/link/${this.state.word.id}`,
+            (data) => {
+                this.setState({
+                    knownLinks: data.knownLinks,
+                    unknownLinks: data.unknownLinks
+                });
+            },
+            (error) => {
+                if (error.message === '404') {
+                    this.setState({
+                        errorMessage: 'No definitions found. 😶',
+                        loading: false
+                    });
+                }
+            });
+    }
+
+
     async fetchDefinitions() {
         fetchGet(
             `wordpair/definiton/${this.state.word.id}`,
             (data) => {
                 this.setState({
                     knownDefinitions: data.knownDefinitions,
-                    unknownDefinitions: data.unknownDefinitions,
-                    loading: false
+                    unknownDefinitions: data.unknownDefinitions
+                }, () => {
+                    this.fetchLinks()
                 });
             },
             (error) => {
@@ -87,50 +114,6 @@ export class Learn extends Component {
                     </div>
                 </div>
                 <form hidden={!this.state.canFetchNext}>
-                    <div className="row">
-                        <div className='col align-self-center'>
-                            <div className="list-group">
-                                <div className="list-group-item">
-                                    <div className="d-flex w-100 justify-content-between">
-                                        <h5 className="mb-1">{this.state.word.knownWord}</h5>
-                                        <small className="text-muted">Known word</small>
-                                    </div>
-                                    {
-                                        this.state.knownDefinitions.map(
-                                            (def) => <p key={def.toString()} className="mb-1">{def}</p>
-                                        )
-                                    }
-                                    {
-                                        this.state.word.knownSeeAlsoLink !== undefined && this.state.word.knownSeeAlsoLink !== null ?
-                                            <small className="text-muted">
-                                                <a className='text-reset' href={this.state.word.knownSeeAlsoLink}>See also</a>
-                                            </small> : null
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                        <div className='col align-self-center'>
-                            <div className="list-group">
-                                <div className="list-group-item">
-                                    <div className="d-flex w-100 justify-content-between">
-                                        <h5 className="mb-1">{this.state.word.unknownWord}</h5>
-                                        <small className="text-muted">Unknown word</small>
-                                    </div>
-                                    {
-                                        this.state.unknownDefinitions.map(
-                                            (def) => <p key={def.toString()} className="mb-1">{def}</p>
-                                        )
-                                    }
-                                    {
-                                        this.state.word.unknownSeeAlsoLink !== undefined && this.state.word.unknownSeeAlsoLink !== null ?
-                                            <small className="text-muted">
-                                                <a className='text-reset' href={this.state.word.unknownSeeAlsoLink}>See also</a>
-                                            </small> : null
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <div className="d-flex justify-content-center">
                         <div className='d-flex flex-column m-3 justify-content-end'>
                             <button type="button" className="btn btn-outline-danger" onClick={this.reject.bind(this)}>
@@ -143,9 +126,52 @@ export class Learn extends Component {
                             </button>
                         </div>
                     </div>
-
+                    <div className="row row-cols-1 row-cols-md-2 g-4">
+                        <div className='col'>
+                            <div className="card">
+                                <div className="card-header">Known word ({this.state.knownLanguageLabel})</div>
+                                <div className="card-body">
+                                    <h3 className="card-title">{this.state.word.knownWord}</h3>
+                                    {this.state.knownDefinitions && this.state.knownDefinitions.map((def) => <p className="card-text">{def}</p>)}
+                                    <p hidden={this.state.knownLinks === null} className="card-text">
+                                        <small className="text-muted me-1">
+                                            See also:
+                                        </small>
+                                        {
+                                            this.state.knownLinks && this.state.knownLinks.map(
+                                                (link) => <small key={link.uri} className="text-muted">
+                                                    <a className='text-reset me-1' href={link.uri}>{link.name}</a>
+                                                </small>
+                                            )
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='col'>
+                            <div className="card">
+                                <div className="card-header">Unknown word ({this.state.unknownLanguageLabel})</div>
+                                <div className="card-body">
+                                    <h3 className="card-title">{this.state.word.unknownWord}</h3>
+                                    {this.state.unknownDefinitions && this.state.unknownDefinitions.map((def) => <p className="card-text">{def}</p>)}
+                                    <p hidden={this.state.unknownLinks === null} className="card-text">
+                                        <small className="text-muted me-1">
+                                            <span >See also:</span>
+                                        </small>
+                                        {
+                                            this.state.unknownLinks && this.state.unknownLinks.map(
+                                                (link) => <small key={link.uri} className="text-muted">
+                                                    <a className='text-reset me-1' href={link.uri}>{link.name}</a>
+                                                </small>
+                                            )
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </form>
-            </div>
+            </div >
         );
     }
 

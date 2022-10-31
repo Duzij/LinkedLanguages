@@ -1,9 +1,10 @@
 using LinkedLanguages.BL.SPARQL.Query;
 using LinkedLanguages.DAL;
-using LinkedLanguages.Tests.Helpers;
 
 using NUnit.Framework;
 using System.Linq;
+
+using static LinkedLanguages.Tests.Helpers.TestServices;
 
 namespace LinkedLanguages.Tests.SparqlTests
 {
@@ -17,9 +18,9 @@ namespace LinkedLanguages.Tests.SparqlTests
         [SetUp]
         public void Setup()
         {
-            sparqlQuery = new WordPairsSparqlQuery(TestServices.GetMoqOptions());
-            statisticsQuery = new PairsStatisticsSparqlQuery(TestServices.GetMoqOptions());
-            wordDefinitionQuery = new WordDefinitionSparqlQuery(TestServices.GetMoqOptions());
+            sparqlQuery = GetTestWordPairsSparqlQuery();
+            statisticsQuery = GetTestPairsStatisticsSparqlQuery();
+            wordDefinitionQuery = GetTestWordDefinitionSparqlQuery();
         }
 
         [Test]

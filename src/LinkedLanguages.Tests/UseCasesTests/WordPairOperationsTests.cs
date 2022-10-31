@@ -6,7 +6,7 @@ using LinkedLanguages.BL.SPARQL.Query;
 using LinkedLanguages.BL.User;
 using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
-
+using Microsoft.Extensions.Logging;
 using Moq;
 
 using NUnit.Framework;
@@ -66,7 +66,7 @@ namespace LinkedLanguages.Tests.UseCasesTests
             appUserProvider.Setup(a => a.GetUserKnownLanguageCode()).Returns("eng");
             wordPairsUserQuery = new WordPairsUserQuery(dbContext, appUserProvider.Object);
             approvedUserQuery = new ApprovedWordPairsQuery(wordPairsUserQuery);
-            wordDefinitionSparqlQuery = new WordDefinitionSparqlQuery(GetMoqOptions());
+            wordDefinitionSparqlQuery = GetTestWordDefinitionSparqlQuery();
         }
 
 
@@ -89,9 +89,10 @@ namespace LinkedLanguages.Tests.UseCasesTests
         [Test]
         public async Task ApproveWordPair()
         {
-            UnusedUserWordPairsQuery unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, wordPairsUserQuery);
+            var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, wordPairsUserQuery);
+            var transliteratedWordParisQuery = new TransliteratedWordParisQuery(dbContext);
 
-            WordPairPump wordPairPump = new WordPairPump(new WordPairsSparqlQuery(GetMoqOptions()), unusedUserWordPairsQuery, dbContext);
+            WordPairPump wordPairPump = new WordPairPump(GetTestWordPairsSparqlQuery(), GetTestWordSeeAlsoLinkSparqlQuery(), unusedUserWordPairsQuery, transliteratedWordParisQuery, dbContext, new Mock<ILogger<WordPairPump>>().Object);
 
             WordPairFacade facade = new WordPairFacade(dbContext, wordPairPump, appUserProvider.Object, unusedUserWordPairsQuery, approvedUserQuery, wordDefinitionSparqlQuery);
 
@@ -111,8 +112,9 @@ namespace LinkedLanguages.Tests.UseCasesTests
         public async Task ApproveWordPairs()
         {
             UnusedUserWordPairsQuery unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, wordPairsUserQuery);
+            var transliteratedWordParisQuery = new TransliteratedWordParisQuery(dbContext);
 
-            WordPairPump wordPairPump = new WordPairPump(new WordPairsSparqlQuery(GetMoqOptions()), unusedUserWordPairsQuery, dbContext);
+            WordPairPump wordPairPump = new WordPairPump(GetTestWordPairsSparqlQuery(), GetTestWordSeeAlsoLinkSparqlQuery(), unusedUserWordPairsQuery, transliteratedWordParisQuery, dbContext, new Mock<ILogger<WordPairPump>>().Object);
 
             WordPairFacade facade = new WordPairFacade(dbContext, wordPairPump, appUserProvider.Object, unusedUserWordPairsQuery, approvedUserQuery, wordDefinitionSparqlQuery);
 

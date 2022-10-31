@@ -1,5 +1,6 @@
 ﻿using LinkedLanguages.BL.SPARQL.Base;
 using LinkedLanguages.DAL.Models;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -14,11 +15,11 @@ namespace LinkedLanguages.BL.SPARQL.Query
                                                        int page);
     public class WordPairsSparqlQuery : SparqlQueryBase<List<WordPair>, WordPairParameterDto>
     {
-        public WordPairsSparqlQuery(IOptions<SparqlEndpointOptions> options) : base(options)
+        public WordPairsSparqlQuery(IOptions<SparqlEndpointOptions> options, ILogger<SparqlQueryBase<List<WordPair>, WordPairParameterDto>> logger) : base(options, logger)
         {
         }
 
-        public override string CommandText { get; set; } = string.Concat("SELECT DISTINCT ?myLanguageLabel ?myWord ?foreignWord ?foreignWordLabel ",
+        public override string CommandText { get; set; } = string.Concat("SELECT  ?myLanguageLabel ?myWord ?foreignWord ?foreignWordLabel ",
                                                                           EtyTreeEtymologyCommandText.GetTwoWayLanguageWhereUnionCommandText());
 
         protected override void SetQueryParams(SparqlParameterizedString queryString, WordPairParameterDto param)

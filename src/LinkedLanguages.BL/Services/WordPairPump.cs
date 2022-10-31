@@ -5,6 +5,7 @@ using LinkedLanguages.BL.SPARQL.Query;
 using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,16 +16,25 @@ namespace LinkedLanguages.BL.Services
     public class WordPairPump
     {
         private readonly WordPairsSparqlQuery pairsQuery;
+        private readonly WordSeeAlsoLinkSparqlQuery wordSeeAlsoLinkSparqlQuery;
         private readonly UnusedUserWordPairsQuery unusedUserWordPairs;
+        private readonly TransliteratedWordParisQuery transliteratedWordParisQuery;
         private readonly ApplicationDbContext dbContext;
+        private readonly ILogger<WordPairPump> logger;
 
         public WordPairPump(WordPairsSparqlQuery pairsQuery,
+                            WordSeeAlsoLinkSparqlQuery wordSeeAlsoLinkSparqlQuery,
                             UnusedUserWordPairsQuery unusedUserWordPairs,
-                            ApplicationDbContext dbContext)
+                            TransliteratedWordParisQuery transliteratedWordParisQuery,
+                            ApplicationDbContext dbContext,
+                            ILogger<WordPairPump> logger)
         {
             this.pairsQuery = pairsQuery;
+            this.wordSeeAlsoLinkSparqlQuery = wordSeeAlsoLinkSparqlQuery;
             this.unusedUserWordPairs = unusedUserWordPairs;
+            this.transliteratedWordParisQuery = transliteratedWordParisQuery;
             this.dbContext = dbContext;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -40,7 +50,7 @@ namespace LinkedLanguages.BL.Services
                 .Select(l => l.Id)
                 .Single();
 
-            Guid unknownLangugageId = dbContext.Languages
+            Guid unknownLanguageId = dbContext.Languages
                 .AsNoTracking()
                 .Where(l => l.Code == unknownLangCode)
                 .Select(l => l.Id)
@@ -62,74 +72,66 @@ namespace LinkedLanguages.BL.Services
                 {
                     await dbContext.LanguageOffsets.AddAsync(new LanguagePageNumber() { Key = key, PageNumer = pageNumber });
                 }
+                await dbContext.SaveChangesAsync();
 
-                List<WordPair> results = pairsQuery.Execute(new WordPairParameterDto(knownLangCode, knownLangugageId, unknownLangCode, unknownLangugageId, pageNumber));
+                List<WordPair> results = pairsQuery.Execute(new WordPairParameterDto(knownLangCode, knownLangugageId, unknownLangCode, unknownLanguageId, pageNumber));
 
-                results = await PostProcessResults(results, knownLangugageId, unknownLangugageId);
+                var databaseWords = await transliteratedWordParisQuery.GetQueryable(unknownLanguageId, knownLangugageId).ToArrayAsync();
+
+                results = results.FilterSameWords()
+                       .FilterSuffixesAndPrefixes()
+                       .FilterWordPairsWithHighCLLD(knownLangugageId, unknownLanguageId)
+                       .FilterTransliteratedWordsFromDatabase(databaseWords)
+                       .FilterTransliteratedDuplicates()
+                       .ToList();
 
                 if (results.Any())
                 {
-                    //Add new words to database
+                    //Add new words to database, pump is finished
                     await dbContext.WordPairs.AddRangeAsync(results);
                     await dbContext.SaveChangesAsync();
                 }
                 else
                 {
-                    //Pump more words
+                    //Pump more words, all results were filtered out
                     await Pump(knownLangCode, unknownLangCode);
                 }
             }
 
         }
+    }
 
-        private async Task<List<WordPair>> PostProcessResults(List<WordPair> results, Guid knownLangugageId, Guid unknownLanguageId)
+    public static class WordPairResultsPipeline
+    {
+        public static IEnumerable<WordPair> FilterSameWords(this IEnumerable<WordPair> results)
         {
-            List<WordPair> returnedResults = new List<WordPair>();
-
-            WordPair[] languageWords = await dbContext.WordPairs.AsNoTracking()
-                .Where(a => a.UnknownLanguageId == unknownLanguageId && a.KnownLanguageId == knownLangugageId)
-                .ToArrayAsync();
-
-            foreach (WordPair wp in results)
+            return results.Where(wp => string.Compare(wp.UnknownWord, wp.KnownWord, ignoreCase: true) != 0);
+        }
+        public static IEnumerable<WordPair> FilterSuffixesAndPrefixes(this IEnumerable<WordPair> results)
+        {
+            return results.Where(
+                    wp => wp.UnknownWord.First() != '-' || wp.UnknownWord.Last() != '-' ||
+                    wp.KnownWord.First() != '-' || wp.KnownWord.Last() != '-');
+        }
+        public static IEnumerable<WordPair> FilterWordPairsWithHighCLLD(this IEnumerable<WordPair> results, Guid knownLangugageId, Guid unknownLanguageId)
+        {
+            results.ToList().ForEach((wp) =>
             {
-                //Same words are ignored, as they are easy to recognize
-                if (string.Compare(wp.UnknownWord, wp.KnownWord, ignoreCase: true) == 0)
-                {
-                    continue;
-                }
-
-                //Suffixes and prefixes are ignored
-                if (wp.UnknownWord.First() == '-' || wp.UnknownWord.Last() == '-' ||
-                    wp.KnownWord.First() == '-' || wp.KnownWord.Last() == '-')
-                {
-                    continue;
-                }
-
                 wp.KnownWordTransliterated = wp.KnownWord.Transliterate();
                 wp.UnknownWordTransliterated = wp.UnknownWord.Transliterate();
-
-                //Words with same transliterated known and unknown words are ignored
-                bool predicate(WordPair a)
-                {
-                    return a.KnownWordTransliterated == wp.KnownWordTransliterated &&
-                                        a.UnknownWordTransliterated == wp.UnknownWordTransliterated;
-                }
-
-                //Ignored from database
-                if (languageWords.FirstOrDefault(predicate) is not null)
-                {
-                    continue;
-                }
-
-                //Ignored from previously saved results
-                if (returnedResults.FirstOrDefault(predicate) is not null)
-                {
-                    continue;
-                }
-
-                //Distances higher than 3 are ignored
                 CalculateCLLD(knownLangugageId, unknownLanguageId, wp);
-                if (wp.Distance > 3)
+            });
+
+            return results.Where(wp => wp.Distance < 3);
+        }
+
+        public static IEnumerable<WordPair> FilterTransliteratedWordsFromDatabase(this IEnumerable<WordPair> results, TransliteratedWordsDto[] databaseWords)
+        {
+            var returnedResults = new List<WordPair>();
+
+            foreach (var wp in results)
+            {
+                if (databaseWords.Any(db => db.KnownWordTransliterated == wp.KnownWordTransliterated && db.UnknownWordTransliterated == wp.UnknownWordTransliterated))
                 {
                     continue;
                 }
@@ -138,6 +140,11 @@ namespace LinkedLanguages.BL.Services
             }
 
             return returnedResults;
+        }
+
+        public static IEnumerable<WordPair> FilterTransliteratedDuplicates(this IEnumerable<WordPair> results)
+        {
+            return results.DistinctBy(a => new { a.UnknownWordTransliterated, a.KnownWordTransliterated });
         }
 
         /// <summary>

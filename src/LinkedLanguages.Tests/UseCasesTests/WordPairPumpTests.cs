@@ -1,9 +1,9 @@
 ﻿using LinkedLanguages.BL.Query;
 using LinkedLanguages.BL.Services;
-using LinkedLanguages.BL.SPARQL.Query;
 using LinkedLanguages.BL.User;
 using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 using NUnit.Framework;
@@ -52,8 +52,9 @@ namespace LinkedLanguages.Tests.UseCasesTests
         public async Task PumpNotPerformedIfNotNeeded()
         {
             UnusedUserWordPairsQuery unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, approvedQuery);
+            var transliteratedWordParisQuery = new TransliteratedWordParisQuery(dbContext);
 
-            WordPairPump wordPairPump = new WordPairPump(new WordPairsSparqlQuery(GetMoqOptions()), unusedUserWordPairsQuery, dbContext);
+            WordPairPump wordPairPump = new WordPairPump(GetTestWordPairsSparqlQuery(), GetTestWordSeeAlsoLinkSparqlQuery(), unusedUserWordPairsQuery, transliteratedWordParisQuery, dbContext, new Mock<ILogger<WordPairPump>>().Object);
 
             await wordPairPump.Pump("eng", "lat");
 
@@ -70,8 +71,9 @@ namespace LinkedLanguages.Tests.UseCasesTests
             dbContext.SaveChanges();
 
             UnusedUserWordPairsQuery unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, approvedQuery);
+            var transliteratedWordParisQuery = new TransliteratedWordParisQuery(dbContext);
 
-            WordPairPump wordPairPump = new WordPairPump(new WordPairsSparqlQuery(GetMoqOptions()), unusedUserWordPairsQuery, dbContext);
+            WordPairPump wordPairPump = new WordPairPump(GetTestWordPairsSparqlQuery(), GetTestWordSeeAlsoLinkSparqlQuery(), unusedUserWordPairsQuery, transliteratedWordParisQuery, dbContext, new Mock<ILogger<WordPairPump>>().Object);
             await wordPairPump.Pump("eng", "lat");
 
             Assert.That(dbContext.WordPairs.Count(), Is.EqualTo(3));
@@ -94,8 +96,9 @@ namespace LinkedLanguages.Tests.UseCasesTests
             await dbContext.SaveChangesAsync();
 
             UnusedUserWordPairsQuery unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, approvedQuery);
+            var transliteratedWordParisQuery = new TransliteratedWordParisQuery(dbContext);
 
-            WordPairPump wordPairPump = new WordPairPump(new WordPairsSparqlQuery(GetMoqOptions()), unusedUserWordPairsQuery, dbContext);
+            WordPairPump wordPairPump = new WordPairPump(GetTestWordPairsSparqlQuery(), GetTestWordSeeAlsoLinkSparqlQuery(), unusedUserWordPairsQuery, transliteratedWordParisQuery, dbContext, new Mock<ILogger<WordPairPump>>().Object);
             await wordPairPump.Pump("eng", "lat");
 
             Assert.That(dbContext.WordPairs.Count(), Is.EqualTo(4));

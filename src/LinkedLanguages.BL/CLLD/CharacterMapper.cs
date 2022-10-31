@@ -59,10 +59,9 @@ namespace LinkedLanguages.BL.CLLD
                 { "k","c"},
                 { "b,v","f"},
                 { "f","p"},
-                {  "p","pp"},
+                { "p","pp"},
                 { "chs","x"},
-                {  "sch", "sh"},
-                { "sch","s"},
+                { "sch","s, sh"},
                 { "b","v"},
                 { "ss","t"},
                 { "nn","n"}

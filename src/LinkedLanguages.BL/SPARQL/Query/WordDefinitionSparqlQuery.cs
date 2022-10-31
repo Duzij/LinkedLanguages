@@ -1,4 +1,5 @@
 ﻿using LinkedLanguages.BL.SPARQL.Base;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace LinkedLanguages.BL.SPARQL.Query
 
     public class WordDefinitionSparqlQuery : SparqlQueryBase<IEnumerable<string>, WordUriDto>
     {
-        public WordDefinitionSparqlQuery(IOptions<SparqlEndpointOptions> options) : base(options)
+        public WordDefinitionSparqlQuery(IOptions<SparqlEndpointOptions> options, ILogger<SparqlQueryBase<IEnumerable<string>, WordUriDto>> logger) : base(options, logger)
         {
         }
 
@@ -40,7 +41,6 @@ namespace LinkedLanguages.BL.SPARQL.Query
 
         protected override void SetQueryParams(SparqlParameterizedString queryString, WordUriDto param)
         {
-            //hack
             queryString.CommandText = queryString.CommandText.Replace("@uri", param.Uri);
         }
     }

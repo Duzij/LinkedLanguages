@@ -1,11 +1,13 @@
 ﻿using LinkedLanguages.BL.SPARQL.Query;
 using LinkedLanguages.DAL;
-using LinkedLanguages.Tests.Helpers;
 
 using NUnit.Framework;
 
 using System;
 using System.Linq;
+
+
+using static LinkedLanguages.Tests.Helpers.TestServices;
 
 namespace LinkedLanguages.Tests.LevenshteinDistanceTests
 {
@@ -16,7 +18,7 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
         [SetUp]
         public void Setup()
         {
-            sparqlQuery = new WordPairsSparqlQuery(TestServices.GetMoqOptions());
+            sparqlQuery = GetTestWordPairsSparqlQuery();
         }
 
         [Test]

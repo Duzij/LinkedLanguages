@@ -1,12 +1,13 @@
 ﻿using LinkedLanguages.BL.SPARQL.Query;
 using LinkedLanguages.DAL;
-using LinkedLanguages.Tests.Helpers;
 
 using NUnit.Framework;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using static LinkedLanguages.Tests.Helpers.TestServices;
 
 namespace LinkedLanguages.Tests.LevenshteinDistanceTests
 {
@@ -32,7 +33,7 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
         [SetUp]
         public void Setup()
         {
-            var sparqlQuery = new WordPairsSparqlQuery(TestServices.GetMoqOptions());
+            var sparqlQuery = GetTestWordPairsSparqlQuery();
             var results = sparqlQuery.Execute(new WordPairParameterDto("eng", LanguageSeed.EnglishLanguageId, "fra", LanguageSeed.RussianLangaugeId, 1));
 
             wordPairWrappers = results.Select(i => new WordPairExtendedLevenshteinWrapper(i, removeInvariantsCharactersMapping))
