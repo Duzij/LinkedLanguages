@@ -34,7 +34,7 @@ namespace LinkedLanguages.BL
         {
             return await dbContext.WordPairToApplicationUsers.AsNoTracking()
                 .Where(a => a.WordPairId == submitWord.WordPairId)
-                .Select(a => new WordPairDto(a.WordPair.Id, a.WordPair.UnknownWord, a.WordPair.KnownWord, a.WordPair.KnownSeeAlsoLink, a.WordPair.UnknownSeeAlsoLink))
+                .Select(a => new WordPairDto(a.WordPair.Id, a.WordPair.UnknownWord, a.WordPair.KnownWord))
                 .FirstAsync();
         }
 

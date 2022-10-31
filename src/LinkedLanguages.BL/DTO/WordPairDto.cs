@@ -6,8 +6,6 @@ namespace LinkedLanguages.BL.DTO
     (
         Guid Id,
         string UnknownWord,
-        string KnownWord,
-        string KnownSeeAlsoLink,
-        string UnknownSeeAlsoLink
+        string KnownWord
     );
 }

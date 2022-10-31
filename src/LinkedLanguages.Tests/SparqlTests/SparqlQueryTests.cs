@@ -35,8 +35,6 @@ namespace LinkedLanguages.Tests.SparqlTests
 
             Assert.That(results.FirstOrDefault().KnownWord, Is.Not.Null);
             Assert.That(results.FirstOrDefault().UnknownWord, Is.Not.Null);
-
-            Assert.That(results.FirstOrDefault().KnownSeeAlsoLink, Is.Not.Null);
         }
 
         [Test]

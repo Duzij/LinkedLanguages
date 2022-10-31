@@ -18,7 +18,7 @@ namespace LinkedLanguages.BL.SPARQL.Query
         {
         }
 
-        public override string CommandText { get; set; } = string.Concat("SELECT DISTINCT ?myLanguageLabel ?myWord ?foreignWord ?foreignWordLabel ?unknownSeeAlsoLink ?knownSeeAlsoLink ",
+        public override string CommandText { get; set; } = string.Concat("SELECT DISTINCT ?myLanguageLabel ?myWord ?foreignWord ?foreignWordLabel ",
                                                                           EtyTreeEtymologyCommandText.GetTwoWayLanguageWhereUnionCommandText());
 
         protected override void SetQueryParams(SparqlParameterizedString queryString, WordPairParameterDto param)
@@ -42,9 +42,6 @@ namespace LinkedLanguages.BL.SPARQL.Query
                 string furi = t.GetLiteral("foreignWord");
                 string muri = t.GetLiteral("myWord");
 
-                string knownSeeAlsoLink = t.GetLiteral("knownSeeAlsoLink");
-                string unknownSeeAlsoLink = t.GetLiteral("unknownSeeAlsoLink");
-
                 results.Add(new WordPair()
                 {
                     Id = Guid.NewGuid(),
@@ -55,9 +52,7 @@ namespace LinkedLanguages.BL.SPARQL.Query
                     UnknownLanguageId = param.unknownLangId,
                     UnknownLanguageCode = param.unknownLangCode,
                     KnownWordUri = muri,
-                    UnknownWordUri = furi,
-                    KnownSeeAlsoLink = knownSeeAlsoLink,
-                    UnknownSeeAlsoLink = unknownSeeAlsoLink,
+                    UnknownWordUri = furi
                 });
             }
 

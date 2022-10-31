@@ -35,11 +35,13 @@ namespace LinkedLanguages.BL.Services
         public async Task Pump(string knownLangCode, string unknownLangCode)
         {
             Guid knownLangugageId = dbContext.Languages
+                .AsNoTracking()
                 .Where(l => l.Code == knownLangCode)
                 .Select(l => l.Id)
                 .Single();
 
             Guid unknownLangugageId = dbContext.Languages
+                .AsNoTracking()
                 .Where(l => l.Code == unknownLangCode)
                 .Select(l => l.Id)
                 .Single();
@@ -48,10 +50,10 @@ namespace LinkedLanguages.BL.Services
 
             if (!remainingWordsForCurrentUser.Any())
             {
-                //Offset will have to be reparated per language
                 string key = $"{knownLangCode}-{unknownLangCode}";
                 LanguagePageNumber offset = await dbContext.LanguageOffsets.FirstOrDefaultAsync(a => a.Key == key);
-                int pageNumber = 1;
+                int pageNumber = 0;
+
                 if (offset != null)
                 {
                     pageNumber = offset.PageNumer++;
@@ -60,9 +62,6 @@ namespace LinkedLanguages.BL.Services
                 {
                     await dbContext.LanguageOffsets.AddAsync(new LanguagePageNumber() { Key = key, PageNumer = pageNumber });
                 }
-
-                await dbContext.SaveChangesAsync();
-
 
                 List<WordPair> results = pairsQuery.Execute(new WordPairParameterDto(knownLangCode, knownLangugageId, unknownLangCode, unknownLangugageId, pageNumber));
 
@@ -128,7 +127,12 @@ namespace LinkedLanguages.BL.Services
                     continue;
                 }
 
+                //Distances higher than 3 are ignored
                 CalculateCLLD(knownLangugageId, unknownLanguageId, wp);
+                if (wp.Distance > 3)
+                {
+                    continue;
+                }
 
                 returnedResults.Add(wp);
             }

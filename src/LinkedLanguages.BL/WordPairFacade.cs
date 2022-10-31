@@ -95,7 +95,7 @@ namespace LinkedLanguages.BL
             }
 
             WordPairDto nextWord = unusedUserWordPairs.GetQueryable(knownLang, unknownLangCode)
-                .Select(u => new WordPairDto(u.Id, u.UnknownWord, u.KnownWord, u.KnownSeeAlsoLink, u.UnknownSeeAlsoLink))
+                .Select(u => new WordPairDto(u.Id, u.UnknownWord, u.KnownWord))
                 .FirstOrDefault();
 
             return nextWord == default(WordPairDto) ? throw new WordNotFoundException() : nextWord;
@@ -137,7 +137,7 @@ namespace LinkedLanguages.BL
 
             WordPairDto nextWord = await approvedWordPairs.GetQueryable(knownLang, unknownLangCode)
                 .Where(w => !w.Larned)
-                .Select(u => new WordPairDto(u.WordPairId, u.WordPair.UnknownWord, "", u.WordPair.KnownSeeAlsoLink, u.WordPair.UnknownSeeAlsoLink))
+                .Select(u => new WordPairDto(u.WordPairId, u.WordPair.UnknownWord, ""))
                 .FirstOrDefaultAsync();
 
             return nextWord == default(WordPairDto) ? throw new WordNotFoundException() : nextWord;
@@ -149,7 +149,7 @@ namespace LinkedLanguages.BL
                  .AsNoTracking()
                  .Where(a => a.ApplicationUserId == appUserProvider.GetUserId())
                  .Where(a => a.Larned)
-                 .Select(a => new WordPairDto(a.WordPairId, a.WordPair.UnknownWord, a.WordPair.KnownWord, a.WordPair.KnownSeeAlsoLink, a.WordPair.UnknownSeeAlsoLink))
+                 .Select(a => new WordPairDto(a.WordPairId, a.WordPair.UnknownWord, a.WordPair.KnownWord))
                  .ToArrayAsync();
         }
 

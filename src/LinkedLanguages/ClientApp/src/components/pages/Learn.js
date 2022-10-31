@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import LoadingSpinner from './../LoadingSpinner';
 import authService from './../api-authorization/AuthorizeService'
 import { fetchGet } from '../FetchApi';
+import { NavLink } from 'react-router-dom';
 
 export class Learn extends Component {
     static displayName = Learn.name;
@@ -16,7 +17,8 @@ export class Learn extends Component {
             unknownDefinitions: [],
             canFetchNext: true,
             knownSeeAlsoLink: undefined,
-            unknownSeeAlsoLink: undefined
+            unknownSeeAlsoLink: undefined,
+            errorMessage: undefined
         };
     }
 
@@ -39,6 +41,12 @@ export class Learn extends Component {
                     () => {
                         this.fetchDefinitions()
                     });
+            },
+            () => {
+                this.setState({
+                    loading: false,
+                    canFetchNext: false
+                });
             });
     }
 
@@ -71,10 +79,10 @@ export class Learn extends Component {
                         <h1>Learn</h1>
                         <p>In this section you can learn some new words</p>
                         <div className="alert alert-primary" role="alert">
-                            For public alpha only one known language and one unknown language is supported.
+                            <span>For public alpha only one known language and one unknown language is supported.</span>
                             <span hidden={this.state.canFetchNext}>
                                 Congratulations, you managed to learn all word pairs.
-                                Continue to the test section ✨</span>
+                                Continue to the <NavLink to="/test">Test</NavLink> section ✨</span>
                         </div>
                     </div>
                 </div>

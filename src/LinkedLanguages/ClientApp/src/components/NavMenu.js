@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem } from 'reactstrap';
-import { Link, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { LoginMenu } from './api-authorization/LoginMenu';
 import './NavMenu.css';
 
@@ -26,21 +26,21 @@ export class NavMenu extends Component {
         return (
             <header>
                 <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" light>
-                    <NavbarBrand tag={Link} to="/">LinkedLanguages</NavbarBrand>
+                    <NavbarBrand to="/">LinkedLanguages</NavbarBrand>
                     <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
                     <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
                         <ul className="navbar-nav flex-grow">
                             <NavItem>
-                                <NavLink tag={Link} className={({isActive}) => isActive ? "active nav-link": "nav-link"} to="/">Home</NavLink>
+                                <NavLink className={({isActive}) => isActive ? "active nav-link": "nav-link"} to="/">Home</NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink tag={Link} className={({isActive}) => isActive ? "active nav-link": "nav-link"} to="/learn">Learn</NavLink>
+                                <NavLink className={({isActive}) => isActive ? "active nav-link": "nav-link"} to="/learn">Learn</NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink tag={Link} className={({isActive}) => isActive ? "active nav-link": "nav-link"} to="/test">Test</NavLink>
+                                <NavLink className={({isActive}) => isActive ? "active nav-link": "nav-link"} to="/test">Test</NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink tag={Link} className={({isActive}) => isActive ? "active nav-link": "nav-link"} to="/setup">Setup</NavLink>
+                                <NavLink className={({isActive}) => isActive ? "active nav-link": "nav-link"} to="/setup">Setup</NavLink>
                             </NavItem>
                             <LoginMenu>
                             </LoginMenu>
