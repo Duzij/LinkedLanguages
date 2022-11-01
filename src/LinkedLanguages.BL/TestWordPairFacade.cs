@@ -25,13 +25,21 @@ namespace LinkedLanguages.BL
             IQueryable<WordPairToApplicationUser> userLearnedWordPairs = dbContext.WordPairToApplicationUsers
               .Where(uwp => uwp.ApplicationUserId == appUserProvider.GetUserId());
 
-            await userLearnedWordPairs.ForEachAsync(a => a.Larned = false);
+            await userLearnedWordPairs.ForEachAsync(a => a.Learned = false);
 
             await dbContext.SaveChangesAsync();
         }
 
         public async Task<WordPairDto> RevealTestWordPair(SubmitWordDto submitWord)
         {
+            WordPairToApplicationUser userWordPair = dbContext.WordPairToApplicationUsers
+             .Where(uwp => uwp.ApplicationUserId == appUserProvider.GetUserId())
+             .FirstOrDefault(uwp => uwp.WordPairId == submitWord.WordPairId);
+
+            userWordPair.NumberOfFailedSubmissions = -1;
+
+            await dbContext.SaveChangesAsync();
+
             return await dbContext.WordPairToApplicationUsers.AsNoTracking()
                 .Where(a => a.WordPairId == submitWord.WordPairId)
                 .Select(a => new WordPairDto(a.WordPair.Id, a.WordPair.UnknownWord, a.WordPair.KnownWord))
@@ -44,18 +52,22 @@ namespace LinkedLanguages.BL
 
             WordPair wp = dbContext.WordPairs.First(wp => wp.Id == submitWord.WordPairId);
 
+            WordPairToApplicationUser userWordPair = dbContext.WordPairToApplicationUsers
+              .Where(uwp => uwp.ApplicationUserId == appUserProvider.GetUserId())
+              .FirstOrDefault(uwp => uwp.WordPairId == wp.Id);
+
             if (string.Compare(wp.KnownWord, submitWord.SubmitedWord.Trim(), ignoreCase: true) != 0)
             {
+                userWordPair.NumberOfFailedSubmissions++;
+                await dbContext.SaveChangesAsync();
+
                 throw new SubmittedWordIncorrectException();
             }
-
-            WordPairToApplicationUser userWordPair = dbContext.WordPairToApplicationUsers
-                .Where(uwp => uwp.ApplicationUserId == appUserProvider.GetUserId())
-                .FirstOrDefault(uwp => uwp.WordPairId == wp.Id);
-
-            userWordPair.Larned = true;
-
-            await dbContext.SaveChangesAsync();
+            else
+            {
+                userWordPair.Learned = true;
+                await dbContext.SaveChangesAsync();
+            }
         }
     }
 }

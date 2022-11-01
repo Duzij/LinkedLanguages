@@ -22,7 +22,6 @@ namespace LinkedLanguages.Controllers
             this.wordPairFacade = wordPairFacade;
         }
 
-
         [HttpGet()]
         public async Task<IActionResult> GetTestWordPair()
         {
@@ -42,6 +41,13 @@ namespace LinkedLanguages.Controllers
         {
             IList<WordPairDto> words = await wordPairFacade.GetLearnedWordPairs();
             return Ok(words);
+        }
+
+        [HttpGet("statistics")]
+        public async Task<IActionResult> GetLearnedWordStatistics()
+        {
+            List<LanguageStatisticsDto> statistics = await wordPairFacade.GetLearnedWordStatistics();
+            return Ok(statistics);
         }
 
         [HttpPost("reset")]

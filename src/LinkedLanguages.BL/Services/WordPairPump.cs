@@ -107,12 +107,14 @@ namespace LinkedLanguages.BL.Services
         {
             return results.Where(wp => string.Compare(wp.UnknownWord, wp.KnownWord, ignoreCase: true) != 0);
         }
+
         public static IEnumerable<WordPair> FilterSuffixesAndPrefixes(this IEnumerable<WordPair> results)
         {
             return results.Where(
                     wp => wp.UnknownWord.First() != '-' || wp.UnknownWord.Last() != '-' ||
                     wp.KnownWord.First() != '-' || wp.KnownWord.Last() != '-');
         }
+
         public static IEnumerable<WordPair> FilterWordPairsWithHighCLLD(this IEnumerable<WordPair> results, Guid knownLangugageId, Guid unknownLanguageId)
         {
             results.ToList().ForEach((wp) =>
@@ -144,7 +146,8 @@ namespace LinkedLanguages.BL.Services
 
         public static IEnumerable<WordPair> FilterTransliteratedDuplicates(this IEnumerable<WordPair> results)
         {
-            return results.DistinctBy(a => new { a.UnknownWordTransliterated, a.KnownWordTransliterated });
+            return results.Where(a => string.Compare(a.UnknownWordTransliterated, a.KnownWordTransliterated, ignoreCase: true) != 0)
+                .DistinctBy(a => new { a.UnknownWordTransliterated, a.KnownWordTransliterated });
         }
 
         /// <summary>

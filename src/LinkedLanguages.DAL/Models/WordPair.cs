@@ -9,6 +9,7 @@ namespace LinkedLanguages.DAL.Models
         public Guid Id { get; set; }
 
         public string KnownLanguageCode { get; set; }
+        public Language KnownLanguage { get; set; }
         public Guid KnownLanguageId { get; set; }
         public string KnownWord { get; set; }
         public string KnownWordUri { get; set; }
@@ -17,6 +18,7 @@ namespace LinkedLanguages.DAL.Models
         public string UnknownWordTransliterated { get; set; }
         public string UnknownLanguageCode { get; set; }
         public Guid UnknownLanguageId { get; set; }
+        public Language UnknownLanguage { get; set; }
         public string UnknownWord { get; set; }
         public string UnknownWordUri { get; set; }
 

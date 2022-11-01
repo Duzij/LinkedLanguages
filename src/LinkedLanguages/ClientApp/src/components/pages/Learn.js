@@ -114,19 +114,19 @@ export class Learn extends Component {
                     </div>
                 </div>
                 <form hidden={!this.state.canFetchNext}>
-                    <div className="d-flex justify-content-center">
-                        <div className='d-flex flex-column m-3 justify-content-end'>
-                            <button type="button" className="btn btn-outline-danger" onClick={this.reject.bind(this)}>
+                    <div className="row row-cols-1 row-cols-md-2 g-2 mb-3">
+                        <div className='col d-flex justify-content-center justify-content-lg-end'>
+                            <button type="button" className="align-self-md-center btn btn-outline-danger" onClick={this.reject.bind(this)}>
                                 Reject
                             </button>
                         </div>
-                        <div className='d-flex flex-column m-3 justify-content-start'>
-                            <button type="button" className="btn btn-outline-success" onClick={this.approve.bind(this)}>
+                        <div className='col d-flex justify-content-center justify-content-lg-start'>
+                            <button type="button" className="align-self-md-center btn btn-outline-success" onClick={this.approve.bind(this)}>
                                 Approve
                             </button>
                         </div>
                     </div>
-                    <div className="row row-cols-1 row-cols-md-2 g-4">
+                    <div className="row row-cols-1 row-cols-md-2 g-2">
                         <div className='col'>
                             <div className="card">
                                 <div className="card-header">Known word ({this.state.knownLanguageLabel})</div>
@@ -171,7 +171,7 @@ export class Learn extends Component {
                         </div>
                     </div>
                 </form>
-            </div >
+            </div>
         );
     }
 

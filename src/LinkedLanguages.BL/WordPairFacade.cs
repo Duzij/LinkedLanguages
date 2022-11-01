@@ -136,7 +136,7 @@ namespace LinkedLanguages.BL
             string unknownLangCode = appUserProvider.GetUserUnknownLanguageCode();
 
             WordPairDto nextWord = await approvedWordPairs.GetQueryable(knownLang, unknownLangCode)
-                .Where(w => !w.Larned)
+                .Where(w => !w.Learned)
                 .Select(u => new WordPairDto(u.WordPairId, u.WordPair.UnknownWord, ""))
                 .FirstOrDefaultAsync();
 
@@ -148,10 +148,51 @@ namespace LinkedLanguages.BL
             return await dbContext.WordPairToApplicationUsers
                  .AsNoTracking()
                  .Where(a => a.ApplicationUserId == appUserProvider.GetUserId())
-                 .Where(a => a.Larned)
+                 .Where(a => a.Learned)
                  .Select(a => new WordPairDto(a.WordPairId, a.WordPair.UnknownWord, a.WordPair.KnownWord))
                  .ToArrayAsync();
         }
 
+        public async Task<List<LanguageStatisticsDto>> GetLearnedWordStatistics()
+        {
+            var learnedWordPairs = await dbContext.WordPairToApplicationUsers
+                 .AsNoTracking()
+                 .Where(a => a.ApplicationUserId == appUserProvider.GetUserId())
+                 .Where(a => a.Learned)
+                 .Select(a => new { a.WordPair.UnknownLanguage.Name, a.NumberOfFailedSubmissions })
+                 .ToListAsync();
+
+            var returnedValue = new List<LanguageStatisticsDto>();
+
+            var lanuagesStatistics = learnedWordPairs.GroupBy(a => a.Name);
+
+            foreach (var lang in lanuagesStatistics)
+            {
+                var list = new List<double>();
+                foreach (var item in lang.ToList())
+                {
+                    double successRate = 0;
+
+                    if (item.NumberOfFailedSubmissions is 0)
+                    {
+                        successRate = 1;
+                    }
+                    else if (item.NumberOfFailedSubmissions is -1)
+                    {
+                        successRate = 0;
+                    }
+                    else
+                    {
+                        successRate = 1 / item.NumberOfFailedSubmissions;
+                    }
+
+                    list.Add(successRate);
+                }
+
+                returnedValue.Add(new LanguageStatisticsDto(lang.Key, Convert.ToInt16(Math.Round(list.Average(), 2) * 100)));
+            }
+
+            return returnedValue;
+        }
     }
 }
