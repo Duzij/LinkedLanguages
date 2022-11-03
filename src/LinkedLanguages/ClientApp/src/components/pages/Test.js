@@ -53,7 +53,6 @@ export class Test extends Component {
                 this.setInputValidity();
                 var input = document.getElementById("knownWord");
                 input.value = "";
-                var input = document.getElementById("unknownWord");
                 this.setState({ word: data, loading: false });
             },
             (error) => {
