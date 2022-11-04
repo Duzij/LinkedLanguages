@@ -19,7 +19,7 @@ namespace LinkedLanguages.BL.SPARQL.Query
         {
         }
 
-        public override string CommandText { get; set; } = string.Concat("SELECT  ?myLanguageLabel ?myWord ?foreignWord ?foreignWordLabel ",
+        public override string CommandText { get; set; } = string.Concat("SELECT ?myLanguageLabel ?myLangugageWord ?foreignWord ?foreignWordLabel",
                                                                           EtyTreeEtymologyCommandText.GetTwoWayLanguageWhereUnionCommandText());
 
         protected override void SetQueryParams(SparqlParameterizedString queryString, WordPairParameterDto param)

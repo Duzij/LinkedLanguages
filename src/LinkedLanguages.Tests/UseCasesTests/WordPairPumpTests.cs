@@ -64,9 +64,6 @@ namespace LinkedLanguages.Tests.UseCasesTests
         [Test]
         public async Task PumpPerformedWhenDbEmpty()
         {
-            //on the first page, some words are ignored
-            dbContext.LanguageOffsets.Add(new() { Id = Guid.NewGuid(), Key = "eng-lat", PageNumer = 2 });
-
             dbContext.WordPairs.RemoveRange(dbContext.WordPairs);
             dbContext.SaveChanges();
 
@@ -76,7 +73,7 @@ namespace LinkedLanguages.Tests.UseCasesTests
             WordPairPump wordPairPump = new WordPairPump(GetTestWordPairsSparqlQuery(), GetTestWordSeeAlsoLinkSparqlQuery(), unusedUserWordPairsQuery, transliteratedWordParisQuery, dbContext, new Mock<ILogger<WordPairPump>>().Object);
             await wordPairPump.Pump("eng", "lat");
 
-            Assert.That(dbContext.WordPairs.Count(), Is.EqualTo(3));
+            Assert.That(dbContext.WordPairs.Count(), Is.EqualTo(1));
         }
 
         [Test]
@@ -101,7 +98,7 @@ namespace LinkedLanguages.Tests.UseCasesTests
             WordPairPump wordPairPump = new WordPairPump(GetTestWordPairsSparqlQuery(), GetTestWordSeeAlsoLinkSparqlQuery(), unusedUserWordPairsQuery, transliteratedWordParisQuery, dbContext, new Mock<ILogger<WordPairPump>>().Object);
             await wordPairPump.Pump("eng", "lat");
 
-            Assert.That(dbContext.WordPairs.Count(), Is.EqualTo(4));
+            Assert.That(dbContext.WordPairs.Count(), Is.EqualTo(2));
         }
     }
 }

@@ -52,7 +52,7 @@ namespace LinkedLanguages.Tests.SparqlTests
         public void GetCount()
         {
             int result = statisticsQuery.Execute(new LanguageCodesDto("eng", "lat"));
-            Assert.That(result, Is.EqualTo(141119));
+            Assert.That(result, Is.EqualTo(23753));
         }
 
         [Test]
