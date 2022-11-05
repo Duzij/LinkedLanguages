@@ -6,38 +6,38 @@
         {
             return @"
             WHERE  { 
-            { ?myLangugageWord  a ety:EtymologyEntry  .
-              ?foreignWord  a ety:EtymologyEntry  .
-              ?myLangugageWord  ety:etymologicallyRelatedTo  ?foreignWord .
-              ?myLangugageWord  rdf:label ?myLanguageLabel .
-              ?foreignWord      rdf:label ?foreignWordLabel .
+            { ?myLanguageWord  a ety:EtymologyEntry  .
+              ?foreignLanguageWord  a ety:EtymologyEntry  .
+              ?myLanguageWord  ety:etymologicallyRelatedTo  ?foreignLanguageWord .
+              ?myLanguageWord  rdf:label ?myLanguageLabel .
+              ?foreignLanguageWord      rdf:label ?foreignWordLabel .
               FILTER langMatches(lang(?myLanguageLabel), @myLang)
               FILTER langMatches(lang(?foreignWordLabel), @forLang)
             }
             UNION 
-            { ?myLangugageWord  a ety:EtymologyEntry  .
-              ?foreignWord  a ety:EtymologyEntry  .
-              ?myLangugageWord  ety:etymologicallyDerivesFrom ?foreignWord .
-              ?myLangugageWord rdf:label  ?myLanguageLabel .
-              ?foreignWord rdf:label             ?foreignWordLabel 
+            { ?myLanguageWord  a ety:EtymologyEntry  .
+              ?foreignLanguageWord  a ety:EtymologyEntry  .
+              ?myLanguageWord  ety:etymologicallyDerivesFrom ?foreignLanguageWord .
+              ?myLanguageWord rdf:label  ?myLanguageLabel .
+              ?foreignLanguageWord rdf:label             ?foreignWordLabel 
               FILTER langMatches(lang(?myLanguageLabel), @myLang)
               FILTER langMatches(lang(?foreignWordLabel), @forLang)
             }
             UNION
-            { ?myLangugageWord  a ety:EtymologyEntry  .
-              ?foreignWord  a ety:EtymologyEntry  .
-              ?foreignWord  ety:etymologicallyRelatedTo ?myLangugageWord  .
-              ?foreignWord  rdf:label ?foreignWordLabel .
-              ?myLangugageWord      rdf:label             ?myLanguageLabel
+            { ?myLanguageWord  a ety:EtymologyEntry  .
+              ?foreignLanguageWord  a ety:EtymologyEntry  .
+              ?foreignLanguageWord  ety:etymologicallyRelatedTo ?myLanguageWord  .
+              ?foreignLanguageWord  rdf:label ?foreignWordLabel .
+              ?myLanguageWord      rdf:label             ?myLanguageLabel
               FILTER langMatches(lang(?myLanguageLabel), @myLang)
               FILTER langMatches(lang(?foreignWordLabel), @forLang)
             }
             UNION
-            { ?myLangugageWord  a ety:EtymologyEntry  .
-              ?foreignWord  a ety:EtymologyEntry  .
-              ?foreignWord  ety:etymologicallyDerivesFrom ?myLangugageWord .
-              ?foreignWord  rdf:label  ?foreignWordLabel .
-              ?myLangugageWord  rdf:label  ?myLanguageLabel
+            { ?myLanguageWord  a ety:EtymologyEntry  .
+              ?foreignLanguageWord  a ety:EtymologyEntry  .
+              ?foreignLanguageWord  ety:etymologicallyDerivesFrom ?myLanguageWord .
+              ?foreignLanguageWord  rdf:label  ?foreignWordLabel .
+              ?myLanguageWord  rdf:label  ?myLanguageLabel
               FILTER langMatches(lang(?myLanguageLabel), @myLang)
               FILTER langMatches(lang(?foreignWordLabel), @forLang)
             }}";

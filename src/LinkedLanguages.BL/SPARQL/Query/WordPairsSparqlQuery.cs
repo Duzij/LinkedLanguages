@@ -19,7 +19,7 @@ namespace LinkedLanguages.BL.SPARQL.Query
         {
         }
 
-        public override string CommandText { get; set; } = string.Concat("SELECT ?myLanguageLabel ?myLangugageWord ?foreignWord ?foreignWordLabel",
+        public override string CommandText { get; set; } = string.Concat("SELECT ?myLanguageLabel ?myLanguageWord ?foreignLanguageWord ?foreignWordLabel",
                                                                           EtyTreeEtymologyCommandText.GetTwoWayLanguageWhereUnionCommandText());
 
         protected override void SetQueryParams(SparqlParameterizedString queryString, WordPairParameterDto param)
@@ -40,8 +40,8 @@ namespace LinkedLanguages.BL.SPARQL.Query
                 string fw = t.GetLiteral("foreignWordLabel");
                 string mw = t.GetLiteral("myLanguageLabel");
 
-                string furi = t.GetLiteral("foreignWord");
-                string muri = t.GetLiteral("myWord");
+                string furi = t.GetLiteral("foreignLanguageWord");
+                string muri = t.GetLiteral("myLanguageWord");
 
                 results.Add(new WordPair()
                 {
