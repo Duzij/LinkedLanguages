@@ -60,7 +60,7 @@ namespace LinkedLanguages.BL.CLLD
             {
                 if (characterMapping is not null)
                 {
-                    if (characterMapping.TryGetValue(v1, value: out string? languageCharactersEquivalent))
+                    if (characterMapping.TryGetValue(v1, value: out string languageCharactersEquivalent))
                     {
                         string[] mappings = languageCharactersEquivalent.Split('\u002C');
                         if (mappings.ToList().Contains(v2))

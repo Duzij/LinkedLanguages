@@ -1,4 +1,4 @@
-﻿using DamerauLevenshteinDistance.Console;
+﻿using LinkedLanguages.BL.CLLD;
 using LinkedLanguages.DAL.Models;
 using System.Collections.Generic;
 
@@ -21,7 +21,7 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
 
             if (wordPair.UnknownWord is not null && wordPair.KnownWord is not null)
             {
-                Distance = ExtendedDamerauLevenshteinCalculator.Calc(WordPair.UnknownWord, WordPair.KnownWord, charactersMapping);
+                Distance = CrossLingualLevenshteinDistanceCalculator.Calc(wordPair.UnknownWord, wordPair.KnownWord, charactersMapping);
             }
         }
 
@@ -36,7 +36,7 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
 
             if (wrapper.WordPair.UnknownWord is not null && wrapper.WordPair.KnownWord is not null)
             {
-                Distance = ExtendedDamerauLevenshteinCalculator.Calc(WordPair.UnknownWord, WordPair.KnownWord, charactersMapping);
+                Distance = CrossLingualLevenshteinDistanceCalculator.Calc(WordPair.UnknownWord, WordPair.KnownWord, charactersMapping);
             }
         }
 

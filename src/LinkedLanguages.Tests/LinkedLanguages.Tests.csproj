@@ -17,9 +17,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\DamerauLevenshteinDistance.Console\DamerauLevenshteinDistance.Console.csproj" />
 		<ProjectReference Include="..\LinkedLanguages.BL\LinkedLanguages.BL.csproj" />
-		<ProjectReference Include="..\LinkedLanguages.CodeGenerator\LinkedLanguages.CodeGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\LinkedLanguages.Resources\LinkedLanguages.Resources.csproj" />
 	</ItemGroup>
 
