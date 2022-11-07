@@ -34,3 +34,11 @@ code {
     cursor: pointer;
     /* Add a pointer on hover */
 }
+
+.navbar {
+    --bs-navbar-padding-y: 0 !important;
+}
+
+.active.nav-link {
+    border-bottom: 2px solid currentColor;
+}
