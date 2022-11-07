@@ -46,42 +46,42 @@ export class Setup extends Component {
             <div>
                 <LoadingSpinner loading={this.state.loading} />
                 <form>
-                    <div className='form-group col-md-12'>
-                        <h1 id="tabelLabel" >User profile</h1>
-                        <p>Here you can modify your profile and change known and unknown languages</p>
-                        <div className="alert alert-warning" role="alert">
-                            For public alpha only one known language and one unknown language is supported.
-                        </div>
-                        <div className="alert alert-primary d-flex align-items-center" role="alert">
-                            <div>
-                                <span>Total number of relations: </span><span hidden={this.state.isLoadingStatistics}>{this.state.predicatesCount}</span>
-                                <span className="spinner-border spinner-border-sm" hidden={!this.state.isLoadingStatistics} role="status" aria-hidden="true"></span>
+                    <h1 id="tabelLabel" >User profile</h1>
+                    <p>Here you can modify your profile and change known and unknown languages</p>
+                    <div className="alert alert-warning" role="alert">
+                        For public alpha only one known language and one unknown language is supported.
+                    </div>
+                    <div className='row d-flex align-items-center justify-content-center'>
+                        <div className='col-lg-6 col-md-8 col-sm-12'>
+                            <div class="card">
+                                <h5 class="card-header">Select your known and unknown language</h5>
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <span>Number of word pairs found: </span><span hidden={this.state.isLoadingStatistics}>{this.state.predicatesCount}</span>
+                                        <span className="spinner-border spinner-border-sm" hidden={!this.state.isLoadingStatistics} role="status" aria-hidden="true"></span>
+                                    </h5>
+                                    <div className='d-flex flex-column my-3 justify-content-end'>
+                                        <label>Known languages</label>
+                                        <Select className="basic-select"
+                                            value={this.state.profile.knownLanguages}
+                                            onChange={this.handleKnownChange}
+                                            options={this.state.languages}
+                                            classNamePrefix="select" />
+                                    </div>
+                                    <div className='d-flex flex-column my-3 justify-content-start'>
+                                        <label>Unknown languages</label>
+                                        <Select className="basic-select"
+                                            value={this.state.profile.unknownLanguages}
+                                            onChange={this.handleUnknownChange}
+                                            options={this.state.languages}
+                                            classNamePrefix="select" />
+                                    </div>
+                                    <button type="button" className="btn btn-primary" onClick={this.saveLanguages}>Save</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div className="d-flex justify-content-center">
-                        <div className='d-flex flex-column m-5 justify-content-end'>
-                            <label>Known languages</label>
-                            <Select makeAnimated={animated}
-                                className="basic-select"
-                                value={this.state.profile.knownLanguages}
-                                onChange={this.handleKnownChange}
-                                options={this.state.languages}
-                                classNamePrefix="select" />
-                        </div>
-                        <div className='d-flex flex-column m-5 justify-content-start'>
-                            <label>Unknown languages</label>
-                            <Select makeAnimated={animated}
-                                className="basic-select"
-                                value={this.state.profile.unknownLanguages}
-                                onChange={this.handleUnknownChange}
-                                options={this.state.languages}
-                                classNamePrefix="select" />
-                        </div>
-                    </div>
-                    <div className='form-group col-md-12'>
-                        <button type="button" className="btn btn-primary" onClick={this.saveLanguages}>Save</button>
-                    </div>
+
                 </form>
 
             </div >
@@ -105,7 +105,7 @@ export class Setup extends Component {
     }
 
     async fetchStatistics() {
-        this.setState({isLoadingStatistics:true})
+        this.setState({ isLoadingStatistics: true })
         await fetchPost('languages/statistics',
             this.state.profile,
             (data) => {
@@ -114,7 +114,7 @@ export class Setup extends Component {
     }
 
     async fetchLanguages() {
-        this.setState({isLoadingStatistics:true})
+        this.setState({ isLoadingStatistics: true })
         fetchGet('languages',
             (data) => {
                 this.setState({ languages: data, loading: false }, () => this.fetchProfile());

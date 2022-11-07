@@ -146,14 +146,14 @@ export class Test extends Component {
                     </div>
                 </div>
                 <div className='row d-flex align-items-center justify-content-center'>
-                    <div className='col-lg-8 col-md-8 col-sm-8'>
+                    <div className='col-lg-8 col-md-12 col-sm-12'>
                         <form hidden={!this.state.canFetchNext} onSubmit={this.handleSubmit}>
                             <div className="card">
                                 <div className="card-body">
                                     <div className='row'>
                                         <div className="col-md-6">
                                             <label htmlFor="knownWord">Known word ({this.state.knownLanguageLabel})</label>
-                                            <div className="input-group mt-3">
+                                            <div className="input-group my-3">
                                                 <input type="text" className="form-control" value={this.state.value} onChange={this.handleChange} id="knownWord" placeholder="known word" required />
                                                 <button className="btn btn-outline-secondary" type="button" onClick={this.reveal}>Reveal</button>
                                             </div>
@@ -166,10 +166,10 @@ export class Test extends Component {
                                         </div>
                                         <div className="col-md-6">
                                             <label>Unknown word ({this.state.unknownLanguageLabel})</label>
-                                            <p className="mt-3 form-control-plaintext">{this.state.word.unknownWord}</p>
+                                            <p className="my-3 form-control-plaintext">{this.state.word.unknownWord}</p>
                                         </div>
                                         <div className="col-12">
-                                            <button type="submit" className="mt-3 btn btn-primary">Submit</button>
+                                            <button type="submit" className="btn btn-primary">Submit</button>
                                         </div>
                                     </div>
                                 </div>

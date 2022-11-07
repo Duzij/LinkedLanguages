@@ -106,7 +106,7 @@ export class Learn extends Component {
                         <h1>Learn</h1>
                         <p>In this section you can learn some new words</p>
                         <div className="alert alert-primary" role="alert">
-                            <span>For public alpha only one known language and one unknown language is supported.</span>
+                            <span>For public alpha only one known language and one unknown language is supported. </span>
                             <span hidden={this.state.canFetchNext}>
                                 Congratulations, you managed to learn all word pairs.
                                 Continue to the <NavLink to="/test">Test</NavLink> section ✨</span>
