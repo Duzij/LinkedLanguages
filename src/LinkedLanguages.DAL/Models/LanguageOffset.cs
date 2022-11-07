@@ -2,7 +2,7 @@
 
 namespace LinkedLanguages.DAL.Models
 {
-    public class LanguagePageNumber
+    public class LanguageOffset
     {
         public Guid Id { get; set; }
         public string Key { get; set; }

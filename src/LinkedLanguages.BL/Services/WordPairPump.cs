@@ -61,7 +61,7 @@ namespace LinkedLanguages.BL.Services
             if (!remainingWordsForCurrentUser.Any())
             {
                 string key = $"{knownLangCode}-{unknownLangCode}";
-                LanguagePageNumber offset = await dbContext.LanguageOffsets.FirstOrDefaultAsync(a => a.Key == key);
+                LanguageOffset offset = await dbContext.LanguageOffsets.FirstOrDefaultAsync(a => a.Key == key);
                 int pageNumber = 0;
 
                 if (offset != null)
@@ -70,7 +70,7 @@ namespace LinkedLanguages.BL.Services
                 }
                 else
                 {
-                    await dbContext.LanguageOffsets.AddAsync(new LanguagePageNumber() { Key = key, PageNumer = pageNumber });
+                    await dbContext.LanguageOffsets.AddAsync(new LanguageOffset() { Key = key, PageNumer = pageNumber });
                 }
                 await dbContext.SaveChangesAsync();
 

@@ -22,7 +22,7 @@ namespace LinkedLanguages.DAL
 
         public DbSet<WordPair> WordPairs { get; set; }
         public DbSet<WordPairToApplicationUser> WordPairToApplicationUsers { get; set; }
-        public DbSet<LanguagePageNumber> LanguageOffsets { get; set; }
+        public DbSet<LanguageOffset> LanguageOffsets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
