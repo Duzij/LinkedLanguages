@@ -27,7 +27,7 @@ namespace LinkedLanguages.BL.Services
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress("duzm00@vse.cz", "Password Recovery"),
+                From = new EmailAddress("duzm00@vse.cz", "Linked Languages"),
                 Subject = subject,
                 PlainTextContent = message,
                 HtmlContent = message
