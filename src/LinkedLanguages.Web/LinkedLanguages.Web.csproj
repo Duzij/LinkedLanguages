@@ -18,6 +18,8 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.9" />
 		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
 		<PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.9" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.10" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.10" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -25,6 +27,20 @@
 		<Content Remove="$(SpaRoot)**" />
 		<None Remove="$(SpaRoot)**" />
 		<None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="Areas\Identity\Pages\Account\Manage\ChangePassword.cshtml" />
+	  <None Include="Areas\Identity\Pages\Account\Manage\DeletePersonalData.cshtml" />
+	  <None Include="Areas\Identity\Pages\Account\Manage\DownloadPersonalData.cshtml" />
+	  <None Include="Areas\Identity\Pages\Account\Manage\Email.cshtml" />
+	  <None Include="Areas\Identity\Pages\Account\Manage\Index.cshtml" />
+	  <None Include="Areas\Identity\Pages\Account\Manage\PersonalData.cshtml" />
+	  <None Include="Areas\Identity\Pages\Account\Manage\SetPassword.cshtml" />
+	  <None Include="Areas\Identity\Pages\Account\Manage\_Layout.cshtml" />
+	  <None Include="Areas\Identity\Pages\Account\Manage\_ManageNav.cshtml" />
+	  <None Include="Areas\Identity\Pages\Account\Manage\_StatusMessage.cshtml" />
+	  <None Include="Areas\Identity\Pages\Account\Manage\_ViewImports.cshtml" />
 	</ItemGroup>
 
 	<ItemGroup>

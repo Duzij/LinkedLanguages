@@ -28,14 +28,22 @@ export class Learn extends Component {
         fetchGet(
             "profile",
             (data) => {
-                this.setState({
-                    unknownLanguageId: data.unknownLanguages[0].value,
-                    unknownLanguageLabel: data.unknownLanguages[0].label,
-                    knownLanguageLabel: data.knownLanguages[0].label,
-                },
-                    () => {
-                        this.fetchNextWord()
+                if (data.knownLanguages.length === 0 || data.unknownLanguages.length === 0) {
+                    this.setState({
+                        loading: false,
+                        errorMessage: "Known and unknown languages are not set, please navigate to Setup section first."
                     });
+                }
+                else {
+                    this.setState({
+                        unknownLanguageId: data.unknownLanguages[0].value,
+                        unknownLanguageLabel: data.unknownLanguages[0].label,
+                        knownLanguageLabel: data.knownLanguages[0].label,
+                        },
+                        () => {
+                            this.fetchNextWord()
+                        });
+                }
             });
     }
 
@@ -105,6 +113,9 @@ export class Learn extends Component {
                     <div className='form-group col-md-12'>
                         <h1>Learn</h1>
                         <p>In this section you can learn some new words</p>
+                        <div hidden={this.state.errorMessage === undefined} className="alert alert-danger" role="alert">
+                            <span>{this.state.errorMessage}</span>
+                        </div>
                         <div className="alert alert-primary" role="alert">
                             <span>For public alpha only one known language and one unknown language is supported. </span>
                             <span hidden={this.state.canFetchNext}>
@@ -113,7 +124,7 @@ export class Learn extends Component {
                         </div>
                     </div>
                 </div>
-                <form hidden={!this.state.canFetchNext}>
+                <form hidden={!this.state.canFetchNext || this.state.errorMessage !== undefined}>
                     <div className="row row-cols-1 row-cols-md-2 g-2 mb-3">
                         <div className='col d-flex justify-content-center justify-content-lg-end'>
                             <button type="button" className="align-self-md-center btn btn-outline-danger" onClick={this.reject.bind(this)}>

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import makeAnimated from 'react-select/animated';
 import LoadingSpinner from './../LoadingSpinner';
 import { fetchGet, fetchPost } from '../FetchApi';
 import { toast } from 'react-toastify';
@@ -45,15 +44,15 @@ export class Setup extends Component {
                 <form>
                     <h1 id="tabelLabel" >User profile</h1>
                     <p>Here you can modify your profile and change known and unknown languages</p>
-                    <div className="alert alert-warning" role="alert">
+                    <div className="alert alert-primary" role="alert">
                         For public alpha only one known language and one unknown language is supported.
                     </div>
                     <div className='row d-flex align-items-center justify-content-center'>
                         <div className='col-lg-6 col-md-8 col-sm-12'>
-                            <div class="card">
-                                <h5 class="card-header">Select your known and unknown language</h5>
-                                <div class="card-body">
-                                    <h5 class="card-title">
+                            <div className="card">
+                                <h5 className="card-header">Select your known and unknown language</h5>
+                                <div className="card-body">
+                                    <h5 className="card-title">
                                         <span>Number of word pairs found: </span><span hidden={this.state.isLoadingStatistics}>{this.state.predicatesCount}</span>
                                         <span className="spinner-border spinner-border-sm" hidden={!this.state.isLoadingStatistics} role="status" aria-hidden="true"></span>
                                     </h5>

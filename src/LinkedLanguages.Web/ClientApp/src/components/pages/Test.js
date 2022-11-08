@@ -28,13 +28,22 @@ export class Test extends Component {
         fetchGet(
             "profile",
             (data) => {
-                this.setState({
-                    unknownLanguageLabel: data.unknownLanguages[0].label,
-                    knownLanguageLabel: data.knownLanguages[0].label,
-                },
-                    () => {
-                        this.fetchTestWordPair();
+                if (data.knownLanguages.length === 0 || data.unknownLanguages.length === 0) {
+                    this.setState({
+                        loading: false,
+                        errorMessage: "Known and unknown languages are not set, please navigate to Setup section first."
                     });
+                }
+                else {
+                    this.setState({
+                        unknownLanguageLabel: data.unknownLanguages[0].label,
+                        knownLanguageLabel: data.knownLanguages[0].label,
+                    },
+                        () => {
+                            this.fetchTestWordPair();
+
+                        });
+                }
             });
     }
 
@@ -140,6 +149,9 @@ export class Test extends Component {
                     <div className='form-group col-md-12'>
                         <h1>Test</h1>
                         <p>Here you can learn some of the words you approved in Learn section.</p>
+                        <div hidden={this.state.errorMessage === undefined} className="alert alert-danger" role="alert">
+                            <span>{this.state.errorMessage}</span>
+                        </div>
                         <div hidden={this.state.canFetchNext} className="alert alert-danger" role="alert">
                             You exceeded all approved word pairs. Continue back to <NavLink to="/learn">Learn section</NavLink> to approve more word pairs.
                         </div>
@@ -147,7 +159,7 @@ export class Test extends Component {
                 </div>
                 <div className='row d-flex align-items-center justify-content-center'>
                     <div className='col-lg-8 col-md-12 col-sm-12'>
-                        <form hidden={!this.state.canFetchNext} onSubmit={this.handleSubmit}>
+                        <form hidden={!this.state.canFetchNext || this.state.errorMessage!==undefined} onSubmit={this.handleSubmit}>
                             <div className="card">
                                 <div className="card-body">
                                     <div className='row'>
