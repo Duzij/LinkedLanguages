@@ -151,7 +151,7 @@ export class Learn extends Component {
                                         {
                                             this.state.knownLinks && this.state.knownLinks.map(
                                                 (link) => <small key={link.uri} className="text-muted">
-                                                    <a className='text-reset me-1' href={link.uri}>{link.name}</a>
+                                                    <a className='text-reset me-1' target="_blank" href={link.uri}>{link.name}</a>
                                                 </small>
                                             )
                                         }
@@ -172,7 +172,7 @@ export class Learn extends Component {
                                         {
                                             this.state.unknownLinks && this.state.unknownLinks.map(
                                                 (link) => <small key={link.uri} className="text-muted">
-                                                    <a className='text-reset me-1' href={link.uri}>{link.name}</a>
+                                                    <a className='text-reset me-1' target="_blank" href={link.uri}>{link.name}</a>
                                                 </small>
                                             )
                                         }

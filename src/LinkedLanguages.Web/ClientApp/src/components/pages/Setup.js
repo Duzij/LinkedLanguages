@@ -42,8 +42,8 @@ export class Setup extends Component {
             <div>
                 <LoadingSpinner loading={this.state.loading} />
                 <form>
-                    <h1 id="tabelLabel" >User profile</h1>
-                    <p>Here you can modify your profile and change known and unknown languages</p>
+                    <h1 id="tabelLabel" >Profile setup</h1>
+                    <p>Here you can modify your known and unknown languages</p>
                     <div className="alert alert-primary" role="alert">
                         For public alpha only one known language and one unknown language is supported.
                     </div>

@@ -30,6 +30,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="ClientApp\public\linked_languages.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="ClientApp\public\linked_languages.png">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Include="Areas\Identity\Pages\Account\Manage\ChangePassword.cshtml" />
 	  <None Include="Areas\Identity\Pages\Account\Manage\DeletePersonalData.cshtml" />
 	  <None Include="Areas\Identity\Pages\Account\Manage\DownloadPersonalData.cshtml" />

@@ -152,8 +152,8 @@ export class Test extends Component {
                         <div hidden={this.state.errorMessage === undefined} className="alert alert-danger" role="alert">
                             <span>{this.state.errorMessage}</span>
                         </div>
-                        <div hidden={this.state.canFetchNext} className="alert alert-danger" role="alert">
-                            You exceeded all approved word pairs. Continue back to <NavLink to="/learn">Learn section</NavLink> to approve more word pairs.
+                        <div hidden={this.state.canFetchNext} className="alert alert-success" role="alert">
+                          ✔ You exceeded all approved word pairs. Continue back to <NavLink to="/learn">Learn section</NavLink> to approve more word pairs. 
                         </div>
                     </div>
                 </div>

@@ -8,6 +8,10 @@ code {
     color: #E01A76;
 }
 
+.home-image {
+    width: 15rem;
+}
+
 .btn-primary {
     color: #fff;
     background-color: #1b6ec2;
