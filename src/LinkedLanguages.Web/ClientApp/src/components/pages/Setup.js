@@ -39,9 +39,6 @@ export class Setup extends Component {
     }
 
     render() {
-        let animated = makeAnimated();
-
-
         return (
             <div>
                 <LoadingSpinner loading={this.state.loading} />
