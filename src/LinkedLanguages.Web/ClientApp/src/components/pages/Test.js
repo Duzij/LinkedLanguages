@@ -142,6 +142,9 @@ export class Test extends Component {
     }
 
     render() {
+
+        const overallSuccess = this.state.statistics.map((lang) => lang.successRate).reduce((a, b) => a + b, 0) / this.state.statistics.length;
+
         return (
             <div>
                 <LoadingSpinner loading={this.state.loading} />
@@ -196,12 +199,15 @@ export class Test extends Component {
                                     <p className="card-text">If word pair is revealed, success ratio for this particular word pair is set to zero.</p>
                                     <p className="card-text">Language success rate, that you can see below, is an average of all learned word pairs success rates for this language.</p>
                                     {
+                                         
                                         this.state.statistics && this.state.statistics.map(
                                             (lang) => <small key={lang.name} className="text-muted">
                                                 <p>{lang.name}: <b>{lang.successRate}%</b> (words learned {lang.wordsCount})</p>
                                             </small>
                                         )
                                     }
+                                    <hr/>
+                                    <p className="card-text">Overall success rate: <b>{overallSuccess}%</b></p>
                                 </div>
                             </div>
                         </div>
