@@ -20,9 +20,11 @@ namespace LinkedLanguages.BL.CLLD
                { "â",  "a" },
                { "ch",  "c"},
                { "que",  "k"},
-               { "é, e", "hy"},
+               { "é", "hy"},
+               { "e", "hy"},
                { "ie", "y"},
-               { "o, ou", "u"},
+               { "o", "u"},
+               { "ou", "u"},
                { "t", "st"}
             };
 
