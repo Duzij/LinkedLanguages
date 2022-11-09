@@ -198,7 +198,7 @@ export class Test extends Component {
                                     {
                                         this.state.statistics && this.state.statistics.map(
                                             (lang) => <small key={lang.name} className="text-muted">
-                                                <p>{lang.name}: <b>{lang.successRate}%</b></p>
+                                                <p>{lang.name}: <b>{lang.successRate}%</b> (words learned {lang.wordsCount})</p>
                                             </small>
                                         )
                                     }

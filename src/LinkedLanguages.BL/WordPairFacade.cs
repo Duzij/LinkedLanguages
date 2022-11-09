@@ -189,7 +189,7 @@ namespace LinkedLanguages.BL
                     list.Add(successRate);
                 }
 
-                returnedValue.Add(new LanguageStatisticsDto(lang.Key, Convert.ToInt16(Math.Round(list.Average(), 2) * 100)));
+                returnedValue.Add(new LanguageStatisticsDto(lang.Key, Convert.ToInt16(Math.Round(list.Average(), 2) * 100), lang.Count()));
             }
 
             return returnedValue;
