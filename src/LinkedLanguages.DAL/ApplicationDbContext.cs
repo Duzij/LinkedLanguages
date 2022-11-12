@@ -27,6 +27,9 @@ namespace LinkedLanguages.DAL
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Language>().HasData(LanguageSeed.GetStaticLanguages());
+            builder.Entity<WordPair>().Property(p => p.UsedCount)
+                   .HasComputedColumnSql("dbo.UsedCount([Id])");
+
             base.OnModelCreating(builder);
         }
     }

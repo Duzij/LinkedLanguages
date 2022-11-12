@@ -74,7 +74,7 @@ namespace LinkedLanguages.BL.Services
 
                 List<WordPair> results = pairsQuery.Execute(new WordPairParameterDto(knownLangCode, knownLangugageId, unknownLangCode, unknownLanguageId, pageNumber));
 
-                var databaseWords = await transliteratedWordParisQuery.GetQueryable(unknownLanguageId, knownLangugageId).ToArrayAsync();
+                TransliteratedWordsDto[] databaseWords = await transliteratedWordParisQuery.GetQueryable(unknownLanguageId, knownLangugageId).ToArrayAsync();
 
                 results = results.FilterSameWords()
                        .FilterSuffixesAndPrefixes()

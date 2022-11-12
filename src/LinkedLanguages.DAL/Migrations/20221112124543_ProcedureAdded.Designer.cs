@@ -4,6 +4,7 @@ using LinkedLanguages.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LinkedLanguages.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221112124543_ProcedureAdded")]
+    partial class ProcedureAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -105,7 +107,7 @@ namespace LinkedLanguages.DAL.Migrations
 
                     b.HasIndex("Use");
 
-                    b.ToTable("Keys", (string)null);
+                    b.ToTable("Keys");
                 });
 
             modelBuilder.Entity("Duende.IdentityServer.EntityFramework.Entities.PersistedGrant", b =>
@@ -244,7 +246,7 @@ namespace LinkedLanguages.DAL.Migrations
 
                     b.HasIndex("LanguageId");
 
-                    b.ToTable("KnownLanguageToUsers", (string)null);
+                    b.ToTable("KnownLanguageToUsers");
                 });
 
             modelBuilder.Entity("LinkedLanguages.DAL.Models.Language", b =>
@@ -261,7 +263,7 @@ namespace LinkedLanguages.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Languages", (string)null);
+                    b.ToTable("Languages");
 
                     b.HasData(
                         new
@@ -340,7 +342,7 @@ namespace LinkedLanguages.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LanguageOffsets", (string)null);
+                    b.ToTable("LanguageOffsets");
                 });
 
             modelBuilder.Entity("LinkedLanguages.DAL.Models.UnknownLanguageToUser", b =>
@@ -359,7 +361,7 @@ namespace LinkedLanguages.DAL.Migrations
 
                     b.HasIndex("LanguageId");
 
-                    b.ToTable("UnknownLanguageToUsers", (string)null);
+                    b.ToTable("UnknownLanguageToUsers");
                 });
 
             modelBuilder.Entity("LinkedLanguages.DAL.Models.WordPair", b =>
@@ -401,11 +403,6 @@ namespace LinkedLanguages.DAL.Migrations
                     b.Property<string>("UnknownWordUri")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UsedCount")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("int")
-                        .HasComputedColumnSql("dbo.UsedCount([Id])");
-
                     b.HasKey("Id");
 
                     b.HasIndex("KnownLanguageId");
@@ -414,7 +411,7 @@ namespace LinkedLanguages.DAL.Migrations
 
                     b.HasIndex("KnownWordTransliterated", "UnknownWordTransliterated");
 
-                    b.ToTable("WordPairs", (string)null);
+                    b.ToTable("WordPairs");
                 });
 
             modelBuilder.Entity("LinkedLanguages.DAL.Models.WordPairToApplicationUser", b =>
@@ -442,7 +439,7 @@ namespace LinkedLanguages.DAL.Migrations
 
                     b.HasIndex("WordPairId");
 
-                    b.ToTable("WordPairToApplicationUsers", (string)null);
+                    b.ToTable("WordPairToApplicationUsers");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

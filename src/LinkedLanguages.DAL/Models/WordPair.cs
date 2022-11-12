@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LinkedLanguages.DAL.Models
 {
@@ -20,5 +21,7 @@ namespace LinkedLanguages.DAL.Models
         public string UnknownWord { get; set; }
         public string UnknownWordUri { get; set; }
         public int Distance { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public int? UsedCount { get; set; }
     }
 }
