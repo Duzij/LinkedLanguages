@@ -39,7 +39,7 @@ export class Learn extends Component {
                         unknownLanguageId: data.unknownLanguages[0].value,
                         unknownLanguageLabel: data.unknownLanguages[0].label,
                         knownLanguageLabel: data.knownLanguages[0].label,
-                        },
+                    },
                         () => {
                             this.fetchNextWord()
                         });
@@ -118,21 +118,21 @@ export class Learn extends Component {
                         </div>
                         <div className="alert alert-primary" role="alert">
                             <span>For public alpha only one known language and one unknown language is supported. </span>
-                            <span hidden={this.state.canFetchNext}>
-                                Congratulations, you managed to learn all word pairs.
-                                Continue to the <NavLink to="/test">Test</NavLink> section ✨</span>
+                        </div>
+                        <div hidden={this.state.canFetchNext} className="alert alert-success" role="alert">
+                         ✨ Congratulations, you learned all available word pairs for current known and unknown language. Continue to the <NavLink to="/test">Test</NavLink> section 
                         </div>
                     </div>
                 </div>
                 <form hidden={!this.state.canFetchNext || this.state.errorMessage !== undefined}>
                     <div className="row row-cols-1 row-cols-md-2 g-2 mb-3">
                         <div className='col d-flex justify-content-center justify-content-lg-end'>
-                            <button type="button" className="align-self-md-center btn btn-outline-danger" onClick={this.reject.bind(this)}>
+                            <button type="button" className="align-self-md-center btn btn-lg btn-outline-danger m-sm-1" onClick={this.reject.bind(this)}>
                                 Reject
                             </button>
                         </div>
                         <div className='col d-flex justify-content-center justify-content-lg-start'>
-                            <button type="button" className="align-self-md-center btn btn-outline-success" onClick={this.approve.bind(this)}>
+                            <button type="button" className="align-self-md-center btn btn-lg btn-outline-success m-sm-1" onClick={this.approve.bind(this)}>
                                 Approve
                             </button>
                         </div>
