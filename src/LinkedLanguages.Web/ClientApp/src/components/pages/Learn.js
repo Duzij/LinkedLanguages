@@ -113,14 +113,16 @@ export class Learn extends Component {
                     <div className='form-group col-md-12'>
                         <h1>Learn</h1>
                         <p>In this section you can learn some new words</p>
-                        <div hidden={this.state.errorMessage === undefined} className="alert alert-danger" role="alert">
-                            <span>{this.state.errorMessage}</span>
-                        </div>
                         <div className="alert alert-primary" role="alert">
                             <span>For public alpha only one known language and one unknown language is supported. </span>
                         </div>
+                        <p><span class="text-danger"><b>Reject</b></span> the word pair if you don't like it 😖</p>
+                        <p><span class="text-success"><b>Approve</b></span> the word pair if it does make sence and you want to learn it 👀</p>
+                        <div hidden={this.state.errorMessage === undefined} className="alert alert-danger" role="alert">
+                            <span>{this.state.errorMessage}</span>
+                        </div>
                         <div hidden={this.state.canFetchNext} className="alert alert-success" role="alert">
-                         ✨ Congratulations, you learned all available word pairs for current known and unknown language. Continue to the <NavLink to="/test">Test</NavLink> section 
+                            ✨ Congratulations, you learned all available word pairs for current known and unknown language. Continue to the <NavLink to="/test">Test</NavLink> section
                         </div>
                     </div>
                 </div>
