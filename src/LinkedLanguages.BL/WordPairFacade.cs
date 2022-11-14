@@ -153,7 +153,7 @@ namespace LinkedLanguages.BL
                  .ToArrayAsync();
         }
 
-        public async Task<List<LanguageStatisticsDto>> GetLearnedWordStatistics()
+        public async Task<List<LearnedWordStatisticsDto>> GetLearnedWordStatistics()
         {
             var learnedWordPairs = await dbContext.WordPairToApplicationUsers
                  .AsNoTracking()
@@ -162,7 +162,7 @@ namespace LinkedLanguages.BL
                  .Select(a => new { a.WordPair.UnknownLanguage.Name, a.NumberOfFailedSubmissions })
                  .ToListAsync();
 
-            var returnedValue = new List<LanguageStatisticsDto>();
+            var returnedValue = new List<LearnedWordStatisticsDto>();
 
             var lanuagesStatistics = learnedWordPairs.GroupBy(a => a.Name);
 
@@ -189,10 +189,26 @@ namespace LinkedLanguages.BL
                     list.Add(successRate);
                 }
 
-                returnedValue.Add(new LanguageStatisticsDto(lang.Key, Convert.ToInt16(Math.Round(list.Average(), 2) * 100), lang.Count()));
+                returnedValue.Add(new LearnedWordStatisticsDto(lang.Key, Convert.ToInt16(Math.Round(list.Average(), 2) * 100), lang.Count()));
             }
 
             return returnedValue;
+        }
+
+        public async Task<List<NotLearnedStatisticsDto>> GetWordStatistics()
+        {
+            var learnedWordPairs = await dbContext.WordPairToApplicationUsers
+                .AsNoTracking()
+                .Where(a => a.ApplicationUserId == appUserProvider.GetUserId())
+                .Where(a => !a.Learned)
+                .Select(a => new { a.WordPair.UnknownLanguage.Name })
+                .ToListAsync();
+
+            return learnedWordPairs
+                .GroupBy(a => a.Name)
+                .Select(a => new NotLearnedStatisticsDto(
+                a.Key, a.Count()))
+                .ToList();
         }
     }
 }

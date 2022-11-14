@@ -43,10 +43,17 @@ namespace LinkedLanguages.Controllers
             return Ok(words);
         }
 
+        [HttpGet("allstatistics")]
+        public async Task<IActionResult> GetWordStatistics()
+        {
+            List<NotLearnedStatisticsDto> statistics = await wordPairFacade.GetWordStatistics();
+            return Ok(statistics);
+        }
+
         [HttpGet("statistics")]
         public async Task<IActionResult> GetLearnedWordStatistics()
         {
-            List<LanguageStatisticsDto> statistics = await wordPairFacade.GetLearnedWordStatistics();
+            List<LearnedWordStatisticsDto> statistics = await wordPairFacade.GetLearnedWordStatistics();
             return Ok(statistics);
         }
 
