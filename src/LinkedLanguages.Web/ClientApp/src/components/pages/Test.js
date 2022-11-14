@@ -177,7 +177,7 @@ export class Test extends Component {
                                 <div className="card-header">Statistics of all foreign words</div>
                                 <div className="card-body">
                                     <p className="card-text">
-                                       Looks like you also approved some words pairs for different language comination. 🤔
+                                       You may also approved some words pairs for different language comination. 🤔
                                     </p>
                                     <p className="card-text">
                                     To test the words from other foreign languages, navigate to <NavLink to="/setup">Setup section</NavLink> to change the settings.
