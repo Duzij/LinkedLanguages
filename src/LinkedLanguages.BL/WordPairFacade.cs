@@ -201,13 +201,16 @@ namespace LinkedLanguages.BL
                 .AsNoTracking()
                 .Where(a => a.ApplicationUserId == appUserProvider.GetUserId())
                 .Where(a => !a.Learned)
-                .Select(a => new { a.WordPair.UnknownLanguage.Name })
+                .Select(a => new
+                {
+                    UnknownLanguage = a.WordPair.UnknownLanguage.Name,
+                    KnownLanguage = a.WordPair.KnownLanguage.Name
+                })
                 .ToListAsync();
 
             return learnedWordPairs
-                .GroupBy(a => a.Name)
-                .Select(a => new NotLearnedStatisticsDto(
-                a.Key, a.Count()))
+                .GroupBy(a => "Known: " + a.KnownLanguage + " | Unknown: " + a.UnknownLanguage)
+                .Select(a => new NotLearnedStatisticsDto(a.Key, a.Count()))
                 .ToList();
         }
     }

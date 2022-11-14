@@ -160,21 +160,28 @@ export class Test extends Component {
                 <div className="row">
                     <div className='form-group col-md-12'>
                         <h1>Test</h1>
-                        <p>Here you can learn some of the words you approved in Learn section.</p>
+                        <p>Here you can test your knowledge of the words you approved in the Learn section.</p>
+                        <p>All word pairs you see here are retrieved based on your current saved known ({this.state.knownLanguageLabel}) and unknown language ({this.state.unknownLanguageLabel}).</p>
                         <div hidden={this.state.errorMessage === undefined} className="alert alert-danger" role="alert">
                             <span>{this.state.errorMessage}</span>
                         </div>
                         <div hidden={this.state.canFetchNext} className="alert alert-success" role="alert">
-                            ✔ You exceeded all approved word pairs. Continue back to <NavLink to="/learn">Learn section</NavLink> to approve more word pairs.
+                            ✔ You exceeded all word pairs for {this.state.unknownLanguageLabel} language. Continue back to <NavLink to="/learn">Learn section</NavLink> to approve more word pairs.
                         </div>
                     </div>
                 </div>
                 <div className='row d-flex align-items-center justify-content-center'>
                     <div className='col-lg-8 col-md-12 col-sm-12'>
-                        <div className='mt-3'>
+                        <div hidden={this.state.notLearnedStatistics.length === 0} className='mt-3'>
                             <div className="card">
                                 <div className="card-header">Statistics of all foreign words</div>
                                 <div className="card-body">
+                                    <p className="card-text">
+                                       Looks like you also approved some words pairs for different language comination. 🤔
+                                    </p>
+                                    <p className="card-text">
+                                    To test the words from other foreign languages, navigate to <NavLink to="/setup">Setup section</NavLink> to change the settings.
+                                    </p>
                                     {
                                         this.state.notLearnedStatistics && this.state.notLearnedStatistics.map(
                                             (lang) => <small key={lang.name} className="text-muted">
