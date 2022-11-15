@@ -185,7 +185,7 @@ export class Test extends Component {
                                     {
                                         this.state.notLearnedStatistics && this.state.notLearnedStatistics.map(
                                             (lang) => <small key={lang.name} className="text-muted">
-                                                <p>{lang.name} words not learned: <b>{lang.wordsNotLearnedCount}</b></p>
+                                                <p>{lang.name} words yet not tested: <b>{lang.wordsNotLearnedCount}</b></p>
                                             </small>
                                         )
                                     }

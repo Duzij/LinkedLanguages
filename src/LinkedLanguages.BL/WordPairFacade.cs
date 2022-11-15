@@ -200,7 +200,7 @@ namespace LinkedLanguages.BL
             var learnedWordPairs = await dbContext.WordPairToApplicationUsers
                 .AsNoTracking()
                 .Where(a => a.ApplicationUserId == appUserProvider.GetUserId())
-                .Where(a => !a.Learned)
+                .Where(a => !a.Learned && !a.Rejected)
                 .Select(a => new
                 {
                     UnknownLanguage = a.WordPair.UnknownLanguage.Name,
