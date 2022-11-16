@@ -116,8 +116,8 @@ export class Learn extends Component {
                         <div className="alert alert-primary" role="alert">
                             <span>For public alpha only one known language and one unknown language is supported. </span>
                         </div>
-                        <p><span class="text-danger"><b>Reject</b></span> the word pair if you don't like it 😖</p>
-                        <p><span class="text-success"><b>Approve</b></span> the word pair if it does make sense and you want to learn it 👀</p>
+                        <p><span className="text-danger"><b>Reject</b></span> the word pair if you don't like it 😖</p>
+                        <p><span className="text-success"><b>Approve</b></span> the word pair if it does make sense and you want to learn it 👀</p>
                         <div hidden={this.state.errorMessage === undefined} className="alert alert-danger" role="alert">
                             <span>{this.state.errorMessage}</span>
                         </div>
