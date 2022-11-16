@@ -30,6 +30,9 @@ namespace LinkedLanguages.DAL
             builder.Entity<WordPair>().Property(p => p.UsedCount)
                    .HasComputedColumnSql("dbo.UsedCount([Id])");
 
+            builder.Entity<WordPair>().Property(p => p.RejectedCount)
+              .HasComputedColumnSql("dbo.RejectedCount([Id])");
+
             base.OnModelCreating(builder);
         }
     }

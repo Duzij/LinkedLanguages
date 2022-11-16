@@ -23,5 +23,8 @@ namespace LinkedLanguages.DAL.Models
         public int Distance { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public int? UsedCount { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public int? RejectedCount { get; set; }
     }
 }

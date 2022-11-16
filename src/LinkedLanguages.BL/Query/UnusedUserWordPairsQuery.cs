@@ -28,10 +28,13 @@ namespace LinkedLanguages.BL.Query
                 .GetQueryable(knownLanguageCode, unknownLanguageCode)
                 .Select(a => a.WordPairId);
 
+            int usersCount = appDbContext.Users.Count();
+
             return appDbContext.WordPairs
                 .Where(wp => wp.UnknownLanguageCode == unknownLanguageCode)
                 .Where(wp => wp.KnownLanguageCode == knownLanguageCode)
-                .Where(uwp => !userWordPairIds.Contains(uwp.Id))
+                .Where(wp => !userWordPairIds.Contains(wp.Id))
+                .Where(wp => wp.RejectedCount < usersCount / 2)
                 .OrderBy(wp => wp.Distance)
                 .OrderByDescending(wp => wp.UsedCount);
         }
