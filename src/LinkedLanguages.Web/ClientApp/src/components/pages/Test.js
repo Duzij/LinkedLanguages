@@ -17,7 +17,8 @@ export class Test extends Component {
             errorMessage: undefined,
             unknownLanguageLabel: undefined,
             knownLanguageLabel: undefined,
-            statistics: []
+            statistics: [],
+            notLearnedStatistics: []
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -41,9 +42,16 @@ export class Test extends Component {
                     },
                         () => {
                             this.fetchTestWordPair();
-
                         });
                 }
+            });
+    }
+
+    async fetchNotLearnedStatistics() {
+        fetchGet(
+            "testwordpair/allstatistics",
+            (data) => {
+                this.setState({ notLearnedStatistics: data })
             });
     }
 
@@ -74,6 +82,7 @@ export class Test extends Component {
                 }
             }
         );
+        this.fetchNotLearnedStatistics();
         this.fetchStatistics();
     }
 
@@ -151,18 +160,39 @@ export class Test extends Component {
                 <div className="row">
                     <div className='form-group col-md-12'>
                         <h1>Test</h1>
-                        <p>Here you can learn some of the words you approved in Learn section.</p>
+                        <p>Here you can test your knowledge of the words you approved in the Learn section.</p>
+                        <p>All word pairs you see here are retrieved based on your current saved known ({this.state.knownLanguageLabel}) and unknown language ({this.state.unknownLanguageLabel}).</p>
                         <div hidden={this.state.errorMessage === undefined} className="alert alert-danger" role="alert">
                             <span>{this.state.errorMessage}</span>
                         </div>
                         <div hidden={this.state.canFetchNext} className="alert alert-success" role="alert">
-                          ✔ You exceeded all approved word pairs. Continue back to <NavLink to="/learn">Learn section</NavLink> to approve more word pairs. 
+                            ✔ You exceeded all word pairs for {this.state.unknownLanguageLabel} language. Continue back to <NavLink to="/learn">Learn section</NavLink> to approve more word pairs.
                         </div>
                     </div>
                 </div>
                 <div className='row d-flex align-items-center justify-content-center'>
                     <div className='col-lg-8 col-md-12 col-sm-12'>
-                        <form hidden={!this.state.canFetchNext || this.state.errorMessage!==undefined} onSubmit={this.handleSubmit}>
+                        <div hidden={this.state.notLearnedStatistics.length === 0} className='mt-3'>
+                            <div className="card">
+                                <div className="card-header">Statistics of all foreign words</div>
+                                <div className="card-body">
+                                    <p className="card-text">
+                                       You may also approved some words pairs for different language comination. 🤔
+                                    </p>
+                                    <p className="card-text">
+                                    To test the words from other foreign languages, navigate to <NavLink to="/setup">Setup section</NavLink> to change the settings.
+                                    </p>
+                                    {
+                                        this.state.notLearnedStatistics && this.state.notLearnedStatistics.map(
+                                            (lang) => <small key={lang.name} className="text-muted">
+                                                <p>{lang.name} words yet not tested: <b>{lang.wordsNotLearnedCount}</b></p>
+                                            </small>
+                                        )
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <form className='mt-3' hidden={!this.state.canFetchNext || this.state.errorMessage !== undefined} onSubmit={this.handleSubmit}>
                             <div className="card">
                                 <div className="card-body">
                                     <div className='row'>
@@ -171,12 +201,6 @@ export class Test extends Component {
                                             <div className="input-group my-3">
                                                 <input type="text" className="form-control" value={this.state.value} onChange={this.handleChange} id="knownWord" placeholder="known word" required />
                                                 <button className="btn btn-outline-secondary" type="button" onClick={this.reveal}>Reveal</button>
-                                            </div>
-                                            <div className="invalid-tooltip">
-                                                Provided word is not correct 🤨
-                                            </div>
-                                            <div className="valid-tooltip">
-                                                Bravo! Keep it up! 🥳✨
                                             </div>
                                         </div>
                                         <div className="col-md-6">
@@ -192,21 +216,21 @@ export class Test extends Component {
                         </form>
                         <div className='mt-3'>
                             <div className="card">
-                                <div className="card-header">Statistics of your foreign languages</div>
+                                <div className="card-header">Success rates</div>
                                 <div className="card-body">
                                     <h5 className="card-title">How statistics is calculated?</h5>
                                     <p className="card-text">Word pair learning success ratios are calculated as one (1) divided by a total number of failed submissions.</p>
                                     <p className="card-text">If word pair is revealed, success ratio for this particular word pair is set to zero.</p>
                                     <p className="card-text">Language success rate, that you can see below, is an average of all learned word pairs success rates for this language.</p>
                                     {
-                                         
+
                                         this.state.statistics && this.state.statistics.map(
                                             (lang) => <small key={lang.name} className="text-muted">
                                                 <p>{lang.name}: <b>{lang.successRate}%</b> (words learned {lang.wordsCount})</p>
                                             </small>
                                         )
                                     }
-                                    <hr/>
+                                    <hr />
                                     <p className="card-text">Overall success rate: <b>{overallSuccess}%</b></p>
                                 </div>
                             </div>

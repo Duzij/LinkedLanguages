@@ -46,3 +46,7 @@ code {
 .active.nav-link {
     border-bottom: 2px solid currentColor;
 }
+
+.navbar-toggler {
+    --bs-navbar-toggler-border-color: transparent;
+}

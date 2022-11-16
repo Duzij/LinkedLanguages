@@ -1,5 +1,5 @@
 ﻿namespace LinkedLanguages.BL.DTO
 {
 
-    public readonly record struct LanguageStatisticsDto(string name, int SuccessRate, int wordsCount);
+    public readonly record struct LearnedWordStatisticsDto(string name, int SuccessRate, int wordsCount);
 }

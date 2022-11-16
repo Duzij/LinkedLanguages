@@ -91,11 +91,7 @@ export class Setup extends Component {
                 unknownLanguages: this.state.profile.unknownLanguages
             },
             (data) => {
-                this.setState({
-                    languages: data
-                }, () => {
-                    toast.success('Profile saved')
-                });
+                toast.success('Profile saved')
             }
         );
     }
