@@ -34,7 +34,7 @@ namespace LinkedLanguages.BL.Query
                 .Where(wp => wp.UnknownLanguageCode == unknownLanguageCode)
                 .Where(wp => wp.KnownLanguageCode == knownLanguageCode)
                 .Where(wp => !userWordPairIds.Contains(wp.Id))
-                .Where(wp => wp.RejectedCount < usersCount / 2)
+                .Where(wp => wp.RejectedCount == null || wp.RejectedCount < usersCount / 2)
                 .OrderBy(wp => wp.Distance)
                 .OrderByDescending(wp => wp.UsedCount);
         }
