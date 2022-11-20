@@ -1,4 +1,5 @@
 using LinkedLanguages.BL;
+using LinkedLanguages.BL.Facades;
 using LinkedLanguages.BL.Query;
 using LinkedLanguages.BL.Services;
 using LinkedLanguages.BL.SPARQL;
@@ -77,6 +78,7 @@ namespace LinkedLanguages.Web
             builder.Services.AddTransient<SeeAlsoLinksFacade>();
             builder.Services.AddTransient<WordPairFacade>();
             builder.Services.AddTransient<TestWordPairFacade>();
+            builder.Services.AddTransient<SetupFacade>();
             builder.Services.AddTransient<WordPairPump>();
 
             //SPARQL queries

@@ -162,7 +162,7 @@ namespace LinkedLanguages.Tests
         [Ignore("")]
         public void ReadFromFileTest()
         {
-            _ = CultureInfo
+            CultureInfo
                     .GetCultures(CultureTypes.NeutralCultures);
 
             foreach (string item in EtyTteeLangs)

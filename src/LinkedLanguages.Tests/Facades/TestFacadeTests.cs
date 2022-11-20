@@ -1,6 +1,7 @@
-﻿using LinkedLanguages.BL;
-using LinkedLanguages.BL.DTO;
+﻿using LinkedLanguages.BL.DTO;
 using LinkedLanguages.BL.Exception;
+using LinkedLanguages.BL.Facades;
+using LinkedLanguages.BL.Query;
 using LinkedLanguages.BL.User;
 using LinkedLanguages.DAL;
 using LinkedLanguages.DAL.Models;
@@ -53,13 +54,16 @@ namespace LinkedLanguages.Tests.Facades
 
             dbContext.WordPairToApplicationUsers.AddRange(usedWordPairs);
             dbContext.WordPairs.AddRange(wordPairs);
-            _ = dbContext.SaveChanges();
+            dbContext.SaveChanges();
 
             appUserProvider = new Mock<IAppUserProvider>();
-            _ = appUserProvider.Setup(a => a.GetUserId()).Returns(GetUserId);
-            _ = appUserProvider.Setup(a => a.GetUserKnownLanguageCode()).Returns("eng");
+            appUserProvider.Setup(a => a.GetUserId()).Returns(GetUserId);
+            appUserProvider.Setup(a => a.GetUserKnownLanguageCode()).Returns("eng");
 
-            testWordPairFacade = new TestWordPairFacade(dbContext, appUserProvider.Object);
+            WordPairsUserQuery wordPairsUserQuery = new WordPairsUserQuery(dbContext, appUserProvider.Object);
+            ApprovedWordPairsQuery approvedWordPairs = new ApprovedWordPairsQuery(wordPairsUserQuery);
+
+            testWordPairFacade = new TestWordPairFacade(dbContext, approvedWordPairs, appUserProvider.Object);
         }
 
         [Test]

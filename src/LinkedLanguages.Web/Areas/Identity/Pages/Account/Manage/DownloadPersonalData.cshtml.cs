@@ -2,31 +2,31 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System.Text.Json;
+using LinkedLanguages.BL.Facades;
+using LinkedLanguages.DAL.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using LinkedLanguages.DAL.Models;
-using LinkedLanguages.BL;
+using System.Text.Json;
 
 namespace LinkedLanguages.Areas.Identity.Pages.Account.Manage
 {
     public class DownloadPersonalDataModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly LanguageFacade languageFacade;
-        private readonly WordPairFacade wordPairFacade;
+        private readonly SetupFacade setupFacade;
+        private readonly TestWordPairFacade testWordPairFacade;
         private readonly ILogger<DownloadPersonalDataModel> _logger;
 
         public DownloadPersonalDataModel(
             UserManager<ApplicationUser> userManager,
-            LanguageFacade languageFacade,
-            WordPairFacade wordPairFacade,
+            SetupFacade setupFacade,
+            TestWordPairFacade testWordPairFacade,
             ILogger<DownloadPersonalDataModel> logger)
         {
             _userManager = userManager;
-            this.languageFacade = languageFacade;
-            this.wordPairFacade = wordPairFacade;
+            this.setupFacade = setupFacade;
+            this.testWordPairFacade = testWordPairFacade;
             _logger = logger;
         }
 
@@ -37,7 +37,7 @@ namespace LinkedLanguages.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            ApplicationUser user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
@@ -46,19 +46,19 @@ namespace LinkedLanguages.Areas.Identity.Pages.Account.Manage
             _logger.LogInformation("User with ID '{UserId}' asked for their personal data.", _userManager.GetUserId(User));
 
             // Only include personal data for download
-            var personalData = new Dictionary<string, object>();
-            var personalDataProps = typeof(ApplicationUser).GetProperties().Where(
+            Dictionary<string, object> personalData = new();
+            IEnumerable<System.Reflection.PropertyInfo> personalDataProps = typeof(ApplicationUser).GetProperties().Where(
                             prop => Attribute.IsDefined(prop, typeof(PersonalDataAttribute)));
-            foreach (var p in personalDataProps)
+            foreach (System.Reflection.PropertyInfo p in personalDataProps)
             {
                 personalData.Add(p.Name, p.GetValue(user)?.ToString() ?? "null");
             }
 
-            var profile = await languageFacade.GetUserProfileAsync();
+            BL.DTO.UserProfileDto profile = await setupFacade.GetUserProfileAsync();
 
             personalData.Add($"Linked Languages Profile", profile);
 
-            var learnedWordPairs = await wordPairFacade.GetLearnedWordPairs();
+            IList<BL.DTO.WordPairDto> learnedWordPairs = await testWordPairFacade.GetLearnedWordPairs();
             personalData.Add($"Learned Word Pairs", learnedWordPairs);
 
             Response.Headers.Add("Content-Disposition", "attachment; filename=PersonalData.json");

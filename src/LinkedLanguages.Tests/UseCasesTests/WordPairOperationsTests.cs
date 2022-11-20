@@ -1,5 +1,5 @@
-﻿using LinkedLanguages.BL;
-using LinkedLanguages.BL.DTO;
+﻿using LinkedLanguages.BL.DTO;
+using LinkedLanguages.BL.Facades;
 using LinkedLanguages.BL.Query;
 using LinkedLanguages.BL.Services;
 using LinkedLanguages.BL.SPARQL.Query;
@@ -34,8 +34,8 @@ namespace LinkedLanguages.Tests.UseCasesTests
             dbContext = GetNewTestDbContext();
             Guid wpId = Guid.NewGuid();
 
-            List<WordPair> wordPairs = new List<WordPair>
-                {
+            List<WordPair> wordPairs = new()
+            {
                     new WordPair {
                         Id = wpId,
                         KnownLanguageId = LanguageSeed.EnglishLanguageId,
@@ -47,8 +47,8 @@ namespace LinkedLanguages.Tests.UseCasesTests
                     }
                 };
 
-            List<WordPairToApplicationUser> usedWordPairs = new List<WordPairToApplicationUser>
-                {
+            List<WordPairToApplicationUser> usedWordPairs = new()
+            {
                     new WordPairToApplicationUser {
                         Id = Guid.NewGuid(),
                         ApplicationUserId = GetUserId,
@@ -80,7 +80,7 @@ namespace LinkedLanguages.Tests.UseCasesTests
         [Test]
         public void UnusedUserWordPairsQuery()
         {
-            UnusedUserWordPairsQuery unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, wordPairsUserQuery);
+            UnusedUserWordPairsQuery unusedUserWordPairsQuery = new(dbContext, wordPairsUserQuery);
 
             List<WordPair> unusedUserWordPairs = unusedUserWordPairsQuery.GetQueryable("eng", "lat").ToList();
             Assert.That(unusedUserWordPairs.Count, Is.EqualTo(0));
@@ -89,12 +89,12 @@ namespace LinkedLanguages.Tests.UseCasesTests
         [Test]
         public async Task ApproveWordPair()
         {
-            var unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, wordPairsUserQuery);
-            var transliteratedWordParisQuery = new TransliteratedWordParisQuery(dbContext);
+            UnusedUserWordPairsQuery unusedUserWordPairsQuery = new(dbContext, wordPairsUserQuery);
+            TransliteratedWordParisQuery transliteratedWordParisQuery = new(dbContext);
 
-            WordPairPump wordPairPump = new WordPairPump(GetTestWordPairsSparqlQuery(), GetTestWordSeeAlsoLinkSparqlQuery(), unusedUserWordPairsQuery, transliteratedWordParisQuery, dbContext, new Mock<ILogger<WordPairPump>>().Object);
+            WordPairPump wordPairPump = new(GetTestWordPairsSparqlQuery(), GetTestWordSeeAlsoLinkSparqlQuery(), unusedUserWordPairsQuery, transliteratedWordParisQuery, dbContext, new Mock<ILogger<WordPairPump>>().Object);
 
-            WordPairFacade facade = new WordPairFacade(dbContext, wordPairPump, appUserProvider.Object, unusedUserWordPairsQuery, approvedUserQuery, wordDefinitionSparqlQuery);
+            WordPairFacade facade = new(dbContext, wordPairPump, appUserProvider.Object, unusedUserWordPairsQuery, wordDefinitionSparqlQuery);
 
             WordPairDto firstWordPair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
             Assert.NotNull(firstWordPair);
@@ -111,12 +111,12 @@ namespace LinkedLanguages.Tests.UseCasesTests
         [Test]
         public async Task ApproveWordPairs()
         {
-            UnusedUserWordPairsQuery unusedUserWordPairsQuery = new UnusedUserWordPairsQuery(dbContext, wordPairsUserQuery);
-            var transliteratedWordParisQuery = new TransliteratedWordParisQuery(dbContext);
+            UnusedUserWordPairsQuery unusedUserWordPairsQuery = new(dbContext, wordPairsUserQuery);
+            TransliteratedWordParisQuery transliteratedWordParisQuery = new(dbContext);
 
-            WordPairPump wordPairPump = new WordPairPump(GetTestWordPairsSparqlQuery(), GetTestWordSeeAlsoLinkSparqlQuery(), unusedUserWordPairsQuery, transliteratedWordParisQuery, dbContext, new Mock<ILogger<WordPairPump>>().Object);
+            WordPairPump wordPairPump = new(GetTestWordPairsSparqlQuery(), GetTestWordSeeAlsoLinkSparqlQuery(), unusedUserWordPairsQuery, transliteratedWordParisQuery, dbContext, new Mock<ILogger<WordPairPump>>().Object);
 
-            WordPairFacade facade = new WordPairFacade(dbContext, wordPairPump, appUserProvider.Object, unusedUserWordPairsQuery, approvedUserQuery, wordDefinitionSparqlQuery);
+            WordPairFacade facade = new(dbContext, wordPairPump, appUserProvider.Object, unusedUserWordPairsQuery, wordDefinitionSparqlQuery);
 
             WordPairDto firstWordPair = await facade.GetNextWord(LanguageSeed.LatinLanguageId);
             Assert.NotNull(firstWordPair);

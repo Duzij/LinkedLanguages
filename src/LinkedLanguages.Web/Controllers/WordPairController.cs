@@ -1,6 +1,6 @@
-﻿using LinkedLanguages.BL;
-using LinkedLanguages.BL.DTO;
+﻿using LinkedLanguages.BL.DTO;
 using LinkedLanguages.BL.Exception;
+using LinkedLanguages.BL.Facades;
 using LinkedLanguages.BL.SPARQL.Query;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +28,7 @@ namespace LinkedLanguages.Controllers
         {
             try
             {
-                var word = await seeAlsoLinksFacade.GetLinks(wordPairId);
+                WordPairSeeAlsoLinksDto word = await seeAlsoLinksFacade.GetLinks(wordPairId);
                 return Ok(word);
             }
             catch (WordNotFoundException)
@@ -56,7 +56,7 @@ namespace LinkedLanguages.Controllers
         {
             try
             {
-                WordPairDefinitonsDto definitions = await wordPairFacade.GetDefinition(wordPairId);
+                WordPairDefinitonsDto definitions = await wordPairFacade.GetDefinitions(wordPairId);
                 return Ok(definitions);
             }
             catch (WordNotFoundException)

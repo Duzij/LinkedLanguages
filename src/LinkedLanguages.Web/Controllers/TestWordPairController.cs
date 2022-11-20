@@ -1,10 +1,11 @@
-﻿using LinkedLanguages.BL;
-using LinkedLanguages.BL.DTO;
+﻿using LinkedLanguages.BL.DTO;
 using LinkedLanguages.BL.Exception;
+using LinkedLanguages.BL.Facades;
+using LinkedLanguages.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LinkedLanguages.Controllers
+namespace LinkedLanguages.Web.Controllers
 {
     [Authorize]
     [ApiController]
@@ -27,7 +28,7 @@ namespace LinkedLanguages.Controllers
         {
             try
             {
-                WordPairDto word = await wordPairFacade.GetTestWordPair();
+                WordPairDto word = await testWordPairFacade.GetTestWordPair();
                 return Ok(word);
             }
             catch (WordNotFoundException)
@@ -39,29 +40,22 @@ namespace LinkedLanguages.Controllers
         [HttpGet("learned")]
         public async Task<IActionResult> GetLearnedWordPairs()
         {
-            IList<WordPairDto> words = await wordPairFacade.GetLearnedWordPairs();
+            IList<WordPairDto> words = await testWordPairFacade.GetLearnedWordPairs();
             return Ok(words);
         }
 
         [HttpGet("allstatistics")]
         public async Task<IActionResult> GetWordStatistics()
         {
-            List<NotLearnedStatisticsDto> statistics = await wordPairFacade.GetWordStatistics();
+            List<NotLearnedStatisticsDto> statistics = await testWordPairFacade.GetApprovedWordStatistics();
             return Ok(statistics);
         }
 
         [HttpGet("statistics")]
         public async Task<IActionResult> GetLearnedWordStatistics()
         {
-            List<LearnedWordStatisticsDto> statistics = await wordPairFacade.GetLearnedWordStatistics();
+            List<LearnedWordStatisticsDto> statistics = await testWordPairFacade.GetLearnedWordStatistics();
             return Ok(statistics);
-        }
-
-        [HttpPost("reset")]
-        public async Task<IActionResult> ResetTestProgress()
-        {
-            await testWordPairFacade.ResetTestProgressAsync();
-            return Ok();
         }
 
         [HttpPost("reveal")]

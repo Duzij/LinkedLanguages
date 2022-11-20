@@ -47,7 +47,7 @@ namespace LinkedLanguages.Tests.Helpers
             var cachEntry = Mock.Of<ICacheEntry>();
 
             var mockMemoryCache = Mock.Get(memoryCache);
-            _ = mockMemoryCache
+            mockMemoryCache
                 .Setup(m => m.CreateEntry(It.IsAny<object>()))
                 .Returns(cachEntry);
             return memoryCache;

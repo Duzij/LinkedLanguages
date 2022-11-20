@@ -1,9 +1,9 @@
-﻿using LinkedLanguages.BL;
-using LinkedLanguages.BL.DTO;
+﻿using LinkedLanguages.BL.DTO;
+using LinkedLanguages.BL.Facades;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LinkedLanguages.Controllers
+namespace LinkedLanguages.Web.Controllers
 {
     [Authorize]
     [ApiController]
@@ -19,7 +19,6 @@ namespace LinkedLanguages.Controllers
             this.logger = logger;
         }
 
-
         [HttpGet()]
         public async Task<IEnumerable<LanguageDto>> GetAllLanguages()
         {
@@ -33,7 +32,7 @@ namespace LinkedLanguages.Controllers
             logger.LogInformation("Getting statistics");
             if (statisticsDto.UnknownLanguages.Any() && statisticsDto.KnownLanguages.Any())
             {
-                var count = languageFacade.GetCountOfPredicates(statisticsDto);
+                int count = languageFacade.GetCountOfLanguagesPredicates(statisticsDto);
                 return count;
             }
             return 0;

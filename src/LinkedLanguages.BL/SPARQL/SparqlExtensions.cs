@@ -15,8 +15,7 @@ namespace LinkedLanguages.BL.SPARQL
                 data = n.NodeType switch
                 {
                     NodeType.Uri => ((IUriNode)n).Uri.AbsoluteUri,
-                    NodeType.Literal => ((ILiteralNode)n).Value,//You may want to inspect the DataType and Language properties and generate
-                                                                //a different string here
+                    NodeType.Literal => ((ILiteralNode)n).Value,
                     _ => throw new RdfOutputException("Unexpected Node Type"),
                 };
             }
