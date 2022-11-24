@@ -16,7 +16,7 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
         }
 
         [Test]
-        public void NullCharactersMappingTest()
+        public void GermanCharactersMappingTest()
         {
             int distance = CrossLingualLevenshteinDistanceCalculator.Calc("shmidt", "Schmidt", GermanCharacterMapper.EnglishToGermanMapping);
             int distance1 = CrossLingualLevenshteinDistanceCalculator.Calc("smith", "Schmith", GermanCharacterMapper.EnglishToGermanMapping);
@@ -26,5 +26,11 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
             Console.WriteLine(distance2);
         }
 
+        [Test]
+        public void GermanCharactersMappingTestTwo()
+        {
+            int distance = CrossLingualLevenshteinDistanceCalculator.Calc("Hoffman", "Hoffmann", GermanCharacterMapper.EnglishToGermanMapping);
+            Console.WriteLine(distance);
+        }
     }
 }

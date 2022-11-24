@@ -32,14 +32,14 @@ namespace LinkedLanguages.BL.Services
                 CalculateCLLD(knownLangugageId, unknownLanguageId, wp);
             });
 
-            return results.Where(wp => wp.Distance < 3);
+            return results.Where(wp => wp.Distance is not 0 and <= 3);
         }
 
         public static IEnumerable<WordPair> FilterTransliteratedWordsFromDatabase(this IEnumerable<WordPair> results, TransliteratedWordsDto[] databaseWords)
         {
-            var returnedResults = new List<WordPair>();
+            List<WordPair> returnedResults = new List<WordPair>();
 
-            foreach (var wp in results)
+            foreach (WordPair wp in results)
             {
                 if (databaseWords.Any(db => db.KnownWordTransliterated == wp.KnownWordTransliterated && db.UnknownWordTransliterated == wp.UnknownWordTransliterated))
                 {
@@ -68,21 +68,21 @@ namespace LinkedLanguages.BL.Services
         {
             Dictionary<string, string> characterMapping = new Dictionary<string, string>();
 
-            if (unknownLanguageId == LanguageSeed.FrenchLanguageId && knownLangugageId == LanguageSeed.EnglishLanguageId)
-            {
-                characterMapping = FrenchCharacterMapper.FrenchToEnglishMapping;
-            }
-            else if (unknownLanguageId == LanguageSeed.EnglishLanguageId && knownLangugageId == LanguageSeed.FrenchLanguageId)
+            if (knownLangugageId == LanguageSeed.EnglishLanguageId && unknownLanguageId == LanguageSeed.FrenchLanguageId)
             {
                 characterMapping = FrenchCharacterMapper.EnglishToFrenchMapping;
             }
-            if (unknownLanguageId == LanguageSeed.GermanLanguageId && knownLangugageId == LanguageSeed.EnglishLanguageId)
+            if (knownLangugageId == LanguageSeed.FrenchLanguageId && unknownLanguageId == LanguageSeed.EnglishLanguageId)
             {
-                characterMapping = GermanCharacterMapper.GermanToEnglishMapping;
+                characterMapping = FrenchCharacterMapper.EnglishToFrenchMapping;
             }
-            else if (unknownLanguageId == LanguageSeed.EnglishLanguageId && knownLangugageId == LanguageSeed.GermanLanguageId)
+            if (knownLangugageId == LanguageSeed.EnglishLanguageId && unknownLanguageId == LanguageSeed.GermanLanguageId)
             {
                 characterMapping = GermanCharacterMapper.EnglishToGermanMapping;
+            }
+            if (knownLangugageId == LanguageSeed.GermanLanguageId && unknownLanguageId == LanguageSeed.EnglishLanguageId)
+            {
+                characterMapping = GermanCharacterMapper.GermanToEnglishMapping;
             }
 
             wp.Distance = CrossLingualLevenshteinDistanceCalculator.Calc(wp.KnownWordTransliterated, wp.UnknownWordTransliterated, characterMapping);
