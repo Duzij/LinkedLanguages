@@ -116,12 +116,13 @@ namespace LinkedLanguages.BL.Facades
             return returnedValue;
         }
 
-        public async Task<List<NotLearnedStatisticsDto>> GetApprovedWordStatistics()
+        public async Task<List<NotLearnedStatisticsDto>> GetApprovedWordStatisticsExceptSelected()
         {
             var learnedWordPairs = await dbContext.WordPairToApplicationUsers
                 .AsNoTracking()
                 .Where(a => a.ApplicationUserId == appUserProvider.GetUserId())
                 .Where(a => !a.Learned && !a.Rejected)
+                .Where(a => a.WordPair.UnknownLanguageCode != appUserProvider.GetUserUnknownLanguageCode() || a.WordPair.KnownLanguageCode != appUserProvider.GetUserKnownLanguageCode())
                 .Select(a => new
                 {
                     UnknownLanguage = a.WordPair.UnknownLanguage.Name,

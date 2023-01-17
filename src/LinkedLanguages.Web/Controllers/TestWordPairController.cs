@@ -47,7 +47,7 @@ namespace LinkedLanguages.Web.Controllers
         [HttpGet("allstatistics")]
         public async Task<IActionResult> GetWordStatistics()
         {
-            List<NotLearnedStatisticsDto> statistics = await testWordPairFacade.GetApprovedWordStatistics();
+            List<NotLearnedStatisticsDto> statistics = await testWordPairFacade.GetApprovedWordStatisticsExceptSelected();
             return Ok(statistics);
         }
 
