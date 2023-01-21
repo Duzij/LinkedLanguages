@@ -21,6 +21,9 @@ export class Home extends Component {
             <p>Based on evaluation of the web application will try to investigate whether it is possible to learn new words in foreign language based on etymological links between words in foreign language and the word in language user already know.</p>
             <p>You can start in <Link to="/setup">Setup section</Link> where you can setup your known and unknown language.
               Later, in <Link to="/learn">Learn section</Link> LinkedLanguages will serve you some word pairs.</p>
+            <p>If you have any questions or feedback 
+              <a className="btn btn-outline-primary m-2 " href="mailto:duzm00@vse.cz">Contact me 📧</a>
+                              </p>
           </div>
         </div>
       </div>
