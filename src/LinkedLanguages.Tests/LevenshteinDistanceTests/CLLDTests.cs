@@ -26,6 +26,22 @@ namespace LinkedLanguages.Tests.LevenshteinDistanceTests
             Console.WriteLine(distance2);
         }
 
+
+        [Test]
+        public void GermanCharactersMappingTestMatrix()
+        {
+            var distance = CrossLingualLevenshteinDistanceCalculator.GetMatrix("an", "ann", GermanCharacterMapper.EnglishToGermanMapping);
+
+            for (int i = 0; i < distance.GetLength(0); i++)
+            {
+                for (int a = 0; a < distance.GetLength(1); a++)
+                {
+                    Console.Write(distance[i, a]);
+                }
+                Console.WriteLine();
+            }
+        }
+
         [Test]
         public void GermanCharactersMappingTestTwo()
         {

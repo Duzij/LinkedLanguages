@@ -2,6 +2,11 @@
 
 namespace LinkedLanguages.BL.CLLD
 {
+    public static class CharacterMapperConstant
+    {
+        public const string NULL = "NULL";
+    }
+
     public static class FrenchCharacterMapper
     {
         public static readonly Dictionary<string, string> EnglishToFrenchMapping = new Dictionary<string, string>()
@@ -48,7 +53,7 @@ namespace LinkedLanguages.BL.CLLD
                 {"s",  "sch"},
                 {"v",  "b"},
                 {"t",  "ss"},
-                {"n",  "nn"}
+                {CharacterMapperConstant.NULL, "n" }
             };
 
         public static readonly Dictionary<string, string> GermanToEnglishMapping = new Dictionary<string, string>()
