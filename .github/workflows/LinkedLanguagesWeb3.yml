@@ -8,7 +8,8 @@ env:
   AZURE_WEBAPP_PACKAGE_PATH: LinkedLanguages.Web\published
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 6.0.x
-  WORKING_DIRECTORY: LinkedLanguages.Web
+  WORKING_DIRECTORY: src\LinkedLanguages.Web
+  TESTING_DIRECTORY: src\LinkedLanguages.Tests
 jobs:
   build:
     runs-on: windows-latest
