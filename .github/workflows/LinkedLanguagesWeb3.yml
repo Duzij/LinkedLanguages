@@ -1,18 +1,18 @@
-name: Build and deploy .NET Core application to Web App linkedlanguages
+name: Build and deploy .NET Core application to Web App LinkedLanguagesWeb3
 on:
   push:
     branches:
-    - main
+    - feature/deploy
 env:
-  AZURE_WEBAPP_NAME: linkedlanguages
-  AZURE_WEBAPP_PACKAGE_PATH: LinkedLanguages.Web/published
+  AZURE_WEBAPP_NAME: LinkedLanguagesWeb3
+  AZURE_WEBAPP_PACKAGE_PATH: LinkedLanguages.Web\published
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 6.0.x
   WORKING_DIRECTORY: src\LinkedLanguages.Web
   TESTING_DIRECTORY: src\LinkedLanguages.Tests
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET SDK
@@ -33,7 +33,7 @@ jobs:
         name: webapp
         path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: build
     steps:
     - name: Download artifact from build job
@@ -45,5 +45,5 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.linkedlanguages_A4DC }}
+        publish-profile: ${{ secrets.LinkedLanguagesWeb3_130A }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
