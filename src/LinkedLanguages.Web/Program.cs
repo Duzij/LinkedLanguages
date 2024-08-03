@@ -49,11 +49,13 @@ namespace LinkedLanguages.Web
                 options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier;
             });
 
+            var hostUrl = builder.Configuration.GetValue<string>("HostUrl");
+
             builder.Services.Configure<JwtBearerOptions>(IdentityServerJwtConstants.IdentityServerJwtBearerScheme, options =>
             {
                 options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
                 {
-                    ValidIssuers = new string[] { "https://linkedlanguages.azurewebsites.net/" }
+                    ValidIssuers = new string[] { hostUrl }
                 };
             });
 
@@ -62,7 +64,7 @@ namespace LinkedLanguages.Web
                 options.Preload = true;
                 options.IncludeSubDomains = true;
                 options.MaxAge = TimeSpan.FromDays(60);
-                options.ExcludedHosts.Add("https://linkedlanguages.azurewebsites.net/");
+                options.ExcludedHosts.Add(hostUrl);
             });
 
             builder.Services.AddControllersWithViews();
